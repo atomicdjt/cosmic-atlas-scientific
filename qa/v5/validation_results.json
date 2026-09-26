@@ -1,0 +1,52 @@
+{
+  "release": "5.0.0",
+  "generated_at": "2026-09-26T21:18:44.195396+00:00",
+  "standalone_sha256": "f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185",
+  "passed": true,
+  "steps": [
+    {
+      "command": [
+        "C:\\Python314\\python.exe",
+        "scripts/build_v5.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\"modules\": 52, \"bytes\": 9298746, \"sha256\": \"f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185\", \"errors\": [], \"passed\": true}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "tests/scientific.cjs"
+      ],
+      "returncode": 0,
+      "stdout": "PASS Independent Wolfram comoving fixtures\nPASS Independent Wolfram lookback fixtures\nPASS Galactic center transform\nPASS Coordinate direction axes\nPASS Distance display round trips\nPASS Angular separation\nPASS Physical separation independent geometry\nPASS Angular-only safeguard\nPASS Seed determinism\nPASS Valid catalog normalization\nPASS Null coordinates rejected\nPASS Explicit angular flag overrides distance\nPASS Low SNR never creates distance\nPASS Missing uncertainty never creates distance\nPASS High SNR inverse parallax\nPASS High RUWE prevents inference\nPASS Unknown fields preserved\nPASS Galactic inverse round trips\nPASS Proper motion tangent convention\nPASS Epoch guard\nPASS Pole propagation finite\nPASS Micro-angle precision\nPASS Context cannot claim physical separation\nPASS Mixed distance bases refused\nPASS Absolute magnitude\nPASS Unsafe source links refused\n{\"passed\":26}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Python314\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_3c273_scale (test_pipeline.PipelineTests.test_3c273_scale) ... ok\ntest_angular_only_valid (test_pipeline.PipelineTests.test_angular_only_valid) ... ok\ntest_dec (test_pipeline.PipelineTests.test_dec) ... ok\ntest_example_catalog (test_pipeline.PipelineTests.test_example_catalog) ... ok\ntest_missing_distance_invalid (test_pipeline.PipelineTests.test_missing_distance_invalid) ... ok\ntest_parallax (test_pipeline.PipelineTests.test_parallax) ... ok\ntest_planck_like_cmb_distance (test_pipeline.PipelineTests.test_planck_like_cmb_distance) ... ok\ntest_ra (test_pipeline.PipelineTests.test_ra) ... ok\ntest_deterministic (test_release_static.StaticReleaseTests.test_deterministic) ... ok\ntest_dom_refs_resolve (test_release_static.StaticReleaseTests.test_dom_refs_resolve) ... ok\ntest_offline_dependencies (test_release_static.StaticReleaseTests.test_offline_dependencies) ... ok\ntest_scientific_guards (test_release_static.StaticReleaseTests.test_scientific_guards) ... ok\ntest_unique_ids (test_release_static.StaticReleaseTests.test_unique_ids) ... ok\ntest_baseline_untouched (test_v5.V5Tests.test_baseline_untouched) ... ok\ntest_catalogs (test_v5.V5Tests.test_catalogs) ... ok\ntest_generated_hashes (test_v5.V5Tests.test_generated_hashes) ... ok\ntest_reproducible_build (test_v5.V5Tests.test_reproducible_build) ... ok\ntest_schema_null_distance_rejected (test_v5.V5Tests.test_schema_null_distance_rejected) ... ok\ntest_tier_nesting (test_v5.V5Tests.test_tier_nesting) ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 42.507s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Python314\\python.exe",
+        "-m",
+        "compileall",
+        "-q",
+        "scripts"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

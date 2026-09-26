@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"fa415a2e0b765db996f4939570d4e28c\", \"title\": \"Cosmological parameters derived from the final Planck data release (PR4)\", \"text\": \"We present cosmological parameter constraints using maps from the last data release (PR4). In particular, we detail an upgraded version of the cosmic microwave background likelihood that is based on angular power spectra and relies on a physical modeling of the foreground residuals in the spectral domain. This new version of the likelihood retains a larger sky fraction (up to 75\\\\,) and uses an extended multipole range. Using this likelihood, along with measurements from we derived constraints on parameters that are in good agreement with previous 2018 results, but with smaller uncertainties by 10\\\\, to 20\\\\,. We demonstrate that the foregrounds can be accurately described in the spectral domain, with a negligible impact on parameters. We also derived constraints on single-parameter extensions to including and Noteworthy results from this updated analysis include a lensing amplitude value of $ which is more closely aligned with theoretical expectations within the framework. Additionally, our curvature measurement, $ 0.010$, is now fully consistent with a flat universe and our measurement of $S_8$ is closer to the measurements derived from large-scale structure surveys (at the 1.5\\\\,sigma level). We also added constraints from PR4 lensing, making this combination the most tightly constrained data set currently available from Additionally, we explored the addition of baryon acoustic oscillation data, which tightens the limits on some particular extensions to the standard cosmology.\", \"url\": \"https://consensus.app/papers/cosmological-parameters-derived-from-the-final-planck-tristram-banday/fa415a2e0b765db996f4939570d4e28c/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"M. Tristram, A. Banday, M. Douspis, X. Garrido, K. Górski, S. Henrot-Versillé, L. Hergt, S. Ili'c, R. Keskitalo, G. Lagache, C. Lawrence, B. Partridge, D. Scott\", \"publish_year\": \"2023\", \"journal\": \"Astronomy & Astrophysics\", \"citation_count\": \"186\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

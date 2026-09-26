@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Out[1]= {\"SiriusGalactic\" -> {227.23025077711668, -8.890342476529936}, \"SiriusVegaAngularDegrees\" -> 157.85950086881016, \"Parallax100masLightYears\" -> 32.61563777, \"3D_3_4_90\" -> 5}"
+    }
+  ],
+  "isError": false
+}

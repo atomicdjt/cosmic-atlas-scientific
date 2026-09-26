@@ -1,0 +1,45 @@
+{
+  "pipeline_version": "5.0.0",
+  "retrieved_at": "2026-09-26T20:50:48.946334+00:00",
+  "sources": [
+    {
+      "file": "data/raw/gaia_50k.csv",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "retrieved_at": "2026-09-26T20:50:48.947062+00:00",
+      "status": "retrieved",
+      "bytes": 14089448,
+      "sha256": "1465834bf489c978d40c167fb966346fcfb1d51fb0011c4f37ecead83875052d"
+    },
+    {
+      "file": "data/raw/bsc5.json",
+      "url": "https://raw.githubusercontent.com/brettonw/YaleBrightStarCatalog/master/bsc5.json",
+      "retrieved_at": "2026-09-26T20:51:47.234902+00:00",
+      "status": "retrieved",
+      "bytes": 4398259,
+      "sha256": "08b019f560a20fdf67565604b2ad04c3e40938f71a4a7c187af2b88fad1a6e8b"
+    },
+    {
+      "file": "data/raw/NGC.csv",
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/master/database_files/NGC.csv",
+      "retrieved_at": "2026-09-26T20:51:47.505345+00:00",
+      "status": "retrieved",
+      "bytes": 3876622,
+      "sha256": "be150bdaa1997dacbcb39f303074403edec7a953b589b36d5f1c4522c0cc6fae"
+    },
+    {
+      "file": "data/raw/addendum.csv",
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/master/database_files/addendum.csv",
+      "retrieved_at": "2026-09-26T20:51:47.734534+00:00",
+      "status": "retrieved",
+      "bytes": 17484,
+      "sha256": "1d8f0914e643ada325a5a94d88d8fefad6a4937a2f77cc34f21483af22b11983"
+    },
+    {
+      "file": "data/raw/OpenNGC-LICENSE",
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/master/LICENSE",
+      "retrieved_at": "2026-09-26T20:51:47.823481+00:00",
+      "status": "blocked",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ]
+}

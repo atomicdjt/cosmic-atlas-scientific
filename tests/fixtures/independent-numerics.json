@@ -1,0 +1,14 @@
+{
+  "verifier": "Wolfram Language NIntegrate and vector mathematics; 2026-09-26",
+  "model": {"H0":67.4,"omega_m":0.315,"omega_r":0.000092,"omega_lambda":0.684908},
+  "cosmology": [
+    {"z":0.158339,"comoving_ly":2209025954.7769227,"lookback_yr":2052673596.8267415,"scale_factor":0.8633051291547639},
+    {"z":1,"comoving_ly":11092369597.366245,"lookback_yr":7949945524.668449,"scale_factor":0.5},
+    {"z":1089,"comoving_ly":45218866181.355774,"lookback_yr":13790320753.096798,"scale_factor":0.0009174311926605505}
+  ],
+  "tolerances":{"comoving_relative":0.00003,"lookback_relative":0.00005,"angle_degrees":0.00000001},
+  "sirius_galactic":{"l":227.23025077711668,"b":-8.890342476529936},
+  "sirius_vega_angular_degrees":157.85950086881016,
+  "parallax_100_mas_ly":32.61563777,
+  "orthogonal_3_4_ly_separation":5
+}

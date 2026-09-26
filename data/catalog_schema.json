@@ -3,55 +3,261 @@
   "$id": "https://cosmic-atlas.local/schema/cosmic-atlas.catalog.v1.json",
   "title": "Cosmic Atlas Catalog Payload v1",
   "type": "object",
-  "required": ["schema", "records"],
+  "required": [
+    "schema",
+    "records"
+  ],
   "properties": {
-    "schema": {"const": "cosmic-atlas.catalog.v1"},
-    "generated_at": {"type": "string"},
-    "source": {"type": ["object", "string", "null"]},
+    "schema": {
+      "const": "cosmic-atlas.catalog.v1"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": [
+        "object",
+        "string",
+        "null"
+      ]
+    },
     "records": {
       "type": "array",
-      "items": {"$ref": "#/$defs/record"}
+      "items": {
+        "$ref": "#/$defs/record"
+      }
     }
   },
   "$defs": {
     "record": {
       "type": "object",
-      "required": ["id", "ra_deg", "dec_deg"],
-      "properties": {
-        "id": {"type": ["string", "integer"]},
-        "source_id": {"type": ["string", "integer", "null"]},
-        "name": {"type": ["string", "null"]},
-        "designation": {"type": ["string", "null"]},
-        "tag": {"type": ["string", "null"]},
-        "tier": {"enum": ["reference", "observational", "external", "context", "model", null]},
-        "type": {"type": ["string", "null"]},
-        "ra_deg": {"type": "number", "minimum": 0, "exclusiveMaximum": 360},
-        "dec_deg": {"type": "number", "minimum": -90, "maximum": 90},
-        "distance_ly": {"type": ["number", "null"], "exclusiveMinimum": 0},
-        "angular_only": {"type": "boolean", "default": false},
-        "display_shell_ly": {"type": ["number", "null"], "exclusiveMinimum": 0},
-        "distance_uncertainty": {"type": ["string", "number", "null"]},
-        "distance_basis": {"type": ["string", "null"]},
-        "parallax_mas": {"type": ["number", "null"]},
-        "parallax_error_mas": {"type": ["number", "null"]},
-        "pmra_masyr": {"type": ["number", "null"]},
-        "pmdec_masyr": {"type": ["number", "null"]},
-        "radial_velocity_kms": {"type": ["number", "null"]},
-        "redshift": {"type": ["number", "null"]},
-        "phot_g_mean_mag": {"type": ["number", "null"]},
-        "bp_rp": {"type": ["number", "null"]},
-        "vmag": {"type": ["number", "null"]},
-        "temperature_k": {"type": ["number", "null"]},
-        "source": {"type": ["string", "null"]},
-        "source_ref": {"type": ["string", "null"]},
-        "source_url": {"type": ["string", "null"]},
-        "description": {"type": ["string", "null"]}
-      },
-      "anyOf": [
-        {"required": ["distance_ly"]},
-        {"properties": {"angular_only": {"const": true}}, "required": ["angular_only"]}
+      "required": [
+        "id",
+        "ra_deg",
+        "dec_deg"
       ],
-      "additionalProperties": true
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "designation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tier": {
+          "enum": [
+            "reference",
+            "observational",
+            "external",
+            "context",
+            "model",
+            null,
+            "procedural"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ra_deg": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360
+        },
+        "dec_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "distance_ly": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "angular_only": {
+          "type": "boolean",
+          "default": false
+        },
+        "display_shell_ly": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "distance_uncertainty": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "distance_basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parallax_mas": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "parallax_error_mas": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "pmra_masyr": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "pmdec_masyr": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "radial_velocity_kms": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "redshift": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "phot_g_mean_mag": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "bp_rp": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "vmag": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "temperature_k": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "oneOf": [
+        {
+          "properties": {
+            "angular_only": {
+              "const": true
+            },
+            "distance_ly": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "angular_only"
+          ]
+        },
+        {
+          "properties": {
+            "distance_ly": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "angular_only": {
+              "const": false
+            }
+          },
+          "required": [
+            "distance_ly"
+          ]
+        },
+        {
+          "properties": {
+            "tier": {
+              "const": "reference"
+            },
+            "distance_ly": {
+              "const": 0
+            },
+            "angular_only": {
+              "const": false
+            }
+          },
+          "required": [
+            "tier",
+            "distance_ly"
+          ]
+        }
+      ]
     }
   },
   "additionalProperties": true

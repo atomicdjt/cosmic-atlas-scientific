@@ -124,5 +124,6 @@ def validate_record(r: dict) -> list[str]:
     d = safe_float(r.get("distance_ly"))
     angular = bool(r.get("angular_only", False))
     if d is None and not angular: problems.append("provide distance_ly or angular_only=true")
-    if d is not None and d <= 0: problems.append("distance_ly must be >0 when supplied")
+    if d is not None and d <= 0 and not (d == 0 and r.get("tier") == "reference"): problems.append("distance_ly must be >0 except reference origin")
+    if angular and d is not None: problems.append("angular_only requires absent/null physical distance")
     return problems

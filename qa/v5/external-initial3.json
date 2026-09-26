@@ -1,0 +1,16 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "login": "atomicdjt",
+      "id": 254662250
+    },
+    "isError": false
+  }
+}
