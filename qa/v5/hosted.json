@@ -1,0 +1,11 @@
+{
+  "url": "https://cosmic-atlas-scientific.vercel.app",
+  "status": 200,
+  "served_sha256": "f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185",
+  "standalone_sha256": "f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185",
+  "byte_identical": true,
+  "loaded_records": 5000,
+  "webgl": true,
+  "errors": [],
+  "passed": true
+}

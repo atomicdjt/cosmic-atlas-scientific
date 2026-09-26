@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"result\": {\n    \"deployment\": {\n      \"id\": \"dpl_81WLMUQYrt1UpdceE19n36FxqB54\",\n      \"name\": \"cosmic-atlas-scientific\",\n      \"url\": \"cosmic-atlas-scientific-13dpqfl12-atomicdjts-projects.vercel.app\",\n      \"type\": \"LAMBDAS\",\n      \"state\": \"READY\",\n      \"createdAt\": 1790457693098,\n      \"creator\": {\n        \"uid\": \"6l5rZ7nDRYxoOA0ZkjXdSoX3\",\n        \"username\": \"atomicdjt\"\n      },\n      \"project\": {\n        \"id\": \"prj_zNLd833awlhqWqEz2deW4tqsdQjM\",\n        \"name\": \"cosmic-atlas-scientific\",\n        \"framework\": null\n      },\n      \"meta\": {\n        \"githubCommitRef\": \"refactor/modular-source-v5\",\n        \"githubCommitSha\": \"46dc8e5e2d9aaf355c0234163c0e4b5061935217\",\n        \"githubCommitMessage\": \"Build v5 modular scientific atlas with reproducible Gaia catalogs and verified browser paths\",\n        \"githubRepo\": \"cosmic-atlas-scientific\",\n        \"githubOrg\": \"atomicdjt\"\n      },\n      \"alias\": [\n        \"cosmic-atlas-scientific.vercel.app\",\n        \"cosmic-atlas-scientific-atomicdjts-projects.vercel.app\"\n      ],\n      \"target\": \"production\",\n      \"regions\": [\n        \"iad1\"\n      ],\n      \"buildingAt\": 1790457694134,\n      \"ready\": 1790457697573,\n      \"readyState\": \"READY\",\n      \"source\": \"cli\",\n      \"aliasError\": null\n    }\n  }\n}"
+    }
+  ],
+  "isError": false
+}

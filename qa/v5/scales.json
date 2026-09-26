@@ -1,0 +1,49 @@
+{
+  "scales": [
+    {
+      "scale": 0,
+      "name": "Earth & Solar System",
+      "cameraDistance": 38,
+      "glError": 0,
+      "motionFinished": true
+    },
+    {
+      "scale": 1,
+      "name": "Sagittarius A* (Galactic Centre)",
+      "cameraDistance": 220,
+      "glError": 0,
+      "motionFinished": true
+    },
+    {
+      "scale": 2,
+      "name": "Andromeda Galaxy (M31)",
+      "cameraDistance": 450,
+      "glError": 0,
+      "motionFinished": true
+    },
+    {
+      "scale": 3,
+      "name": "Virgo Cluster (context centre)",
+      "cameraDistance": 750,
+      "glError": 0,
+      "motionFinished": true
+    },
+    {
+      "scale": 4,
+      "name": "Sloan Great Wall region",
+      "cameraDistance": 1200,
+      "glError": 0,
+      "motionFinished": true
+    },
+    {
+      "scale": 5,
+      "name": "Cosmic Microwave Background",
+      "cameraDistance": 2200,
+      "glError": 0,
+      "motionFinished": true
+    }
+  ],
+  "errors": [],
+  "standalone_sha256": "f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185",
+  "passed": true
+}
