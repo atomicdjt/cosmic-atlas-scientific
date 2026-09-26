@@ -1,0 +1,51 @@
+{
+  "release": "4.0.0",
+  "build_id": "CA-SCI-4.0-2026-09-26",
+  "generated_at": "2026-09-26T09:31:28+00:00",
+  "passed": true,
+  "build_manifest": {
+    "file": "standalone/Cosmic_Atlas_Scientific_v4.html",
+    "bytes": 127949,
+    "sha256": "6fb8b0bc99f1eba486056e1d0b9e19c7c81cc6ab2d010bc15dbb3dd4158cc101",
+    "dom_ids": 83,
+    "unique_dom_ids": 83,
+    "duplicate_ids": [],
+    "unresolved_getElementById": [],
+    "external_script_tags": 0,
+    "stylesheet_links": 0,
+    "network_fetch_calls": 0,
+    "math_random_calls": 0,
+    "node_syntax_ok": true,
+    "node_message": ""
+  },
+  "steps": [
+    {
+      "command": "/opt/pyvenv/bin/python scripts/build_standalone.py",
+      "returncode": 0,
+      "stdout": "{\n  \"file\": \"standalone/Cosmic_Atlas_Scientific_v4.html\",\n  \"bytes\": 127949,\n  \"sha256\": \"6fb8b0bc99f1eba486056e1d0b9e19c7c81cc6ab2d010bc15dbb3dd4158cc101\",\n  \"dom_ids\": 83,\n  \"unique_dom_ids\": 83,\n  \"duplicate_ids\": [],\n  \"unresolved_getElementById\": [],\n  \"external_script_tags\": 0,\n  \"stylesheet_links\": 0,\n  \"network_fetch_calls\": 0,\n  \"math_random_calls\": 0,\n  \"node_syntax_ok\": true,\n  \"node_message\": \"\"\n}",
+      "stderr": ""
+    },
+    {
+      "command": "/opt/pyvenv/bin/python scripts/validate_catalog.py data/example_import_catalog.json",
+      "returncode": 0,
+      "stdout": "{\n  \"catalog\": \"data/example_import_catalog.json\",\n  \"records\": 6,\n  \"physical_distance_records\": 6,\n  \"angular_only_records\": 0,\n  \"errors\": 0,\n  \"error_examples\": []\n}",
+      "stderr": ""
+    },
+    {
+      "command": "/opt/pyvenv/bin/python -m unittest discover -s tests -v",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_3c273_scale (test_pipeline.PipelineTests.test_3c273_scale) ... ok\ntest_angular_only_valid (test_pipeline.PipelineTests.test_angular_only_valid) ... ok\ntest_dec (test_pipeline.PipelineTests.test_dec) ... ok\ntest_example_catalog (test_pipeline.PipelineTests.test_example_catalog) ... ok\ntest_missing_distance_invalid (test_pipeline.PipelineTests.test_missing_distance_invalid) ... ok\ntest_parallax (test_pipeline.PipelineTests.test_parallax) ... ok\ntest_planck_like_cmb_distance (test_pipeline.PipelineTests.test_planck_like_cmb_distance) ... ok\ntest_ra (test_pipeline.PipelineTests.test_ra) ... ok\ntest_deterministic (test_release_static.StaticReleaseTests.test_deterministic) ... ok\ntest_dom_refs_resolve (test_release_static.StaticReleaseTests.test_dom_refs_resolve) ... ok\ntest_offline_dependencies (test_release_static.StaticReleaseTests.test_offline_dependencies) ... ok\ntest_scientific_guards (test_release_static.StaticReleaseTests.test_scientific_guards) ... ok\ntest_unique_ids (test_release_static.StaticReleaseTests.test_unique_ids) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.012s\n\nOK"
+    },
+    {
+      "command": "/opt/pyvenv/bin/python -m py_compile scripts/catalog_common.py scripts/fetch_gaia_dr3.py scripts/fetch_bsc5.py scripts/fetch_openngc.py scripts/merge_catalogs.py scripts/validate_catalog.py scripts/build_standalone.py",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "browser_smoke": {
+    "status": "environment-blocked",
+    "detail": "Container Chromium could not initialize a usable GL/ANGLE backend; see qa/chromium.log. This is not counted as a passed runtime GPU test."
+  }
+}

@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="A zero-dependency WebGL atlas exploring cosmic scale from nearby stars through the Milky Way, Local Group, large-scale structure, and the cosmic microwave background." />
+  <title>Cosmic Atlas v4 Scientific Release</title>
+  <style>
+/* <![CDATA[ */
+:root {
+      --bg-color: #030509;
+      --panel-bg: rgba(9, 14, 26, 0.88);
+      --panel-border: rgba(64, 120, 220, 0.35);
+      --accent-cyan: #00e5ff;
+      --accent-blue: #3d84ff;
+      --accent-gold: #ffbe3b;
+      --accent-red: #ff4b6e;
+      --text-main: #e2e8f0;
+      --text-dim: #94a3b8;
+      --font-mono: 'Space Mono', 'Consolas', 'Courier New', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      font-family: var(--font-sans);
+      color: var(--text-main);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      touch-action: none;
+      display: block;
+    }
+
+    .hud-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: grid;
+      grid-template-columns: 320px 1fr 360px;
+      grid-template-rows: auto 1fr auto;
+      padding: 16px;
+      gap: 14px;
+    }
+
+    .interactive {
+      pointer-events: auto;
+    }
+
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 229, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .top-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--accent-cyan), #0a1936);
+      box-shadow: 0 0 14px var(--accent-cyan);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      letter-spacing: 0.8px;
+    }
+
+    .scales-nav {
+      display: flex;
+      gap: 6px;
+      background: rgba(4, 9, 20, 0.7);
+      padding: 5px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .scale-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .scale-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .scale-btn.active {
+      color: #030914;
+      background: var(--accent-cyan);
+      font-weight: 700;
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    .left-sidebar {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+    }
+
+    .left-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .left-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(64, 120, 220, 0.4);
+      border-radius: 4px;
+    }
+
+    .telemetry-card, .controls-card {
+      padding: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+    }
+
+    .badge-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: #38ef7d;
+      font-family: var(--font-mono);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #38ef7d;
+      box-shadow: 0 0 8px #38ef7d;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .telemetry-item {
+      margin-bottom: 8px;
+    }
+
+    .telemetry-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .telemetry-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .realm-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .toggle-label {
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .color-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 32px;
+      height: 16px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .25s;
+      border-radius: 16px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 10px;
+      width: 10px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-cyan);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+      background-color: #051026;
+    }
+
+    .slider-group {
+      margin-top: 10px;
+    }
+
+    .slider-title {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .range-input {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    .right-sidebar {
+      grid-column: 3;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+    }
+
+    .inspector-card {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .inspector-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .inspector-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .inspector-desc {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--text-dim);
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .spec-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .spec-key {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .spec-val {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      margin-top: 1px;
+    }
+
+    .btn-focus {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border: none;
+      color: #051026;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);
+    }
+
+    .btn-focus:hover {
+      transform: translateY(-1px);
+    }
+
+    .bottom-bar {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    .key-hints {
+      display: flex;
+      gap: 14px;
+    }
+
+    .key-pill {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #fff;
+    }
+
+    .search-container {
+      position: relative;
+      width: 220px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      margin-top: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      z-index: 100;
+    }
+
+    .search-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text-main);
+      text-align: left;
+      font-family: var(--font-sans);
+      padding: 7px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .search-item:hover {
+      background: rgba(0, 229, 255, 0.15);
+      color: #fff;
+    }
+
+    #selection-reticle {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 1.5px dashed var(--accent-cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      display: none;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    @media (max-width: 900px) {
+      .hud-layer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 8px;
+        gap: 6px;
+        pointer-events: none;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        gap: 6px;
+        padding: 8px 12px;
+      }
+
+      .brand {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .scales-nav {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 4px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .scale-btn {
+        padding: 4px 10px;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+
+      .search-container {
+        width: 100%;
+      }
+
+      .left-sidebar, .right-sidebar {
+        display: none;
+      }
+
+      .left-sidebar.mobile-open, .right-sidebar.mobile-open {
+        display: flex;
+        position: absolute;
+        top: 130px;
+        bottom: 45px;
+        z-index: 50;
+        width: calc(100% - 16px);
+        left: 8px;
+        max-height: none;
+      }
+
+      .bottom-bar {
+        padding: 6px 10px;
+        font-size: 9px;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+      }
+
+      .key-hints {
+        display: none;
+      }
+
+      .mobile-toggles {
+        display: flex !important;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 2px;
+      }
+
+      .mobile-pill-btn {
+        background: rgba(9, 14, 26, 0.9);
+        border: 1px solid var(--accent-cyan);
+        color: var(--accent-cyan);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        padding: 4px 12px;
+        border-radius: 14px;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+    }
+
+    .mobile-toggles {
+      display: none;
+    }
+
+    .version-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      margin-left: 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      background: rgba(0, 229, 255, 0.08);
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.7px;
+      vertical-align: middle;
+      -webkit-text-fill-color: var(--accent-cyan);
+    }
+
+    .runtime-message {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      z-index: 200;
+      display: none;
+      width: min(520px, calc(100% - 32px));
+      padding: 18px;
+      border-radius: 12px;
+      background: rgba(9, 14, 26, 0.96);
+      border: 1px solid rgba(255, 75, 110, 0.55);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.7);
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.5;
+      pointer-events: auto;
+    }
+
+    .runtime-message strong {
+      color: #fff;
+    }
+
+
+
+    .science-card {
+      padding: 14px;
+    }
+
+    .science-note {
+      font-size: 9.5px;
+      line-height: 1.45;
+      color: var(--text-dim);
+      margin-top: 7px;
+    }
+
+    .science-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .science-btn {
+      border: 1px solid rgba(0,229,255,.28);
+      background: rgba(0,229,255,.07);
+      color: var(--text-main);
+      border-radius: 7px;
+      padding: 7px 8px;
+      font: 600 9px/1.2 var(--font-mono);
+      letter-spacing: .25px;
+      cursor: pointer;
+    }
+
+    .science-btn:hover, .science-btn:focus-visible {
+      border-color: var(--accent-cyan);
+      outline: none;
+      background: rgba(0,229,255,.13);
+    }
+
+    .data-tier {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font: 700 9px/1 var(--font-mono);
+      letter-spacing: .45px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.16);
+      color: #fff;
+    }
+    .data-tier.observational { background: rgba(56,239,125,.10); border-color: rgba(56,239,125,.38); color:#7dffae; }
+    .data-tier.reference { background: rgba(0,229,255,.10); border-color: rgba(0,229,255,.38); color:var(--accent-cyan); }
+    .data-tier.context { background: rgba(255,190,59,.10); border-color: rgba(255,190,59,.38); color:var(--accent-gold); }
+    .data-tier.model { background: rgba(255,75,110,.10); border-color: rgba(255,75,110,.38); color:#ff8ca3; }
+
+    .provenance-card, .measure-card {
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .provenance-title, .measure-title {
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font: 700 9px/1.2 var(--font-mono);
+      letter-spacing: .65px;
+      margin-bottom: 6px;
+    }
+
+    .provenance-line {
+      font-size: 10px;
+      color: var(--text-main);
+      line-height: 1.45;
+      margin-top: 4px;
+      overflow-wrap: anywhere;
+    }
+
+    .provenance-line strong { color:#fff; font-weight:600; }
+
+    .source-links {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .source-link {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(0,229,255,.5);
+      font: 600 9px/1.3 var(--font-mono);
+    }
+    .source-link:hover, .source-link:focus-visible { color:#fff; outline:none; }
+
+    .measure-buttons {
+      display:grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap:6px;
+      margin-top:7px;
+    }
+
+    .measure-btn {
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      color:var(--text-main);
+      border-radius:6px;
+      padding:6px 7px;
+      font:600 9px/1.2 var(--font-mono);
+      cursor:pointer;
+    }
+    .measure-btn:hover, .measure-btn:focus-visible { border-color:var(--accent-cyan); outline:none; }
+
+    .measure-output {
+      margin-top:8px;
+      color:var(--text-dim);
+      font: 9.5px/1.45 var(--font-mono);
+    }
+    .measure-output strong { color:#fff; }
+
+    .science-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,.68);
+      pointer-events: auto;
+    }
+    .science-modal-backdrop.open { display:flex; }
+
+    .science-modal {
+      width: min(720px, 100%);
+      max-height: min(82vh, 760px);
+      overflow:auto;
+      padding:18px;
+      border-radius:12px;
+      background: rgba(7,12,23,.98);
+      border:1px solid rgba(0,229,255,.30);
+      box-shadow:0 24px 80px rgba(0,0,0,.8);
+    }
+    .science-modal h2 { font-size:17px; margin-bottom:6px; }
+    .science-modal h3 { font-size:11px; color:var(--accent-cyan); margin-top:14px; margin-bottom:5px; text-transform:uppercase; letter-spacing:.6px; }
+    .science-modal p, .science-modal li { font-size:10.5px; line-height:1.55; color:var(--text-dim); }
+    .science-modal ul { margin:6px 0 0 18px; }
+    .science-modal .modal-top { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .science-modal .close-modal { background:transparent; border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:7px; padding:5px 8px; cursor:pointer; }
+
+    .quality-dot {
+      width:7px;height:7px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:4px;
+      background:#38ef7d;box-shadow:0 0 7px rgba(56,239,125,.45);
+    }
+    .quality-dot.context { background:var(--accent-gold); box-shadow:0 0 7px rgba(255,190,59,.4); }
+    .quality-dot.model { background:var(--accent-red); box-shadow:0 0 7px rgba(255,75,110,.4); }
+
+    .data-tier.external { background: rgba(0,229,255,.10); border-color: rgba(0,229,255,.45); color:#8ff4ff; }
+    .catalog-import-status {
+      margin-top:8px;padding:7px 8px;border-radius:7px;background:rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.07);font-size:9.5px;line-height:1.45;color:var(--text-dim);
+    }
+    .catalog-import-status strong { color:#fff; }
+    .data-modal { width:min(980px, calc(100vw - 24px)); max-height:min(82vh, 760px); }
+    .data-table-tools { display:flex; gap:8px; margin:10px 0; flex-wrap:wrap; }
+    .data-table-search { flex:1; min-width:180px; background:rgba(0,0,0,.38); border:1px solid rgba(255,255,255,.14); color:#fff; border-radius:7px; padding:7px 9px; font-size:11px; }
+    .table-wrap { max-height:52vh; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:8px; }
+    .catalog-table { width:100%; border-collapse:collapse; font-size:9.5px; font-family:var(--font-mono); }
+    .catalog-table th { position:sticky; top:0; z-index:1; text-align:left; background:#0c1424; color:var(--accent-cyan); padding:7px; border-bottom:1px solid rgba(255,255,255,.12); }
+    .catalog-table td { padding:6px 7px; border-bottom:1px solid rgba(255,255,255,.05); color:var(--text-dim); vertical-align:top; }
+    .catalog-table tr:hover td { background:rgba(0,229,255,.05); color:#fff; }
+    .tour-panel { display:none; position:absolute; z-index:220; left:50%; bottom:58px; transform:translateX(-50%); width:min(560px,calc(100vw - 24px)); padding:12px 14px; background:rgba(7,12,23,.96); border:1px solid rgba(0,229,255,.35); border-radius:12px; box-shadow:0 18px 55px rgba(0,0,0,.75); pointer-events:auto; }
+    .tour-panel.open { display:block; }
+    .tour-kicker { font:700 9px var(--font-mono); letter-spacing:1px; text-transform:uppercase; color:var(--accent-cyan); }
+    .tour-title { font-size:15px; margin:3px 0 4px; }
+    .tour-copy { font-size:10.5px; line-height:1.5; color:var(--text-dim); }
+    .tour-actions { display:flex; justify-content:space-between; gap:7px; margin-top:9px; }
+    .tour-actions > div { display:flex; gap:6px; }
+    .mini-btn { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.14); color:#fff; border-radius:7px; padding:5px 8px; font:600 9px var(--font-mono); cursor:pointer; }
+    .mini-btn:hover,.mini-btn:focus-visible { border-color:var(--accent-cyan); outline:none; }
+    .dataset-badge { display:inline-block; padding:2px 6px; margin-left:4px; border-radius:10px; border:1px solid rgba(255,255,255,.12); font:700 8px var(--font-mono); color:var(--text-dim); }
+    .science-actions.wide { grid-template-columns:1fr 1fr; }
+    @media (max-width: 520px) {
+      .data-modal { padding:12px; }
+      .catalog-table { font-size:8.5px; }
+      .catalog-table th:nth-child(4), .catalog-table td:nth-child(4), .catalog-table th:nth-child(5), .catalog-table td:nth-child(5) { display:none; }
+      .tour-panel { bottom:50px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .live-dot { animation: none; }
+      .scale-btn, .btn-focus, .slider, .slider:before { transition: none; }
+    }
+/* ]]> */
+  </style>
+</head>
+<body>
+
+  <div id="selection-reticle"></div>
+  <canvas id="webgl-canvas" role="img" aria-label="Interactive 3D visualization of cosmic scales from the Solar neighborhood to the observable-universe horizon"></canvas>
+  <div id="runtime-message" class="runtime-message" role="alert"></div>
+
+  <div id="science-modal-backdrop" class="science-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="science-modal-title">
+    <section class="science-modal">
+      <div class="modal-top">
+        <div>
+          <h2 id="science-modal-title">Scientific methodology & provenance</h2>
+          <p>Cosmic Atlas v4 separates measured catalog quantities, literature-derived distances, cosmology-derived values, imported catalog records, and illustrative geometry. It is an educational scientific visualization and data-exploration product, not a survey reconstruction or precision astrometry package.</p>
+        </div>
+        <button id="science-modal-close" class="close-modal" type="button" aria-label="Close scientific methodology">Close</button>
+      </div>
+      <h3>Data tiers</h3>
+      <ul>
+        <li><strong>Observational:</strong> ICRS positions and selected astrometric / spectroscopic quantities transcribed from SIMBAD/CDS records and their cited literature. Several stellar astrometric values trace Gaia or Hipparcos-family catalog references.</li>
+        <li><strong>Literature distance:</strong> selected distances use published geometric or standard-candle measurements where redshift would be a poor distance estimator (Local Group, Galactic Centre, Centaurus A).</li>
+        <li><strong>Model-derived:</strong> cosmological redshift, lookback time and the 3C 273 comoving distance use a flat Planck-2018-like ΛCDM model (H0=67.4 km/s/Mpc, Ωm=0.315).</li>
+        <li><strong>Imported catalog:</strong> v4 can ingest normalized physical or angular-only records generated by the included Gaia/BSC/OpenNGC scripts. Imported records are kept distinct from the curated core.</li>
+        <li><strong>Illustrative context:</strong> Milky Way particles, Local Group textures, cosmic-web filaments, macrostructure landmark centers, and the CMB texture are procedural visualizations. They are explicitly not survey maps.</li>
+      </ul>
+      <h3>Distance policy</h3>
+      <p>For high-S/N nearby parallaxes, v4 uses the direct inverse-parallax distance for visualization and reports the measurement provenance. For objects where that approximation is unsuitable, a literature distance is adopted and named. Distances remain rounded for an atlas-scale display.</p>
+      <h3>Coordinate system</h3>
+      <p>Catalog directions are ICRS/J2000-equivalent sky coordinates as reported by the cited records. The 3D renderer is observer-centered at Sol and uses a nonlinear radial transform only for display; angular directions are preserved.</p>
+      <h3>Primary sources</h3>
+      <div class="source-links">
+        <a class="source-link" target="_blank" rel="noopener noreferrer" href="https://simbad.cds.unistra.fr/Pages/guide/ch15.htx">SIMBAD/CDS data model</a>
+        <a class="source-link" target="_blank" rel="noopener noreferrer" href="https://gea.esac.esa.int/archive/documentation/GDR3/">Gaia DR3 documentation</a>
+        <a class="source-link" target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/1807.06209">Planck 2018 cosmology</a>
+      </div>
+    </section>
+  </div>
+
+
+  <div id="data-modal-backdrop" class="science-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="data-modal-title">
+    <section class="science-modal data-modal">
+      <div class="modal-top">
+        <div>
+          <h2 id="data-modal-title">Embedded & loaded catalog records</h2>
+          <p id="data-modal-summary">Catalog table</p>
+        </div>
+        <button id="data-modal-close" class="close-modal" type="button" aria-label="Close data table">Close</button>
+      </div>
+      <div class="data-table-tools">
+        <input id="data-table-search" class="data-table-search" type="search" placeholder="Filter by name, type, source, or ID…" aria-label="Filter catalog table" />
+      </div>
+      <div class="table-wrap">
+        <table class="catalog-table">
+          <thead><tr><th>Name</th><th>Tier</th><th>Distance</th><th>RA</th><th>Dec</th><th>Source</th></tr></thead>
+          <tbody id="data-table-body"></tbody>
+        </table>
+      </div>
+      <p style="margin-top:8px">The table is a view of the in-memory scientific records, not the procedural particle fields.</p>
+    </section>
+  </div>
+
+  <section id="tour-panel" class="tour-panel interactive" aria-live="polite" aria-label="Guided cosmic-scale tour">
+    <div class="tour-kicker" id="tour-kicker">Guided tour</div>
+    <div class="tour-title" id="tour-title">Solar neighborhood</div>
+    <div class="tour-copy" id="tour-copy"></div>
+    <div class="tour-actions">
+      <div><button id="tour-close-btn" class="mini-btn" type="button">Close</button></div>
+      <div><button id="tour-prev-btn" class="mini-btn" type="button">Previous</button><button id="tour-next-btn" class="mini-btn" type="button">Next</button></div>
+    </div>
+  </section>
+
+
+  <div class="hud-layer">
+    <header class="top-bar glass-panel interactive">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title">Cosmic Atlas <span class="version-chip">V4 SCI</span></div>
+          <div class="brand-sub">Scientific Release • ICRS • Planck 2018 ΛCDM • Extensible Catalog Loader</div>
+        </div>
+      </div>
+
+      <nav class="scales-nav">
+        <button class="scale-btn active" data-scale="0">1. Solar System &amp; Stars</button>
+        <button class="scale-btn" data-scale="1">2. Milky Way</button>
+        <button class="scale-btn" data-scale="2">3. Local Group</button>
+        <button class="scale-btn" data-scale="3">4. Laniakea</button>
+        <button class="scale-btn" data-scale="4">5. Cosmic Web</button>
+        <button class="scale-btn" data-scale="5">6. CMB / Early Universe</button>
+      </nav>
+
+      <div class="search-container">
+        <input type="text" id="object-search" class="search-input" placeholder="Search cosmic object..." aria-label="Search cosmic object" autocomplete="off" spellcheck="false" />
+        <div id="search-results" class="search-results"></div>
+      </div>
+
+      <div class="mobile-toggles">
+        <button id="toggle-telemetry-btn" class="mobile-pill-btn" aria-controls="telemetry-sidebar" aria-expanded="false">Telemetry / Layers</button>
+        <button id="toggle-inspector-btn" class="mobile-pill-btn" aria-controls="inspector-sidebar" aria-expanded="false">Target Inspector</button>
+        <button id="reset-view-btn" class="mobile-pill-btn" aria-label="Reset view to Solar neighborhood">Home</button>
+      </div>
+    </header>
+
+    <aside class="left-sidebar interactive" id="telemetry-sidebar" aria-label="Observer telemetry and layer controls">
+      <div class="telemetry-card glass-panel">
+        <div class="card-header">
+          <span class="card-title">Observer Telemetry</span>
+          <div class="badge-live"><div class="live-dot"></div>SOL-REF</div>
+        </div>
+
+        <div class="telemetry-item">
+          <div class="telemetry-label">Cosmological Realm</div>
+          <div class="realm-badge" id="hud-realm">Local Interstellar Cloud</div>
+        </div>
+
+        <div class="telemetry-item">
+          <div class="telemetry-label">Comoving Distance from Origin</div>
+          <div class="telemetry-value" id="hud-dist">0.00 Light Years</div>
+        </div>
+
+        <div class="telemetry-item">
+          <div class="telemetry-label">Lookback Time</div>
+          <div class="telemetry-value" id="hud-lookback">Present Epoch (0 yr)</div>
+        </div>
+
+        <div class="telemetry-item">
+          <div class="telemetry-label">Cosmological Redshift (model z)</div>
+          <div class="telemetry-value" id="hud-redshift">z = 0.0000</div>
+        </div>
+
+        <div class="telemetry-item">
+          <div class="telemetry-label">Scale Factor a(t)</div>
+          <div class="telemetry-value" id="hud-scale-factor">1.0000 (100%)</div>
+        </div>
+      </div>
+
+      <div class="controls-card glass-panel">
+        <div class="card-header">
+          <span class="card-title">Layers &amp; Visibility</span>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#38ef7d"></span>Observed Catalog Landmarks</span>
+          <label class="switch"><input type="checkbox" id="layer-catalog" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#8ff4ff"></span>Imported Scientific Catalog</span>
+          <label class="switch"><input type="checkbox" id="layer-imported" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#ffbe3b"></span>Context / Model Landmarks</span>
+          <label class="switch"><input type="checkbox" id="layer-context" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#8ec5fc"></span>Procedural Nearby Star Field</span>
+          <label class="switch"><input type="checkbox" id="layer-stars" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#ffdd80"></span>Milky Way Disk</span>
+          <label class="switch"><input type="checkbox" id="layer-galaxy" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#e0c3fc"></span>Local Group Galaxies</span>
+          <label class="switch"><input type="checkbox" id="layer-localgroup" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#00e5ff"></span>Cosmic Web Filaments</span>
+          <label class="switch"><input type="checkbox" id="layer-filaments" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#ff4b6e"></span>CMB Last-Scattering Sphere</span>
+          <label class="switch"><input type="checkbox" id="layer-cmb" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label"><span class="color-dot" style="background:#5c7099"></span>Distance Scale Rings</span>
+          <label class="switch"><input type="checkbox" id="layer-grid" checked="checked" /><span class="slider"></span></label>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-title">
+            <span>Cosmic Rotation Speed</span>
+            <span id="speed-val">1.0x</span>
+          </div>
+          <input type="range" id="sim-speed" class="range-input" min="0" max="3" step="0.1" value="1.0" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-title">
+            <span>Particle Brightness</span>
+            <span id="bright-val">1.0</span>
+          </div>
+          <input type="range" id="particle-brightness" class="range-input" min="0.2" max="2.5" step="0.1" value="1.0" />
+        </div>
+      </div>
+
+      <div class="science-card glass-panel">
+        <div class="card-header"><span class="card-title">Science &amp; Data</span></div>
+        <div id="catalog-summary" class="science-note">Loading embedded catalog provenance…</div>
+        <div class="science-actions wide">
+          <button id="catalog-only-btn" class="science-btn" type="button">Catalog-only view</button>
+          <button id="science-info-btn" class="science-btn" type="button">Methodology</button>
+          <button id="data-table-btn" class="science-btn" type="button">Data table</button>
+          <button id="tour-btn" class="science-btn" type="button">Guided tour</button>
+          <button id="import-catalog-btn" class="science-btn" type="button">Import catalog JSON</button>
+          <button id="export-csv-btn" class="science-btn" type="button">Export CSV</button>
+          <button id="export-json-btn" class="science-btn" type="button">Export JSON</button>
+          <button id="snapshot-btn" class="science-btn" type="button">Save canvas PNG</button>
+          <button id="restore-layers-btn" class="science-btn" type="button">Restore layers</button>
+        </div>
+        <input id="catalog-file-input" type="file" accept=".json,application/json" hidden />
+        <div id="catalog-import-status" class="catalog-import-status"><strong>Extensible data layer:</strong> no external catalog loaded. Use a normalized JSON generated by the included ingestion scripts; the standalone app remains fully functional without it.</div>
+        <div class="science-note">Green = catalog/literature grounded. Cyan = imported catalog. Gold = contextual landmark. Red = cosmology model. Procedural layers are visual context, not observational survey reconstructions.</div>
+      </div>
+    </aside>
+
+    <aside class="right-sidebar interactive" id="inspector-sidebar" aria-label="Selected cosmic object inspector">
+      <div class="inspector-card glass-panel" id="inspector-panel">
+        <div class="inspector-tag" id="inspect-tag">Solar Reference</div>
+        <h2 class="inspector-name" id="inspect-name">Earth &amp; Sol System</h2>
+        <p class="inspector-desc" id="inspect-desc">
+          The Solar System and reference point of human observation. Located in the Orion-Cygnus Arm of the Milky Way, approximately 26,670 light-years from the galactic core.
+        </p>
+
+        <div id="data-tier" class="data-tier reference">Reference origin</div>
+
+        <div class="spec-grid">
+          <div class="spec-box"><span class="spec-key">Distance</span><span class="spec-val" id="spec-dist">0.00 ly</span></div>
+          <div class="spec-box"><span class="spec-key">Distance uncertainty</span><span class="spec-val" id="spec-dist-unc">—</span></div>
+          <div class="spec-box"><span class="spec-key">ICRS RA</span><span class="spec-val" id="spec-ra">00:00:00</span></div>
+          <div class="spec-box"><span class="spec-key">ICRS Dec</span><span class="spec-val" id="spec-dec">+00:00:00</span></div>
+          <div class="spec-box"><span class="spec-key">Galactic l / b</span><span class="spec-val" id="spec-galactic">—</span></div>
+          <div class="spec-box"><span class="spec-key">Record status</span><span class="spec-val" id="spec-status">Curated core</span></div>
+          <div class="spec-box"><span class="spec-key">Observed z / RV</span><span class="spec-val" id="spec-z">—</span></div>
+          <div class="spec-box"><span class="spec-key">Model z</span><span class="spec-val" id="spec-model-z">0.0000</span></div>
+          <div class="spec-box"><span class="spec-key">Type / Class</span><span class="spec-val" id="spec-type">Reference</span></div>
+          <div class="spec-box"><span class="spec-key">Epoch / Lookback</span><span class="spec-val" id="spec-lookback">0 Years</span></div>
+        </div>
+
+        <div class="provenance-card">
+          <div class="provenance-title">Record provenance</div>
+          <div class="provenance-line"><strong id="prov-source">Reference origin</strong></div>
+          <div class="provenance-line" id="prov-record">Sol-centered origin; no external catalog position.</div>
+          <div class="provenance-line" id="prov-distance">Distance basis: definition of origin.</div>
+          <div id="prov-links" class="source-links"></div>
+        </div>
+
+        <div class="measure-card">
+          <div class="measure-title">Two-point measurement</div>
+          <div class="measure-buttons">
+            <button class="measure-btn" id="measure-a-btn" type="button">Set A</button>
+            <button class="measure-btn" id="measure-b-btn" type="button">Set B</button>
+            <button class="measure-btn" id="measure-clear-btn" type="button">Clear</button>
+          </div>
+          <div class="measure-output" id="measure-output">Choose a target, set A, then choose another target and set B.</div>
+        </div>
+
+        <button class="btn-focus" id="btn-focus-target"><span>Target Lock &amp; Focus</span></button>
+      </div>
+    </aside>
+
+    <footer class="bottom-bar glass-panel interactive">
+      <div class="key-hints">
+        <span><span class="key-pill">Touch / Left Click Drag</span> Rotate Orbit</span>
+        <span><span class="key-pill">Pinch / Wheel</span> Zoom Scale</span>
+        <span><span class="key-pill">Tap / Click Object</span> Inspect &amp; Telemetry</span>
+        <span><span class="key-pill">R</span> Reset</span>
+        <span><span class="key-pill">/</span> Search</span>
+      </div>
+      <div>
+        <span id="model-radius-label">V4 • scientific data tiers • importable catalog schema • Planck 2018-like ΛCDM • deterministic context</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+// <![CDATA[
+const RELEASE_MANIFEST = Object.freeze({
+  product: "Cosmic Atlas Scientific",
+  version: "4.0.0",
+  buildId: "CA-SCI-4.0-2026-09-26",
+  releaseDate: "2026-09-26",
+  coordinateFrame: "ICRS directions; Sol-centered display coordinates",
+  cosmology: { model: "flat Planck-2018-like ΛCDM", H0_km_s_Mpc: 67.4, omega_m: 0.315 },
+  coreCatalog: { source: "Curated literature/SIMBAD scientific core", role: "physically placed reference set" },
+  importSchema: "cosmic-atlas.catalog.v1",
+  proceduralPolicy: "Procedural geometry is explicitly contextual and never presented as survey reconstruction."
+});
+
+const Mat4 = {
+      create: function() {
+        const out = new Float32Array(16);
+        out[0] = 1; out[5] = 1; out[10] = 1; out[15] = 1;
+        return out;
+      },
+      identity: function(out) {
+        for (let i = 0; i < 16; i++) out[i] = 0;
+        out[0] = 1; out[5] = 1; out[10] = 1; out[15] = 1;
+        return out;
+      },
+      perspective: function(out, fovy, aspect, near, far) {
+        const f = 1.0 / Math.tan(fovy / 2.0);
+        const nf = 1.0 / (near - far);
+        out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
+        out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
+        out[8] = 0; out[9] = 0; out[10] = (far + near) * nf; out[11] = -1;
+        out[12] = 0; out[13] = 0; out[14] = (2 * far * near) * nf; out[15] = 0;
+        return out;
+      },
+      lookAt: function(out, eye, center, up) {
+        let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+        const eyex = eye[0], eyey = eye[1], eyez = eye[2];
+        const upx = up[0], upy = up[1], upz = up[2];
+        const centerx = center[0], centery = center[1], centerz = center[2];
+
+        z0 = eyex - centerx;
+        z1 = eyey - centery;
+        z2 = eyez - centerz;
+        len = Math.hypot(z0, z1, z2);
+        if (len > 0) { len = 1 / len; z0 *= len; z1 *= len; z2 *= len; }
+
+        x0 = upy * z2 - upz * z1;
+        x1 = upz * z0 - upx * z2;
+        x2 = upx * z1 - upy * z0;
+        len = Math.hypot(x0, x1, x2);
+        if (len > 0) { len = 1 / len; x0 *= len; x1 *= len; x2 *= len; }
+
+        y0 = z1 * x2 - z2 * x1;
+        y1 = z2 * x0 - z0 * x2;
+        y2 = z0 * x1 - z1 * x0;
+
+        out[0] = x0; out[1] = y0; out[2] = z0; out[3] = 0;
+        out[4] = x1; out[5] = y1; out[6] = z1; out[7] = 0;
+        out[8] = x2; out[9] = y2; out[10] = z2; out[11] = 0;
+        out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+        out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+        out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+        out[15] = 1;
+        return out;
+      },
+      multiply: function(out, a, b) {
+        const a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
+        const a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
+        const a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
+        const a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+        let b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+        out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+        out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+        out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+        out[3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+        b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
+        out[4] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+        out[5] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+        out[6] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+        out[7] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+        b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
+        out[8] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+        out[9] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+        out[10] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+        out[11] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+        b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
+        out[12] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+        out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+        out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+        out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+        return out;
+      }
+    };
+
+    function distToSceneRadius(d) {
+      if (d <= 0) return 0;
+      if (d <= 100) {
+        return 40.0 * Math.pow(d / 100.0, 0.6);
+      } else if (d <= 100000) {
+        return 40.0 + 120.0 * (Math.log10(d) - 2.0) / 3.0;
+      } else if (d <= 5000000) {
+        return 160.0 + 160.0 * (Math.log10(d) - 5.0) / (Math.log10(5000000) - 5.0);
+      } else if (d <= 250000000) {
+        return 320.0 + 280.0 * (Math.log10(d) - Math.log10(5000000)) / (Math.log10(250000000) - Math.log10(5000000));
+      } else if (d <= 5000000000) {
+        return 600.0 + 400.0 * (Math.log10(d) - Math.log10(250000000)) / (Math.log10(5000000000) - Math.log10(250000000));
+      } else {
+        const dClamped = Math.min(d, MODEL_MAX_LY);
+        return 1000.0 + 600.0 * (Math.log10(dClamped) - Math.log10(5000000000)) / (Math.log10(MODEL_MAX_LY) - Math.log10(5000000000));
+      }
+    }
+
+    function sceneRadiusToDist(r) {
+      if (r <= 0) return 0;
+      if (r <= 40) {
+        return 100.0 * Math.pow(r / 40.0, 1.0 / 0.6);
+      } else if (r <= 160) {
+        return Math.pow(10.0, 2.0 + 3.0 * (r - 40.0) / 120.0);
+      } else if (r <= 320) {
+        return Math.pow(10.0, 5.0 + (Math.log10(5000000) - 5.0) * (r - 160.0) / 160.0);
+      } else if (r <= 600) {
+        return Math.pow(10.0, Math.log10(5000000) + (Math.log10(250000000) - Math.log10(5000000)) * (r - 320.0) / 280.0);
+      } else if (r <= 1000) {
+        return Math.pow(10.0, Math.log10(250000000) + (Math.log10(5000000000) - Math.log10(250000000)) * (r - 600.0) / 400.0);
+      } else {
+        return Math.pow(10.0, Math.log10(5000000000) + (Math.log10(MODEL_MAX_LY) - Math.log10(5000000000)) * (Math.min(r, 1600) - 1000.0) / 600.0);
+      }
+    }
+
+    function astronomicalToCartesian(raDeg, decDeg, distLy) {
+      const raRad = raDeg * Math.PI / 180.0;
+      const decRad = decDeg * Math.PI / 180.0;
+      const r = distToSceneRadius(distLy);
+      return [
+        r * Math.cos(decRad) * Math.cos(raRad),
+        r * Math.sin(decRad),
+        r * Math.cos(decRad) * Math.sin(raRad)
+      ];
+    }
+
+    // --- Cosmology model -------------------------------------------------------
+    // Flat Planck-like ΛCDM approximation. Distances are present-day comoving
+    // distances. A log(1+z) lookup keeps the render loop fast while making
+    // redshift/lookback telemetry physically coherent across cosmic scales.
+    const COSMO = Object.freeze({
+      H0: 67.4,            // km/s/Mpc
+      omegaM: 0.315,
+      omegaR: 9.2e-5,
+      omegaL: 1.0 - 0.315 - 9.2e-5,
+      cKmS: 299792.458,
+      mpcToLy: 3.26156e6,
+      zMax: 1.0e7,
+      samples: 4096
+    });
+
+    function expansionE(z) {
+      const zp1 = 1.0 + z;
+      return Math.sqrt(
+        COSMO.omegaR * Math.pow(zp1, 4) +
+        COSMO.omegaM * Math.pow(zp1, 3) +
+        COSMO.omegaL
+      );
+    }
+
+    function buildCosmologyTable() {
+      const rows = [{ z: 0, distLy: 0, lookbackYr: 0 }];
+      const xMax = Math.log1p(COSMO.zMax);
+      const dx = xMax / COSMO.samples;
+      const hubbleDistanceMpc = COSMO.cKmS / COSMO.H0;
+      const hubbleTimeGyr = 9.778 / (COSMO.H0 / 100.0);
+      let intDistance = 0.0;
+      let intLookback = 0.0;
+      let prevDistanceIntegrand = 1.0 / expansionE(0);
+      let prevLookbackIntegrand = 1.0 / expansionE(0);
+
+      for (let i = 1; i <= COSMO.samples; i++) {
+        const x = i * dx;
+        const z = Math.expm1(x);
+        const e = expansionE(z);
+        // dz = exp(x) dx; lookback integrand cancels the (1+z) term.
+        const distanceIntegrand = Math.exp(x) / e;
+        const lookbackIntegrand = 1.0 / e;
+        intDistance += 0.5 * (prevDistanceIntegrand + distanceIntegrand) * dx;
+        intLookback += 0.5 * (prevLookbackIntegrand + lookbackIntegrand) * dx;
+        rows.push({
+          z,
+          distLy: intDistance * hubbleDistanceMpc * COSMO.mpcToLy,
+          lookbackYr: intLookback * hubbleTimeGyr * 1.0e9
+        });
+        prevDistanceIntegrand = distanceIntegrand;
+        prevLookbackIntegrand = lookbackIntegrand;
+      }
+      return rows;
+    }
+
+    const COSMO_TABLE = buildCosmologyTable();
+    const MODEL_MAX_LY = COSMO_TABLE[COSMO_TABLE.length - 1].distLy;
+
+    function interpolateCosmologyByDistance(dLy) {
+      if (dLy <= 0) return COSMO_TABLE[0];
+      if (dLy >= MODEL_MAX_LY) return COSMO_TABLE[COSMO_TABLE.length - 1];
+      let lo = 0, hi = COSMO_TABLE.length - 1;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (COSMO_TABLE[mid].distLy < dLy) lo = mid;
+        else hi = mid;
+      }
+      const a = COSMO_TABLE[lo], b = COSMO_TABLE[hi];
+      const t = (dLy - a.distLy) / Math.max(1e-9, b.distLy - a.distLy);
+      return {
+        z: a.z + (b.z - a.z) * t,
+        distLy: dLy,
+        lookbackYr: a.lookbackYr + (b.lookbackYr - a.lookbackYr) * t
+      };
+    }
+
+    function redshiftToComovingDistance(z) {
+      if (z <= 0) return 0;
+      let lo = 0, hi = COSMO_TABLE.length - 1;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (COSMO_TABLE[mid].z < z) lo = mid;
+        else hi = mid;
+      }
+      const a = COSMO_TABLE[lo], b = COSMO_TABLE[hi];
+      const t = (z - a.z) / Math.max(1e-12, b.z - a.z);
+      return a.distLy + (b.distLy - a.distLy) * t;
+    }
+
+    const CMB_REDSHIFT = 1089.0;
+    const CMB_DISTANCE_LY = redshiftToComovingDistance(CMB_REDSHIFT);
+
+    function distToRedshift(dLy) {
+      return interpolateCosmologyByDistance(dLy).z;
+    }
+
+    function distToLookback(dLy) {
+      return interpolateCosmologyByDistance(dLy).lookbackYr;
+    }
+
+    // Stable seeded generator: the atlas has the same procedural universe on
+    // every reload, which makes screenshots, QA, and object placement reproducible.
+    function mulberry32(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32(0xC05C1C26);
+
+    function unitFromRaDec(raDeg, decDeg) {
+      const ra = raDeg * Math.PI / 180.0;
+      const dec = decDeg * Math.PI / 180.0;
+      return [Math.cos(dec) * Math.cos(ra), Math.sin(dec), Math.cos(dec) * Math.sin(ra)];
+    }
+
+    function normalizeVec3(v) {
+      const m = Math.hypot(v[0], v[1], v[2]) || 1.0;
+      return [v[0] / m, v[1] / m, v[2] / m];
+    }
+
+    function crossVec3(a, b) {
+      return [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
+      ];
+    }
+
+    function physicalVectorToScene(vLy) {
+      const d = Math.hypot(vLy[0], vLy[1], vLy[2]);
+      if (d <= 0) return [0, 0, 0];
+      const r = distToSceneRadius(d);
+      return [r * vLy[0] / d, r * vLy[1] / d, r * vLy[2] / d];
+    }
+
+    function formatDistance(dLy) {
+      if (dLy < 0.01) return "0.00 ly (Sol Local)";
+      if (dLy < 1000) return dLy.toFixed(2) + " ly";
+      if (dLy < 1000000) return (dLy / 1000).toFixed(2) + " kly";
+      if (dLy < 1000000000) return (dLy / 1000000).toFixed(2) + " Mly";
+      return (dLy / 1000000000).toFixed(2) + " Gly";
+    }
+
+    function formatLookback(years) {
+      if (years < 1000) return years.toFixed(0) + " Years ago";
+      if (years < 1000000) return (years / 1000).toFixed(1) + " Thousand Years ago";
+      if (years < 1000000000) return (years / 1000000).toFixed(2) + " Million Years ago";
+      return (years / 1000000000).toFixed(2) + " Billion Years ago";
+    }
+
+    function getRealmName(dLy) {
+      if (dLy < 15) return "Solar Neighborhood (Oort Cloud)";
+      if (dLy < 300) return "Local Interstellar Bubble";
+      if (dLy < 10000) return "Orion-Cygnus Galactic Arm";
+      if (dLy < 120000) return "Milky Way Galaxy";
+      if (dLy < 6000000) return "Local Galactic Group";
+      if (dLy < 110000000) return "Virgo Supercluster";
+      if (dLy < 520000000) return "Laniakea Supercluster";
+      if (dLy < 3000000000) return "Large-Scale Filamentary Web";
+      if (dLy < 30000000000) return "Deep Universe & Early Quasars";
+      return "Cosmic Microwave Background (Horizon)";
+    }
+
+    function hexToRgb(hex) {
+      const c = parseInt(hex.replace('#', ''), 16);
+      return [(c >> 16 & 255) / 255, (c >> 8 & 255) / 255, (c & 255) / 255];
+    }
+
+    // ICRS (J2000-equivalent) to Galactic coordinates using the standard
+    // rotation matrix adopted for modern equatorial/galactic transformations.
+    function icrsToGalactic(raDeg, decDeg) {
+      const ra = raDeg * Math.PI / 180.0, dec = decDeg * Math.PI / 180.0;
+      const x = Math.cos(dec) * Math.cos(ra), y = Math.cos(dec) * Math.sin(ra), z = Math.sin(dec);
+      const gx = -0.0548755604*x -0.8734370902*y -0.4838350155*z;
+      const gy =  0.4941094279*x -0.4448296300*y +0.7469822445*z;
+      const gz = -0.8676661490*x -0.1980763734*y +0.4559837762*z;
+      let l = Math.atan2(gy, gx) * 180 / Math.PI; if (l < 0) l += 360;
+      const b = Math.asin(Math.max(-1, Math.min(1, gz))) * 180 / Math.PI;
+      return { l, b };
+    }
+
+    const CELESTIAL_CATALOG = [
+      { id: "sol", name: "Earth & Solar System", tag: "Solar Reference", dataClass: "reference", distLy: 0.0, distUnc: "—", ra: 0, dec: 0, raText: "00 00 00.000", decText: "+00 00 00.00", type: "Observer origin / G2V host star", desc: "The Solar System defines the observer-centered origin of this atlas. Catalog directions and radial distances are transformed into display coordinates from this reference point.", color: "#fffae0", size: 5, zObs: null, rv: null, source: "Reference origin", record: "Sol-centered coordinate origin", sourceRef: "Definition", sourceUrl: "", distanceBasis: "Defined as 0 ly." },
+      { id: "proxima", name: "Proxima Centauri", tag: "Nearby Star — Catalog Record", dataClass: "observational", distLy: 4.246455222, distUnc: "≈ ±0.0003 ly (formal parallax only)", ra: 217.428942222, dec: -62.6794901891, raText: "14 29 42.946133", decText: "−62 40 46.164681", type: "High proper-motion M-dwarf / Alpha Centauri component", desc: "The nearest known star to the Sun. Position, proper motion and parallax in this build are transcribed from the SIMBAD record, whose astrometry cites Gaia EDR3.", color: "#ff9d5c", size: 3.7, zObs: -6.9e-05, rv: -20.578199, source: "SIMBAD/CDS", record: "Parallax 768.0665 ± 0.0499 mas; μRA −3781.741 mas/yr; μDec +769.465 mas/yr", sourceRef: "2020yCat.1350....0G / 2020AJ....160..120J", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Proxima+Centauri", distanceBasis: "Direct inverse-parallax visualization distance; formal measurement uncertainty only." },
+      { id: "sirius", name: "Sirius A / B", tag: "Binary Star — Catalog Record", dataClass: "observational", distLy: 8.600933520, distUnc: "≈ ±0.04 ly (formal parallax)", ra: 101.287155333, dec: -16.7161158611, raText: "06 45 08.91728", decText: "−16 42 58.0171", type: "Spectroscopic binary; A-type primary + white dwarf", desc: "The brightest star system in Earth’s night sky. The position, proper motion, parallax and radial velocity shown here are catalog measurements surfaced through SIMBAD.", color: "#d4e6ff", size: 4.2, zObs: -1.8e-05, rv: -5.5, source: "SIMBAD/CDS", record: "Parallax 379.21 ± 1.58 mas; μRA −546.01 mas/yr; μDec −1223.07 mas/yr", sourceRef: "2007A&A...474..653V; 2006AstL...32..759G", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Sirius", distanceBasis: "Direct inverse-parallax visualization distance." },
+      { id: "vega", name: "Vega (Alpha Lyrae)", tag: "Reference Star — Catalog Record", dataClass: "observational", distLy: 25.044613376, distUnc: "≈ ±0.07 ly (formal parallax)", ra: 279.234734792, dec: 38.7836889444, raText: "18 36 56.33635", decText: "+38 47 01.2802", type: "A0V star", desc: "A bright A-type standard star. SIMBAD lists the ICRS position, proper motion, parallax and radial velocity used in this embedded record.", color: "#99c5ff", size: 3.8, zObs: -4.5e-05, rv: -13.5, source: "SIMBAD/CDS", record: "Parallax 130.23 ± 0.36 mas; μRA +200.94 mas/yr; μDec +286.23 mas/yr", sourceRef: "2007A&A...474..653V; 2004A&A...420..183A", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Vega", distanceBasis: "Direct inverse-parallax visualization distance." },
+      { id: "arcturus", name: "Arcturus (Alpha Boötis)", tag: "Red Giant — Catalog Record", dataClass: "observational", distLy: 36.716874930, distUnc: "≈ ±0.22 ly (formal parallax)", ra: 213.915300292, dec: 19.1824091667, raText: "14 15 39.67207", decText: "+19 10 56.6730", type: "K1.5III giant", desc: "A nearby orange giant with high proper motion. Astrometry and radial velocity are embedded from the SIMBAD record and its cited literature.", color: "#ffaa44", size: 4, zObs: -1.7e-05, rv: -5.229, source: "SIMBAD/CDS", record: "Parallax 88.83 ± 0.54 mas; μRA −1093.39 mas/yr; μDec −2000.06 mas/yr", sourceRef: "2007A&A...474..653V; 2018A&A...616A...7S", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Arcturus", distanceBasis: "Direct inverse-parallax visualization distance." },
+      { id: "pleiades", name: "Pleiades Cluster (M45)", tag: "Open Cluster — Catalog Record", dataClass: "observational", distLy: 442.906029332, distUnc: "≈ ±0.3 ly (formal mean parallax)", ra: 56.6008333333, dec: 24.1138888889, raText: "03 46 24.2", decText: "+24 06 50", type: "Open cluster", desc: "The Pleiades open cluster. The embedded SIMBAD record reports a mean parallax of 7.364 mas and proper motion values from Gaia-era cluster astrometry.", color: "#77b3ff", size: 4.6, zObs: 2e-05, rv: 5.88, source: "SIMBAD/CDS", record: "Mean parallax 7.364 ± 0.005 mas; μRA +19.997 mas/yr; μDec −45.548 mas/yr", sourceRef: "2018A&A...616A..10G; 2021A&A...647A..19T", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=M45", distanceBasis: "Inverse of the catalog mean parallax for atlas visualization; cluster depth is not represented." },
+      { id: "betelgeuse", name: "Betelgeuse (Alpha Orionis)", tag: "Red Supergiant — Catalog Record", dataClass: "observational", distLy: 497.948091603, distUnc: "≈ ±63 ly (formal parallax; systematics important)", ra: 88.792939, dec: 7.407064, raText: "05 55 10.30536", decText: "+07 24 25.4304", type: "M1–M2 Ia–Iab red supergiant", desc: "A nearby red supergiant whose distance is difficult to estimate precisely. v4 intentionally exposes the large uncertainty rather than presenting a false single-value precision.", color: "#ff4433", size: 4.8, zObs: 7.3e-05, rv: 21.91, source: "SIMBAD/CDS", record: "Parallax 6.55 ± 0.83 mas; μRA +27.54 mas/yr; μDec +11.30 mas/yr", sourceRef: "2007A&A...474..653V; 2005A&A...430..165F", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Betelgeuse", distanceBasis: "Naive inverse-parallax display distance; uncertainty/systematics are scientifically significant." },
+      { id: "orion_nebula", name: "Orion Nebula (M42)", tag: "H II Region — Catalog + Literature", dataClass: "observational", distLy: 1350.285840, distUnc: "±23 ly (±7 pc)", ra: 83.82, dec: -5.3875, raText: "05 35 16.8", decText: "−05 23 15", type: "H II region / stellar nursery", desc: "The Orion Nebula / Orion Nebula Cluster region. The sky position is from SIMBAD; the adopted distance is a published VLBA trigonometric-parallax result.", color: "#ff77a8", size: 5, zObs: null, rv: null, source: "SIMBAD/CDS + Menten et al. (2007)", record: "SIMBAD object M 42; adopted ONC distance 414 ± 7 pc", sourceRef: "2022A&A...661A..38P; 2007A&A...474..515M", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Orion+Nebula", distanceBasis: "Literature trigonometric-parallax distance to the Orion Nebula Cluster.", distanceUrl: "https://arxiv.org/abs/0709.0485" },
+      { id: "sgra", name: "Sagittarius A* (Galactic Centre)", tag: "SMBH — Catalog + Geometric Distance", dataClass: "observational", distLy: 26673.037680, distUnc: "≈ ±83 ly combined statistical/systematic", ra: 266.416816625, dec: -29.0078249722, raText: "17 45 40.03599", decText: "−29 00 28.1699", type: "Galactic-centre supermassive black hole", desc: "The compact radio source associated with the Milky Way’s central black hole. Position is from SIMBAD; distance uses the GRAVITY Collaboration geometric S2-orbit measurement.", color: "#ffbe3b", size: 6.2, zObs: null, rv: null, source: "SIMBAD/CDS + GRAVITY Collaboration", record: "Sgr A* ICRS radio position; R0 = 8178 ± 13(stat) ± 22(sys) pc", sourceRef: "2011AJ....142...35P; 2019A&A...625L..10G", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=sgr+A", distanceBasis: "Geometric Galactic-centre distance from the S2 orbit.", distanceUrl: "https://arxiv.org/abs/1904.05721" },
+      { id: "lmc", name: "Large Magellanic Cloud (LMC)", tag: "Satellite Galaxy — Catalog + Geometric Distance", dataClass: "observational", distLy: 161740.760400, distUnc: "±1.8 kly (systematic-dominated)", ra: 80.8941666667, dec: -69.7561111111, raText: "05 23 34.6", decText: "−69 45 22", type: "Magellanic irregular satellite galaxy", desc: "A major Milky Way satellite and a cornerstone of the extragalactic distance ladder. Position and redshift are from SIMBAD; distance uses late-type eclipsing binaries.", color: "#b0c8f0", size: 6.5, zObs: 0.000875, rv: 262.2, source: "SIMBAD/CDS + Pietrzyński et al. (2019)", record: "LMC catalog position; geometric distance 49.59 ± 0.09(stat) ± 0.54(sys) kpc", sourceRef: "2003A&A...412...45P; Nature 567, 200–203 (2019)", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=LMC", distanceBasis: "Eclipsing-binary geometric distance; preferred over using local peculiar redshift.", distanceUrl: "https://www.nature.com/articles/s41586-019-0999-4" },
+      { id: "andromeda", name: "Andromeda Galaxy (M31)", tag: "Local Group Galaxy — Catalog + Literature", dataClass: "observational", distLy: 2553801.480000, distUnc: "≈ ±82 kly (±25 kpc adopted)", ra: 10.6847083333, dec: 41.26875, raText: "00 42 44.330", decText: "+41 16 07.50", type: "SA(s)b spiral galaxy", desc: "The dominant large galaxy of the Local Group alongside the Milky Way. The ICRS position and heliocentric redshift are from SIMBAD; a literature distance is adopted because peculiar velocity dominates locally.", color: "#d0e4ff", size: 7.5, zObs: -0.001, rv: -300, source: "SIMBAD/CDS + Local Group literature", record: "M 31 / NGC 224; radial velocity −300 ± 4 km/s", sourceRef: "2006AJ....131.1163S; McConnachie (2012)", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=M31", distanceBasis: "Adopted heliocentric Local Group distance 783 ± 25 kpc; redshift is not used as a Hubble-flow distance.", distanceUrl: "https://arxiv.org/abs/1204.1562" },
+      { id: "triangulum", name: "Triangulum Galaxy (M33)", tag: "Local Group Galaxy — Catalog + Literature", dataClass: "observational", distLy: 2638602.040000, distUnc: "≈ ±78 kly (±24 kpc)", ra: 23.4620690622, dec: 30.660175112, raText: "01 33 50.896575", decText: "+30 39 36.630403", type: "SA(s)cd spiral galaxy", desc: "The third-largest major galaxy of the Local Group. ICRS position and observed redshift come from SIMBAD; distance is a TRGB-based literature value.", color: "#a4d4ff", size: 5.7, zObs: -0.000598, rv: -179.2, source: "SIMBAD/CDS + McConnachie et al.", record: "M 33; observed radial velocity −179.2 ± 1.7 km/s", sourceRef: "2020yCat.1350....0G; McConnachie et al. 2004/2005", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=M33", distanceBasis: "Adopted TRGB distance 809 ± 24 kpc; local peculiar velocity makes redshift unsuitable as a distance proxy.", distanceUrl: "https://academic.oup.com/mnras/article/428/2/1248/1002981" },
+      { id: "centaurus_a", name: "Centaurus A (NGC 5128)", tag: "Active Galaxy — Catalog + Literature", dataClass: "observational", distLy: 12393928.000000, distUnc: "±0.33 Mly (±0.1 Mpc)", ra: 201.365063377, dec: -43.0191125081, raText: "13 25 27.615210", decText: "−43 01 08.805029", type: "Active peculiar elliptical/lenticular radio galaxy", desc: "The nearest powerful radio galaxy. SIMBAD supplies the precise radio position and observed redshift; the adopted distance comes from a multi-method distance review.", color: "#ff9966", size: 6, zObs: 0.00187695, rv: 562, source: "SIMBAD/CDS + Harris, Rejkuba & Harris", record: "NGC 5128 / Centaurus A; z = 0.00187695", sourceRef: "2020A&A...644A.159C; PASA 27, 457–462 (2010)", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Centaurus+A", distanceBasis: "Best-estimate literature distance 3.8 ± 0.1 Mpc.", distanceUrl: "https://arxiv.org/abs/0911.3180" },
+      { id: "quasar_3c273", name: "3C 273", tag: "Quasar — Catalog + Cosmology", dataClass: "observational", distLy: redshiftToComovingDistance(0.15756751), distUnc: "Model-dependent comoving distance", ra: 187.27791594, dec: 2.05238823055, raText: "12 29 06.699826", decText: "+02 03 08.597630", type: "Quasar / active galactic nucleus", desc: "The historically first identified quasar. Its precise ICRS direction and spectroscopic redshift are embedded from SIMBAD; radial distance is derived from that observed redshift under the atlas ΛCDM model.", color: "#ffdd44", size: 6.7, zObs: 0.15756751, rv: 43555, source: "SIMBAD/CDS + Planck-like ΛCDM conversion", record: "3C 273; spectroscopic z = 0.15756751 ± 0.0005", sourceRef: "2020yCat.1350....0G; 2022ApJS..261....2K", sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C273", distanceBasis: "Comoving distance numerically derived from observed z using this build’s Planck-2018-like cosmology.", distanceUrl: "https://arxiv.org/abs/1807.06209" },
+      { id: "virgo_cluster", name: "Virgo Cluster (context centre)", tag: "Context Landmark", dataClass: "context", distLy: 54000000.0, distUnc: "Representative scale", ra: 186.75, dec: 12.72, raText: "≈ 12h 27m", decText: "≈ +12° 43′", type: "Galaxy cluster context marker", desc: "Representative center used to navigate the Virgo-region scale. This is a contextual atlas landmark, not a precision centroid or a substitute for member-galaxy catalog data.", color: "#66ccff", size: 7.5, zObs: null, rv: null, source: "Illustrative context", record: "Representative Virgo-region center", sourceRef: "Not a single catalog object", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "great_attractor", name: "Great Attractor region", tag: "Context Landmark", dataClass: "context", distLy: 220000000.0, distUnc: "Representative scale", ra: 243.8, dec: -60.8, raText: "≈ 16h 15m", decText: "≈ −60° 48′", type: "Large-scale flow / gravitational basin context", desc: "A navigation marker for the Great Attractor / Norma region. The phenomenon is extended and model-dependent; the point shown here is deliberately labeled as context rather than an observed object.", color: "#ff44aa", size: 8, zObs: null, rv: null, source: "Illustrative context", record: "Representative large-scale-flow landmark", sourceRef: "Extended region; no single-point catalog identity", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "coma_cluster", name: "Coma Cluster (context)", tag: "Context Landmark", dataClass: "context", distLy: 321000000.0, distUnc: "Representative scale", ra: 194.95, dec: 27.98, raText: "≈ 12h 59m 48s", decText: "≈ +27° 59′", type: "Galaxy-cluster context marker", desc: "Representative Coma Cluster landmark retained for scale navigation. The point is contextual; individual member galaxies should be used for precision catalog work.", color: "#88e0ff", size: 7, zObs: null, rv: null, source: "Illustrative context", record: "Approximate cluster navigation center", sourceRef: "Context layer", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "shapley", name: "Shapley Supercluster region", tag: "Context Landmark", dataClass: "context", distLy: 650000000.0, distUnc: "Representative scale", ra: 202.5, dec: -31.5, raText: "≈ 13h 30m", decText: "≈ −31° 30′", type: "Supercluster context marker", desc: "Representative marker for the Shapley concentration. It is an extended structure and is therefore not represented as a precision point measurement.", color: "#ff66cc", size: 8, zObs: null, rv: null, source: "Illustrative context", record: "Representative supercluster landmark", sourceRef: "Context layer", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "bootes_void", name: "Boötes Void region", tag: "Context Landmark", dataClass: "context", distLy: 700000000.0, distUnc: "Representative scale", ra: 219, dec: 35, raText: "≈ 14h 36m", decText: "≈ +35°", type: "Cosmic-void context marker", desc: "A representative point for navigating the Boötes Void scale. The void is spatially extended; this marker is not a physical object at a single coordinate.", color: "#223366", size: 8.5, zObs: null, rv: null, source: "Illustrative context", record: "Representative void-region landmark", sourceRef: "Context layer", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "sloan_wall", name: "Sloan Great Wall region", tag: "Context Landmark", dataClass: "context", distLy: 1200000000.0, distUnc: "Representative scale", ra: 190, dec: 5, raText: "≈ 12h 40m", decText: "≈ +05°", type: "Large-scale structure context marker", desc: "A representative navigation point for the Sloan Great Wall scale. The wall is an extended galaxy distribution, not a point source.", color: "#00ffbb", size: 8.5, zObs: null, rv: null, source: "Illustrative context", record: "Representative cosmic-wall landmark", sourceRef: "Context layer", sourceUrl: "", distanceBasis: "Approximate navigation distance." },
+      { id: "cmb_horizon", name: "Cosmic Microwave Background", tag: "Cosmology Model Surface", dataClass: "model", distLy: CMB_DISTANCE_LY, distUnc: "Model-derived comoving radius", ra: 0, dec: 0, raText: "All-sky surface", decText: "All-sky surface", type: "Last-scattering surface (z ≈ 1089)", desc: "The last-scattering surface rendered at the model comoving distance corresponding to z ≈ 1089. The sphere texture is procedural and must not be interpreted as Planck sky-map data.", color: "#ff3366", size: 10, zObs: 1089, rv: null, source: "Planck-like ΛCDM model", record: "z ≈ 1089 last-scattering surface", sourceRef: "Planck 2018 cosmological parameters", sourceUrl: "https://arxiv.org/abs/1807.06209", distanceBasis: "Numerical comoving distance under the atlas cosmological model." }
+    ];
+
+    CELESTIAL_CATALOG.forEach(item => {
+      item.pos = astronomicalToCartesian(item.ra, item.dec, item.distLy);
+    });
+
+    document.getElementById('model-radius-label').innerText =
+      `Scientific v4 • model radius ≈ ${(MODEL_MAX_LY / 1e9).toFixed(2)} Gly • CMB ≈ ${(CMB_DISTANCE_LY / 1e9).toFixed(2)} Gly • observed/context/model tiers`;
+
+    const canvas = document.getElementById('webgl-canvas');
+    const runtimeMessage = document.getElementById('runtime-message');
+
+    function showRuntimeMessage(title, detail) {
+      runtimeMessage.innerHTML = `<strong>${title}</strong><br>${detail}`;
+      runtimeMessage.style.display = 'block';
+    }
+
+    let gl = canvas.getContext('webgl', { antialias: true, alpha: false, powerPreference: 'high-performance' }) ||
+             canvas.getContext('experimental-webgl');
+
+    if (!gl) {
+      showRuntimeMessage('WebGL is unavailable.', 'Cosmic Atlas needs WebGL enabled in this browser. Try a current Chrome, Edge, Firefox, or Safari build with hardware acceleration enabled.');
+      throw new Error('WebGL unavailable');
+    }
+
+    function createShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const info = gl.getShaderInfoLog(shader) || 'Unknown shader compilation error';
+        gl.deleteShader(shader);
+        throw new Error(info);
+      }
+      return shader;
+    }
+
+    function createProgram(gl, vsSource, fsSource) {
+      const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        const info = gl.getProgramInfoLog(prog) || 'Unknown WebGL program link error';
+        gl.deleteProgram(prog);
+        throw new Error(info);
+      }
+      return prog;
+    }
+
+    const particleVS = `
+      attribute vec3 aPosition;
+      attribute vec3 aColor;
+      attribute float aSize;
+      uniform mat4 uMVP;
+      uniform float uHeight;
+      uniform float uBrightness;
+      varying vec3 vColor;
+      void main() {
+        gl_Position = uMVP * vec4(aPosition, 1.0);
+        float w = gl_Position.w;
+        if (w > 0.0) {
+          gl_PointSize = clamp(aSize * (uHeight / (w * 0.9 + 25.0)), 1.5, 40.0);
+        } else {
+          gl_PointSize = 0.0;
+        }
+        vColor = aColor * uBrightness;
+      }
+    `;
+
+    const particleFS = `
+      precision mediump float;
+      varying vec3 vColor;
+      void main() {
+        vec2 c = gl_PointCoord - vec2(0.5);
+        float d2 = dot(c, c);
+        if (d2 > 0.25) discard;
+        float alpha = exp(-d2 * 14.0);
+        float core = exp(-d2 * 55.0);
+        vec3 col = mix(vColor, vec3(1.0), core * 0.85);
+        gl_FragColor = vec4(col, alpha);
+      }
+    `;
+
+    const particleProg = createProgram(gl, particleVS, particleFS);
+    const pLoc = {
+      pos: gl.getAttribLocation(particleProg, 'aPosition'),
+      col: gl.getAttribLocation(particleProg, 'aColor'),
+      size: gl.getAttribLocation(particleProg, 'aSize'),
+      uMVP: gl.getUniformLocation(particleProg, 'uMVP'),
+      uHeight: gl.getUniformLocation(particleProg, 'uHeight'),
+      uBrightness: gl.getUniformLocation(particleProg, 'uBrightness')
+    };
+
+    const lineVS = `
+      attribute vec3 aPosition;
+      uniform mat4 uMVP;
+      void main() {
+        gl_Position = uMVP * vec4(aPosition, 1.0);
+      }
+    `;
+    const lineFS = `
+      precision mediump float;
+      uniform vec4 uColor;
+      void main() {
+        gl_FragColor = uColor;
+      }
+    `;
+    const lineProg = createProgram(gl, lineVS, lineFS);
+    const lLoc = {
+      pos: gl.getAttribLocation(lineProg, 'aPosition'),
+      uMVP: gl.getUniformLocation(lineProg, 'uMVP'),
+      uColor: gl.getUniformLocation(lineProg, 'uColor')
+    };
+
+    const cmbVS = `
+      attribute vec3 aPosition;
+      uniform mat4 uMVP;
+      varying vec3 vPos;
+      void main() {
+        vPos = normalize(aPosition);
+        gl_Position = uMVP * vec4(aPosition, 1.0);
+      }
+    `;
+    const cmbFS = `
+      precision mediump float;
+      varying vec3 vPos;
+      uniform float uTime;
+
+      float hash(vec3 p) {
+        return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164))) * 43758.5453);
+      }
+
+      float noise(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(mix(hash(i + vec3(0,0,0)), hash(i + vec3(1,0,0)), f.x),
+              mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+          mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+              mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+      }
+
+      vec3 planckPalette(float t) {
+        vec3 darkBlue = vec3(0.02, 0.05, 0.35);
+        vec3 cyan     = vec3(0.10, 0.55, 0.85);
+        vec3 green    = vec3(0.20, 0.80, 0.50);
+        vec3 orange   = vec3(0.95, 0.65, 0.15);
+        vec3 red      = vec3(0.90, 0.15, 0.15);
+        if (t < 0.25) return mix(darkBlue, cyan, t * 4.0);
+        if (t < 0.50) return mix(cyan, green, (t - 0.25) * 4.0);
+        if (t < 0.75) return mix(green, orange, (t - 0.50) * 4.0);
+        return mix(orange, red, (t - 0.75) * 4.0);
+      }
+
+      void main() {
+        float n = 0.0;
+        n += 0.500 * noise(vPos * 8.0);
+        n += 0.250 * noise(vPos * 16.0);
+        n += 0.125 * noise(vPos * 32.0);
+        vec3 col = planckPalette(clamp(n, 0.0, 1.0));
+        gl_FragColor = vec4(col, 0.38);
+      }
+    `;
+    const cmbProg = createProgram(gl, cmbVS, cmbFS);
+    const cLoc = {
+      pos: gl.getAttribLocation(cmbProg, 'aPosition'),
+      uMVP: gl.getUniformLocation(cmbProg, 'uMVP'),
+      uTime: gl.getUniformLocation(cmbProg, 'uTime')
+    };
+
+    function buildBufferBundle(positions, colors, sizes) {
+      const vboPos = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboPos);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+      const vboCol = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboCol);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+      const vboSize = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboSize);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sizes), gl.STATIC_DRAW);
+
+      return { vboPos, vboCol, vboSize, count: positions.length / 3 };
+    }
+
+    function buildCatalogTierBundle(predicate) {
+      const pos = [], col = [], size = [];
+      CELESTIAL_CATALOG.filter(predicate).forEach(item => {
+        pos.push(item.pos[0], item.pos[1], item.pos[2]);
+        const rgb = hexToRgb(item.color);
+        col.push(rgb[0], rgb[1], rgb[2]);
+        size.push(item.size * 3.2);
+      });
+      return buildBufferBundle(pos, col, size);
+    }
+    const observedCatalogBundle = buildCatalogTierBundle(item => item.dataClass === 'observational' || item.dataClass === 'reference');
+    const contextCatalogBundle = buildCatalogTierBundle(item => item.dataClass === 'context' || item.dataClass === 'model');
+
+    let importedCatalogRecords = [];
+    let importedCatalogBundle = buildBufferBundle([], [], []);
+
+    function deleteBufferBundle(bundle) {
+      if (!bundle) return;
+      if (bundle.vboPos) gl.deleteBuffer(bundle.vboPos);
+      if (bundle.vboCol) gl.deleteBuffer(bundle.vboCol);
+      if (bundle.vboSize) gl.deleteBuffer(bundle.vboSize);
+    }
+
+    function colorFromBpRp(bpRp) {
+      const x = Number(bpRp);
+      if (!Number.isFinite(x)) return '#8ff4ff';
+      if (x < 0.0) return '#8bb8ff';
+      if (x < 0.5) return '#b8d6ff';
+      if (x < 1.0) return '#fff3d0';
+      if (x < 1.7) return '#ffd08b';
+      if (x < 2.5) return '#ff9b62';
+      return '#ff6b55';
+    }
+
+    function pointSizeFromMagnitude(mag) {
+      const g = Number(mag);
+      if (!Number.isFinite(g)) return 2.8;
+      return Math.max(1.5, Math.min(7.0, 6.2 - 0.32 * g));
+    }
+
+    function normalizeImportedRecord(raw, idx) {
+      let ra = Number(raw.ra_deg ?? raw.ra ?? raw.RA_ICRS);
+      const dec = Number(raw.dec_deg ?? raw.dec ?? raw.DE_ICRS);
+      let distLy = Number(raw.distance_ly ?? raw.distLy);
+      const parallax = Number(raw.parallax_mas ?? raw.parallax ?? raw.Plx);
+      if (!Number.isFinite(distLy) && Number.isFinite(parallax) && parallax > 0) distLy = (1000 / parallax) * 3.261563777;
+      if (!Number.isFinite(ra) || !Number.isFinite(dec) || dec < -90 || dec > 90) return null;
+      ra = ((ra % 360) + 360) % 360;
+      const hasPhysicalDistance = Number.isFinite(distLy) && distLy > 0;
+      const angularOnly = !hasPhysicalDistance;
+      // Angular-only records are placed on a user/source supplied visualization shell.
+      // This shell is never treated as a measured distance and is excluded from 3-D claims.
+      const displayShellLy = Math.max(1, Number(raw.display_shell_ly) || 1000);
+      const renderDistLy = hasPhysicalDistance ? distLy : displayShellLy;
+      const perr = Number(raw.parallax_error_mas ?? raw.parallax_error ?? raw.e_Plx);
+      const snr = Number.isFinite(parallax) && Number.isFinite(perr) && perr > 0 ? parallax / perr : null;
+      const sourceId = String(raw.source_id ?? raw.id ?? raw.designation ?? `import-${idx+1}`);
+      const name = String(raw.name ?? raw.proper_name ?? raw.designation ?? `Catalog source ${sourceId}`);
+      const source = String(raw.source ?? raw.catalog ?? 'Imported scientific catalog');
+      const color = raw.color || colorFromBpRp(raw.bp_rp);
+      const item = {
+        id: `ext:${sourceId}`,
+        externalId: sourceId,
+        name,
+        tag: String(raw.tag ?? (angularOnly ? 'Imported Angular Catalog Record' : 'Imported Catalog Record')),
+        dataClass: 'external',
+        distLy: renderDistLy,
+        physicalDistanceLy: hasPhysicalDistance ? distLy : null,
+        angularOnly,
+        displayShellLy: angularOnly ? displayShellLy : null,
+        distUnc: angularOnly ? 'No physical distance supplied; radial position is a display shell only.' : (Number.isFinite(perr) && Number.isFinite(parallax) && parallax > 0 ? `Parallax S/N ${snr.toFixed(1)}; formal σπ=${perr} mas` : String(raw.distance_uncertainty ?? 'See source catalog')),
+        ra, dec,
+        raText: `${ra.toFixed(6)}°`, decText: `${dec.toFixed(6)}°`,
+        type: String(raw.type ?? raw.object_type ?? 'Catalog source'),
+        desc: String(raw.description ?? `Imported record ${sourceId} from ${source}.`),
+        color,
+        size: pointSizeFromMagnitude(raw.phot_g_mean_mag ?? raw.vmag ?? raw.magnitude),
+        zObs: raw.redshift == null ? null : Number(raw.redshift),
+        rv: raw.radial_velocity_kms == null ? (raw.radial_velocity == null ? null : Number(raw.radial_velocity)) : Number(raw.radial_velocity_kms),
+        source,
+        record: String(raw.record ?? raw.designation ?? sourceId),
+        sourceRef: String(raw.source_ref ?? raw.release ?? raw.bibcode ?? ''),
+        sourceUrl: String(raw.source_url ?? ''),
+        distanceBasis: angularOnly ? `Angular-only observation; rendered on an arbitrary ${formatDistance(displayShellLy)} display shell. No physical radial distance is asserted.` : (Number.isFinite(parallax) && parallax > 0 ? 'Imported parallax converted using d(pc)=1000/π(mas); review low-S/N parallaxes before scientific use.' : String(raw.distance_basis ?? 'Imported physical distance.')),
+        imported: true,
+        photG: raw.phot_g_mean_mag == null ? null : Number(raw.phot_g_mean_mag),
+        bpRp: raw.bp_rp == null ? null : Number(raw.bp_rp),
+        parallaxMas: Number.isFinite(parallax) ? parallax : null,
+        parallaxErrorMas: Number.isFinite(perr) ? perr : null,
+        pmra: raw.pmra_masyr == null ? (raw.pmra == null ? null : Number(raw.pmra)) : Number(raw.pmra_masyr),
+        pmdec: raw.pmdec_masyr == null ? (raw.pmdec == null ? null : Number(raw.pmdec)) : Number(raw.pmdec_masyr)
+      };
+      item.pos = astronomicalToCartesian(item.ra, item.dec, item.distLy);
+      return item;
+    }
+
+    function rebuildImportedCatalogBundle() {
+      deleteBufferBundle(importedCatalogBundle);
+      const pos=[], col=[], size=[];
+      importedCatalogRecords.forEach(item => {
+        pos.push(item.pos[0], item.pos[1], item.pos[2]);
+        const rgb = hexToRgb(item.color);
+        col.push(rgb[0], rgb[1], rgb[2]);
+        size.push(item.size * 3.2);
+      });
+      importedCatalogBundle = buildBufferBundle(pos, col, size);
+    }
+
+    const localPos = [], localCol = [], localSize = [];
+    for (let i = 0; i < 1500; i++) {
+      const u = rand(), v = rand();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const dLy = Math.pow(rand(), 0.5) * 100.0;
+      const r = distToSceneRadius(dLy);
+      localPos.push(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta) * 0.6,
+        r * Math.cos(phi)
+      );
+      const spec = rand();
+      let rgb;
+      if (spec < 0.7) rgb = [1.0, 0.52, 0.33];
+      else if (spec < 0.88) rgb = [1.0, 0.87, 0.60];
+      else rgb = [0.70, 0.83, 1.0];
+      localCol.push(rgb[0], rgb[1], rgb[2]);
+      localSize.push(2.5 + rand() * 2.0);
+    }
+    const localStarsBundle = buildBufferBundle(localPos, localCol, localSize);
+
+    // Milky Way geometry is built in physical light-year coordinates around
+    // Sagittarius A*, then transformed into the observer-centered logarithmic scene.
+    // This keeps the Sun off-center instead of incorrectly placing it at the disk core.
+    const mwPos = [], mwCol = [], mwSize = [];
+    const numArms = 4, armWinding = 3.65;
+    const galacticCenterDistanceLy = 26670.0;
+    const galacticCenterDir = unitFromRaDec(266.41683, -29.00781);
+    const galacticCenterPhysical = galacticCenterDir.map(v => v * galacticCenterDistanceLy);
+    const galacticNorth = normalizeVec3(unitFromRaDec(192.85948, 27.12825));
+    const gcToSun = normalizeVec3(galacticCenterDir.map(v => -v));
+    const galacticTangent = normalizeVec3(crossVec3(galacticNorth, gcToSun));
+
+    for (let i = 0; i < 30000; i++) {
+      const t = Math.pow(rand(), 1.75);
+      const radiusLy = 250 + t * 54750;
+      const arm = (i % numArms) * (2 * Math.PI / numArms);
+      const spiralAngle = Math.log1p(radiusLy / 1800.0) * armWinding + arm;
+      const spread = (rand() - 0.5) * (0.34 + (radiusLy / 55000) * 0.55);
+      const angle = spiralAngle + spread;
+      const diskHeightLy = 900.0 * Math.exp(-radiusLy / 26000.0) + 120.0;
+      const zLy = (rand() - 0.5 + rand() - 0.5) * diskHeightLy;
+      const xLy = radiusLy * Math.cos(angle);
+      const yLy = radiusLy * Math.sin(angle);
+
+      const physical = [
+        galacticCenterPhysical[0] + gcToSun[0] * xLy + galacticTangent[0] * yLy + galacticNorth[0] * zLy,
+        galacticCenterPhysical[1] + gcToSun[1] * xLy + galacticTangent[1] * yLy + galacticNorth[1] * zLy,
+        galacticCenterPhysical[2] + gcToSun[2] * xLy + galacticTangent[2] * yLy + galacticNorth[2] * zLy
+      ];
+      const scene = physicalVectorToScene(physical);
+      mwPos.push(scene[0], scene[1], scene[2]);
+
+      const bulgeFactor = Math.max(0, 1.0 - radiusLy / 15000);
+      let rgb;
+      if (bulgeFactor > 0.4) {
+        rgb = [1.0, 0.78, 0.42];
+      } else {
+        const rnd = rand();
+        if (rnd < 0.25) rgb = [1.0, 0.47, 0.67];
+        else if (rnd < 0.70) rgb = [0.55, 0.76, 1.0];
+        else rgb = [1.0, 1.0, 1.0];
+      }
+      mwCol.push(rgb[0], rgb[1], rgb[2]);
+      mwSize.push(2.2 + rand() * 2.5);
+    }
+    const mwBundle = buildBufferBundle(mwPos, mwCol, mwSize);
+
+    const lgPos = [], lgCol = [], lgSize = [];
+    function addSpiralGalaxyPoints(center, radScene, count, tiltRad, baseRgb) {
+      for (let i = 0; i < count; i++) {
+        const radFrac = Math.pow(rand(), 1.5);
+        const r = radFrac * radScene;
+        const spiral = rand() * Math.PI * 2 + Math.log(r + 1.0) * 3.0;
+        let lx = r * Math.cos(spiral);
+        let ly = (rand() - 0.5) * (radScene * 0.15 * (1.0 - radFrac));
+        let lz = r * Math.sin(spiral);
+
+        const ty = ly * Math.cos(tiltRad) - lz * Math.sin(tiltRad);
+        const tz = ly * Math.sin(tiltRad) + lz * Math.cos(tiltRad);
+
+        lgPos.push(center[0] + lx, center[1] + ty, center[2] + tz);
+        let rgb = (radFrac < 0.25) ? [1.0, 0.86, 0.67] : baseRgb;
+        lgCol.push(rgb[0], rgb[1], rgb[2]);
+        lgSize.push(2.4 + rand() * 2.0);
+      }
+    }
+    const andromedaCoord = astronomicalToCartesian(10.68, 41.27, 2540000.0);
+    addSpiralGalaxyPoints(andromedaCoord, 22.0, 6500, 1.34, [0.80, 0.89, 1.0]);
+
+    const triangulumCoord = astronomicalToCartesian(23.46, 30.66, 2730000.0);
+    addSpiralGalaxyPoints(triangulumCoord, 12.0, 2500, 0.9, [0.64, 0.83, 1.0]);
+
+    const localGroupBundle = buildBufferBundle(lgPos, lgCol, lgSize);
+
+    const filPos = [], filCol = [], filSize = [];
+    const clusterNodes = [
+      astronomicalToCartesian(186.75, 12.72, 54000000.0),
+      astronomicalToCartesian(243.8, -60.8, 220000000.0),
+      astronomicalToCartesian(194.95, 27.98, 321000000.0),
+      astronomicalToCartesian(202.5, -31.5, 650000000.0),
+      astronomicalToCartesian(190.0, 5.0, 1200000000.0)
+    ];
+
+    for (let i = 0; i < 32000; i++) {
+      let px, py, pz;
+      if (i < 14000) {
+        const nA = clusterNodes[Math.floor(rand() * clusterNodes.length)];
+        const nB = clusterNodes[Math.floor(rand() * clusterNodes.length)];
+        const alpha = rand();
+        const jRad = (1.0 - Math.abs(alpha - 0.5) * 1.5) * 22.0 + 3.0;
+        px = nA[0] + (nB[0] - nA[0]) * alpha + (rand() - 0.5) * jRad;
+        py = nA[1] + (nB[1] - nA[1]) * alpha + (rand() - 0.5) * jRad;
+        pz = nA[2] + (nB[2] - nA[2]) * alpha + (rand() - 0.5) * jRad;
+      } else {
+        const dLy = 250000000 + Math.pow(rand(), 1.6) * 35000000000;
+        const r = distToSceneRadius(dLy);
+        const theta = rand() * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * rand() - 1.0);
+        px = r * Math.sin(phi) * Math.cos(theta);
+        py = r * Math.sin(phi) * Math.sin(theta);
+        pz = r * Math.cos(phi);
+      }
+      filPos.push(px, py, pz);
+
+      const pDist = Math.hypot(px, py, pz);
+      const dLyApprox = sceneRadiusToDist(pDist);
+      const z = distToRedshift(dLyApprox);
+      let rgb;
+      if (z < 0.05) rgb = [0.25, 0.83, 1.0];
+      else if (z < 0.5) rgb = [0.54, 0.72, 1.0];
+      else if (z < 1.5) rgb = [1.0, 0.82, 0.46];
+      else if (z < 4.0) rgb = [1.0, 0.52, 0.27];
+      else rgb = [1.0, 0.20, 0.33];
+      filCol.push(rgb[0], rgb[1], rgb[2]);
+      filSize.push(2.5 + rand() * 2.0);
+    }
+    const filamentsBundle = buildBufferBundle(filPos, filCol, filSize);
+
+    const ringVerts = [];
+    const distanceList = [10, 100, 1000, 26670, 100000, 2540000, 54000000, 500000000, 1000000000, 10000000000, 46500000000];
+    const ringRanges = [];
+    let startIdx = 0;
+
+    distanceList.forEach(d => {
+      const r = distToSceneRadius(d);
+      const segs = 90;
+      for (let i = 0; i <= segs; i++) {
+        const theta = (i / segs) * Math.PI * 2;
+        ringVerts.push(r * Math.cos(theta), 0, r * Math.sin(theta));
+      }
+      ringRanges.push({ start: startIdx, count: segs + 1, d: d });
+      startIdx += segs + 1;
+    });
+
+    const vboRings = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboRings);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ringVerts), gl.STATIC_DRAW);
+
+    const cmbVerts = [];
+    const cmbRadius = distToSceneRadius(CMB_DISTANCE_LY);
+    const lats = 36, lons = 48;
+    for (let i = 0; i < lats; i++) {
+      const theta1 = (i / lats) * Math.PI;
+      const theta2 = ((i + 1) / lats) * Math.PI;
+      for (let j = 0; j < lons; j++) {
+        const phi1 = (j / lons) * Math.PI * 2;
+        const phi2 = ((j + 1) / lons) * Math.PI * 2;
+
+        const p1 = [cmbRadius * Math.sin(theta1) * Math.cos(phi1), cmbRadius * Math.cos(theta1), cmbRadius * Math.sin(theta1) * Math.sin(phi1)];
+        const p2 = [cmbRadius * Math.sin(theta2) * Math.cos(phi1), cmbRadius * Math.cos(theta2), cmbRadius * Math.sin(theta2) * Math.sin(phi1)];
+        const p3 = [cmbRadius * Math.sin(theta2) * Math.cos(phi2), cmbRadius * Math.cos(theta2), cmbRadius * Math.sin(theta2) * Math.sin(phi2)];
+        const p4 = [cmbRadius * Math.sin(theta1) * Math.cos(phi2), cmbRadius * Math.cos(theta1), cmbRadius * Math.sin(theta1) * Math.sin(phi2)];
+
+        cmbVerts.push(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2]);
+        cmbVerts.push(p1[0], p1[1], p1[2], p3[0], p3[1], p3[2], p4[0], p4[1], p4[2]);
+      }
+    }
+    const vboCMB = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboCMB);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cmbVerts), gl.STATIC_DRAW);
+    const cmbVertexCount = cmbVerts.length / 3;
+
+    const camera = {
+      target: [0, 0, 0],
+      dist: 45.0,
+      theta: 0.8,
+      phi: 0.35,
+      targetDist: 45.0,
+      targetTheta: 0.8,
+      targetPhi: 0.35,
+      lookTarget: [0, 0, 0],
+      animating: false,
+      animStartDist: 45.0,
+      animStartLook: [0, 0, 0],
+      animEndDist: 45.0,
+      animEndLook: [0, 0, 0],
+      animProgress: 1.0
+    };
+
+    function flyToScale(targetDist, targetLook) {
+      camera.animStartDist = camera.dist;
+      camera.animStartLook = [camera.lookTarget[0], camera.lookTarget[1], camera.lookTarget[2]];
+      camera.animEndDist = targetDist;
+      camera.animEndLook = [targetLook[0], targetLook[1], targetLook[2]];
+      camera.animProgress = 0.0;
+      camera.animating = true;
+    }
+
+    let isDragging = false;
+    let prevMouseX = 0, prevMouseY = 0;
+    let pinchDistStart = 0;
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.interactive')) return;
+      isDragging = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevMouseX;
+      const dy = e.clientY - prevMouseY;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+
+      camera.targetTheta += dx * 0.006;
+      camera.targetPhi = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, camera.targetPhi + dy * 0.006));
+    });
+
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    window.addEventListener('wheel', (e) => {
+      if (e.target.closest('.interactive')) return;
+      const factor = e.deltaY > 0 ? 1.15 : 0.87;
+      camera.targetDist = Math.max(1.0, Math.min(2600.0, camera.targetDist * factor));
+    }, { passive: true });
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.interactive')) return;
+      if (e.touches.length === 1) {
+        isDragging = true;
+        prevMouseX = e.touches[0].clientX;
+        prevMouseY = e.touches[0].clientY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        pinchDistStart = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.target.closest('.interactive')) return;
+      if (e.touches.length === 1 && isDragging) {
+        const dx = e.touches[0].clientX - prevMouseX;
+        const dy = e.touches[0].clientY - prevMouseY;
+        prevMouseX = e.touches[0].clientX;
+        prevMouseY = e.touches[0].clientY;
+
+        camera.targetTheta += dx * 0.007;
+        camera.targetPhi = Math.max(-Math.PI * 0.48, Math.min(Math.PI * 0.48, camera.targetPhi + dy * 0.007));
+      } else if (e.touches.length === 2) {
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        if (pinchDistStart > 0) {
+          const factor = pinchDistStart / dist;
+          camera.targetDist = Math.max(1.0, Math.min(2600.0, camera.targetDist * Math.pow(factor, 0.25)));
+        }
+        pinchDistStart = dist;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+      pinchDistStart = 0;
+    });
+
+    const sgraCoord = CELESTIAL_CATALOG.find(c => c.id === "sgra").pos;
+    const scalePresets = [
+      { name: "Solar System & Stars", dist: 38.0, look: [0, 0, 0], id: "sol" },
+      { name: "Milky Way Galaxy", dist: 220.0, look: sgraCoord, id: "sgra" },
+      { name: "Local Group", dist: 450.0, look: andromedaCoord, id: "andromeda" },
+      { name: "Laniakea & Superclusters", dist: 750.0, look: clusterNodes[0], id: "virgo_cluster" },
+      { name: "Cosmic Web & Filaments", dist: 1200.0, look: [0, 0, 0], id: "sloan_wall" },
+      { name: "CMB Last-Scattering Surface", dist: 2200.0, look: [0, 0, 0], id: "cmb_horizon" }
+    ];
+
+    let currentScale = 0;
+    const scaleBtns = document.querySelectorAll('.scale-btn');
+    scaleBtns.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        currentScale = idx;
+        scaleBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const p = scalePresets[idx];
+        flyToScale(p.dist, p.look);
+        const match = CELESTIAL_CATALOG.find(c => c.id === p.id);
+        if (match) showInspector(match);
+      });
+    });
+
+    let selectedItem = CELESTIAL_CATALOG[0];
+    const reticle = document.getElementById('selection-reticle');
+    let measureA = null, measureB = null;
+
+    function formatObservedMotion(item) {
+      if (item.zObs == null && item.rv == null) return '—';
+      if (item.zObs != null && item.rv != null) {
+        const z = Math.abs(item.zObs) >= 0.01 ? item.zObs.toFixed(6) : item.zObs.toFixed(6);
+        return `z=${z} / ${item.rv.toFixed(2)} km/s`;
+      }
+      if (item.zObs != null) return `z=${item.zObs}`;
+      return `${item.rv.toFixed(2)} km/s`;
+    }
+
+    function tierLabel(item) {
+      if (item.dataClass === 'observational') return 'Observational / literature grounded';
+      if (item.dataClass === 'reference') return 'Reference origin';
+      if (item.dataClass === 'external') return 'Imported catalog observation';
+      if (item.dataClass === 'model') return 'Cosmology model';
+      return 'Illustrative context';
+    }
+
+    function updateProvenance(item) {
+      const tier = document.getElementById('data-tier');
+      tier.className = `data-tier ${item.dataClass}`;
+      tier.innerText = tierLabel(item);
+      document.getElementById('prov-source').innerText = item.source || 'No source metadata';
+      document.getElementById('prov-record').innerText = `${item.record || ''}${item.sourceRef ? ` • ${item.sourceRef}` : ''}`;
+      document.getElementById('prov-distance').innerText = `Distance basis: ${item.distanceBasis || 'Not specified'}`;
+      const links = [];
+      if (item.sourceUrl) links.push(`<a class="source-link" target="_blank" rel="noopener noreferrer" href="${item.sourceUrl}">Object / catalog source</a>`);
+      if (item.distanceUrl) links.push(`<a class="source-link" target="_blank" rel="noopener noreferrer" href="${item.distanceUrl}">Distance / model source</a>`);
+      document.getElementById('prov-links').innerHTML = links.join('');
+    }
+
+    function angularSeparationDeg(a, b) {
+      const r1 = a.ra * Math.PI / 180, r2 = b.ra * Math.PI / 180;
+      const d1 = a.dec * Math.PI / 180, d2 = b.dec * Math.PI / 180;
+      const cosSep = Math.sin(d1)*Math.sin(d2) + Math.cos(d1)*Math.cos(d2)*Math.cos(r1-r2);
+      return Math.acos(Math.max(-1, Math.min(1, cosSep))) * 180 / Math.PI;
+    }
+
+    function spatialSeparationLy(a, b) {
+      const theta = angularSeparationDeg(a,b) * Math.PI / 180;
+      if (a.angularOnly || b.angularOnly) return null;
+      const da = a.physicalDistanceLy ?? a.distLy, db = b.physicalDistanceLy ?? b.distLy;
+      return Math.sqrt(Math.max(0, da*da + db*db - 2*da*db*Math.cos(theta)));
+    }
+
+    function updateMeasurement() {
+      const out = document.getElementById('measure-output');
+      if (!measureA && !measureB) { out.innerHTML = 'Choose a target, set A, then choose another target and set B.'; return; }
+      if (!measureA || !measureB) {
+        const x = measureA || measureB;
+        out.innerHTML = `<strong>${measureA ? 'A' : 'B'}:</strong> ${x.name}<br>Set the other endpoint to calculate angular and 3D separation.`;
+        return;
+      }
+      const ang = angularSeparationDeg(measureA, measureB);
+      const sep = spatialSeparationLy(measureA, measureB);
+      const caution = (measureA.dataClass === 'context' || measureB.dataClass === 'context' || measureA.dataClass === 'model' || measureB.dataClass === 'model')
+        ? '<br><span style="color:var(--accent-gold)">Caution: at least one endpoint is contextual/model-derived, so the 3D separation is illustrative.</span>' : '';
+      const spatialText = sep == null ? 'unavailable (angular-only endpoint)' : formatDistance(sep);
+      const angularNote = (measureA.angularOnly || measureB.angularOnly) ? '<br><span style="color:var(--accent-gold)">Angular-only records have no claimed radial distance; the display shell is excluded from 3-D measurement.</span>' : '';
+      out.innerHTML = `<strong>A:</strong> ${measureA.name}<br><strong>B:</strong> ${measureB.name}<br><strong>Angular separation:</strong> ${ang.toFixed(3)}°<br><strong>3D radial separation:</strong> ${spatialText}${caution}${angularNote}`;
+    }
+
+    function showInspector(item) {
+      selectedItem = item;
+      document.getElementById('inspect-tag').innerText = item.tag;
+      document.getElementById('inspect-name').innerText = item.name;
+      document.getElementById('inspect-desc').innerText = item.desc;
+      document.getElementById('spec-dist').innerText = item.angularOnly ? 'angular-only (display shell)' : formatDistance(item.physicalDistanceLy ?? item.distLy);
+      document.getElementById('spec-dist-unc').innerText = item.distUnc || '—';
+      document.getElementById('spec-ra').innerText = item.raText || `${item.ra.toFixed(6)}°`;
+      document.getElementById('spec-dec').innerText = item.decText || `${item.dec.toFixed(6)}°`;
+      const gal = icrsToGalactic(item.ra, item.dec);
+      document.getElementById('spec-galactic').innerText = `l=${gal.l.toFixed(3)}° / b=${gal.b.toFixed(3)}°`;
+      document.getElementById('spec-status').innerText = item.imported ? 'Imported / runtime catalog' : (item.dataClass === 'observational' ? 'Curated scientific core' : item.dataClass === 'reference' ? 'Defined reference' : item.dataClass === 'model' ? 'Model-derived' : 'Context only');
+      document.getElementById('spec-z').innerText = formatObservedMotion(item);
+      const modelZ = item.angularOnly ? null : (item.id === 'cmb_horizon' ? CMB_REDSHIFT : distToRedshift(item.physicalDistanceLy ?? item.distLy));
+      document.getElementById('spec-model-z').innerText = item.angularOnly ? '— (no radial distance)' : ((item.physicalDistanceLy ?? item.distLy) < 1e7 ? 'local / ≈0' : (modelZ >= 1000 ? modelZ.toExponential(2) : modelZ.toFixed(5)));
+      document.getElementById('spec-type').innerText = item.type;
+      document.getElementById('spec-lookback').innerText = item.angularOnly ? '— (angular-only)' : formatLookback(distToLookback(item.physicalDistanceLy ?? item.distLy));
+      document.getElementById('inspect-tag').style.color = item.color;
+      updateProvenance(item);
+
+      if (window.innerWidth <= 900 && item.id !== 'sol') {
+        document.querySelector('.right-sidebar').classList.add('mobile-open');
+        document.querySelector('.left-sidebar').classList.remove('mobile-open');
+        syncMobilePanelAria?.();
+      }
+    }
+
+    document.getElementById('btn-focus-target').addEventListener('click', () => {
+      if (!selectedItem) return;
+      const targetPos = selectedItem.pos;
+      const distLy = selectedItem.distLy;
+      const targetDist = Math.max(15.0, distToSceneRadius(distLy) * 0.25);
+      flyToScale(targetDist, targetPos);
+    });
+
+    const telemetryBtn = document.getElementById('toggle-telemetry-btn');
+    const inspectorBtn = document.getElementById('toggle-inspector-btn');
+
+    function syncMobilePanelAria() {
+      telemetryBtn.setAttribute('aria-expanded', document.querySelector('.left-sidebar').classList.contains('mobile-open') ? 'true' : 'false');
+      inspectorBtn.setAttribute('aria-expanded', document.querySelector('.right-sidebar').classList.contains('mobile-open') ? 'true' : 'false');
+    }
+
+    telemetryBtn.addEventListener('click', () => {
+      const left = document.querySelector('.left-sidebar');
+      const right = document.querySelector('.right-sidebar');
+      left.classList.toggle('mobile-open');
+      right.classList.remove('mobile-open');
+      syncMobilePanelAria();
+    });
+
+    inspectorBtn.addEventListener('click', () => {
+      const left = document.querySelector('.left-sidebar');
+      const right = document.querySelector('.right-sidebar');
+      right.classList.toggle('mobile-open');
+      left.classList.remove('mobile-open');
+      syncMobilePanelAria();
+    });
+
+    function resetView() {
+      flyToScale(38.0, [0, 0, 0]);
+      camera.targetTheta = 0.8;
+      camera.targetPhi = 0.35;
+      currentScale = 0;
+      scaleBtns.forEach((b, idx) => b.classList.toggle('active', idx === 0));
+      showInspector(CELESTIAL_CATALOG[0]);
+    }
+
+    document.getElementById('reset-view-btn').addEventListener('click', resetView);
+
+
+    document.getElementById('measure-a-btn').addEventListener('click', () => { measureA = selectedItem; updateMeasurement(); });
+    document.getElementById('measure-b-btn').addEventListener('click', () => { measureB = selectedItem; updateMeasurement(); });
+    document.getElementById('measure-clear-btn').addEventListener('click', () => { measureA = null; measureB = null; updateMeasurement(); });
+
+    const scienceModal = document.getElementById('science-modal-backdrop');
+    function openScienceModal() { scienceModal.classList.add('open'); document.getElementById('science-modal-close').focus(); }
+    function closeScienceModal() { scienceModal.classList.remove('open'); }
+    document.getElementById('science-info-btn').addEventListener('click', openScienceModal);
+    document.getElementById('science-modal-close').addEventListener('click', closeScienceModal);
+    scienceModal.addEventListener('click', e => { if (e.target === scienceModal) closeScienceModal(); });
+
+    const catalogCounts = CELESTIAL_CATALOG.reduce((acc, x) => { acc[x.dataClass] = (acc[x.dataClass] || 0) + 1; return acc; }, {});
+    function updateCatalogSummary() {
+      document.getElementById('catalog-summary').innerHTML = `<span class="quality-dot"></span><strong>${catalogCounts.observational || 0}</strong> curated observational records • <strong>${importedCatalogRecords.length}</strong> imported records • <strong>${catalogCounts.context || 0}</strong> context landmarks • <strong>${catalogCounts.model || 0}</strong> model surface • ${RELEASE_MANIFEST.buildId}`;
+    }
+    updateCatalogSummary();
+
+    function setCheckbox(id, checked) {
+      const el = document.getElementById(id);
+      el.checked = checked;
+      el.dispatchEvent(new Event('change'));
+    }
+    document.getElementById('catalog-only-btn').addEventListener('click', () => {
+      setCheckbox('layer-catalog', true); setCheckbox('layer-imported', true); setCheckbox('layer-context', false); setCheckbox('layer-stars', false);
+      setCheckbox('layer-galaxy', false); setCheckbox('layer-localgroup', false); setCheckbox('layer-filaments', false);
+      setCheckbox('layer-cmb', false); setCheckbox('layer-grid', true);
+    });
+    document.getElementById('restore-layers-btn').addEventListener('click', () => {
+      ['layer-catalog','layer-imported','layer-context','layer-stars','layer-galaxy','layer-localgroup','layer-filaments','layer-cmb','layer-grid'].forEach(id => setCheckbox(id, true));
+    });
+
+    function allScientificRecords() { return [...CELESTIAL_CATALOG, ...importedCatalogRecords]; }
+    function downloadBlob(filename, type, text) {
+      const blob = new Blob([text], {type});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    document.getElementById('export-csv-btn').addEventListener('click', () => {
+      const columns = ['id','name','dataClass','ra_deg','dec_deg','distance_ly','angular_only','display_shell_ly','distance_uncertainty','observed_z','radial_velocity_km_s','type','source','source_reference','distance_basis','source_url','imported'];
+      const quote = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+      const rows = allScientificRecords().map(x => [x.externalId || x.id,x.name,x.dataClass,x.ra,x.dec,x.angularOnly ? '' : (x.physicalDistanceLy ?? x.distLy),x.angularOnly ? 'true':'false',x.angularOnly ? x.displayShellLy : '',x.distUnc,x.zObs,x.rv,x.type,x.source,x.sourceRef,x.distanceBasis,x.sourceUrl,x.imported ? 'true':'false'].map(quote).join(','));
+      downloadBlob('cosmic_atlas_v4_catalog.csv','text/csv;charset=utf-8',[columns.join(','),...rows].join('\n'));
+    });
+
+    document.getElementById('export-json-btn').addEventListener('click', () => {
+      const payload = { schema:'cosmic-atlas.catalog.v1', manifest:RELEASE_MANIFEST, records:allScientificRecords().map(x => ({
+        id:x.externalId || x.id, name:x.name, tier:x.dataClass, ra_deg:x.ra, dec_deg:x.dec, distance_ly:x.angularOnly ? null : (x.physicalDistanceLy ?? x.distLy), angular_only:!!x.angularOnly, display_shell_ly:x.angularOnly ? x.displayShellLy : null,
+        distance_uncertainty:x.distUnc, observed_redshift:x.zObs, radial_velocity_kms:x.rv, type:x.type,
+        source:x.source, source_ref:x.sourceRef, source_url:x.sourceUrl, distance_basis:x.distanceBasis,
+        imported:!!x.imported, phot_g_mean_mag:x.photG ?? null, bp_rp:x.bpRp ?? null,
+        parallax_mas:x.parallaxMas ?? null, parallax_error_mas:x.parallaxErrorMas ?? null,
+        pmra_masyr:x.pmra ?? null, pmdec_masyr:x.pmdec ?? null
+      }))};
+      downloadBlob('cosmic_atlas_v4_catalog.json','application/json;charset=utf-8',JSON.stringify(payload,null,2));
+    });
+
+    const fileInput = document.getElementById('catalog-file-input');
+    document.getElementById('import-catalog-btn').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0]; if (!file) return;
+      const status = document.getElementById('catalog-import-status');
+      try {
+        const parsed = JSON.parse(await file.text());
+        const rows = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.records) ? parsed.records : []);
+        if (!rows.length) throw new Error('No records array found.');
+        const max = Math.min(rows.length, 50000);
+        const normalized=[]; let rejected=0;
+        for (let i=0;i<max;i++) { const rec=normalizeImportedRecord(rows[i],i); if (rec) normalized.push(rec); else rejected++; }
+        importedCatalogRecords = normalized;
+        rebuildImportedCatalogBundle(); updateCatalogSummary(); populateDataTable(document.getElementById('data-table-search').value);
+        status.innerHTML = `<strong>Loaded:</strong> ${normalized.length.toLocaleString()} records from ${file.name}${rows.length>max ? ` (first ${max.toLocaleString()} used)` : ''}. ${rejected} rejected for missing/invalid sky position. Records without radial distance are retained as explicitly angular-only observations.`;
+      } catch (err) {
+        status.innerHTML = `<strong>Import failed:</strong> ${String(err.message || err)}`;
+      } finally { fileInput.value=''; }
+    });
+
+    function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    const dataModal = document.getElementById('data-modal-backdrop');
+    const dataSearch = document.getElementById('data-table-search');
+    function populateDataTable(query='') {
+      const q = query.trim().toLowerCase();
+      const rows = allScientificRecords().filter(x => !q || [x.name,x.id,x.externalId,x.type,x.source,x.sourceRef].some(v => String(v||'').toLowerCase().includes(q))).slice(0,1200);
+      document.getElementById('data-modal-summary').innerText = `${rows.length.toLocaleString()} shown of ${allScientificRecords().length.toLocaleString()} in-memory records${q ? ' matching filter' : ''}. Table rendering is capped at 1,200 rows for mobile responsiveness.`;
+      document.getElementById('data-table-body').innerHTML = rows.map(x => `<tr data-record-id="${escapeHtml(x.id)}"><td>${escapeHtml(x.name)}</td><td>${escapeHtml(tierLabel(x))}</td><td>${escapeHtml(x.angularOnly ? 'angular-only' : formatDistance(x.physicalDistanceLy ?? x.distLy))}</td><td>${escapeHtml((x.ra ?? 0).toFixed(4)+'°')}</td><td>${escapeHtml((x.dec ?? 0).toFixed(4)+'°')}</td><td>${escapeHtml(x.source||'—')}</td></tr>`).join('');
+      document.querySelectorAll('#data-table-body tr').forEach(tr => tr.addEventListener('click', () => {
+        const item = allScientificRecords().find(x => x.id === tr.dataset.recordId); if (!item) return;
+        showInspector(item); const targetDist=Math.max(15.0,distToSceneRadius(item.distLy)*0.25); flyToScale(targetDist,item.pos); dataModal.classList.remove('open');
+      }));
+    }
+    document.getElementById('data-table-btn').addEventListener('click', () => { populateDataTable(dataSearch.value); dataModal.classList.add('open'); dataSearch.focus(); });
+    document.getElementById('data-modal-close').addEventListener('click', () => dataModal.classList.remove('open'));
+    dataModal.addEventListener('click', e => { if (e.target === dataModal) dataModal.classList.remove('open'); });
+    dataSearch.addEventListener('input', () => populateDataTable(dataSearch.value));
+
+    document.getElementById('snapshot-btn').addEventListener('click', () => {
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cosmic_atlas_v4_view.png'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      }, 'image/png');
+    });
+
+    const TOUR_STEPS = [
+      {scale:0,id:'sol',title:'Solar neighborhood',copy:'Begin at the observer-centered origin. Nearby directions are catalog grounded; the dense local star field remains procedural unless an external catalog is loaded.'},
+      {scale:1,id:'sgra',title:'Milky Way',copy:'The Galaxy is rendered around Sagittarius A*, keeping the Sun off-center. Disk particles are illustrative geometry; catalog landmarks retain measured directions and adopted distances.'},
+      {scale:2,id:'andromeda',title:'Local Group',copy:'Move to M31 and neighboring Local Group scales. Published geometric distances are preferred here because local peculiar velocities make redshift a poor distance estimator.'},
+      {scale:3,id:'virgo_cluster',title:'Supercluster context',copy:'At tens to hundreds of millions of light-years, contextual landmarks help navigation. Gold markers are explicitly not precision centroids or substitutes for member-galaxy catalogs.'},
+      {scale:4,id:'sloan_wall',title:'Large-scale structure',copy:'The filament network is procedural context, not a reconstruction of SDSS or DESI survey data. Future catalog imports can add real galaxy samples without changing the renderer.'},
+      {scale:5,id:'cmb_horizon',title:'Last scattering',copy:'The CMB sphere is placed at the model comoving distance for z≈1089 under the release cosmology. Its texture is procedural and is not Planck sky-map data.'}
+    ];
+    let tourIndex=0;
+    function showTourStep(idx) {
+      tourIndex=(idx+TOUR_STEPS.length)%TOUR_STEPS.length; const st=TOUR_STEPS[tourIndex];
+      document.getElementById('tour-kicker').innerText=`Guided tour • ${tourIndex+1}/${TOUR_STEPS.length}`;
+      document.getElementById('tour-title').innerText=st.title; document.getElementById('tour-copy').innerText=st.copy;
+      const p=scalePresets[st.scale]; flyToScale(p.dist,p.look); scaleBtns.forEach((b,i)=>b.classList.toggle('active',i===st.scale));
+      const item=CELESTIAL_CATALOG.find(x=>x.id===st.id); if(item) showInspector(item);
+      document.getElementById('tour-panel').classList.add('open');
+    }
+    document.getElementById('tour-btn').addEventListener('click',()=>showTourStep(0));
+    document.getElementById('tour-prev-btn').addEventListener('click',()=>showTourStep(tourIndex-1));
+    document.getElementById('tour-next-btn').addEventListener('click',()=>showTourStep(tourIndex+1));
+    document.getElementById('tour-close-btn').addEventListener('click',()=>document.getElementById('tour-panel').classList.remove('open'));
+
+    const layers = {
+      catalog: true,
+      imported: true,
+      context: true,
+      stars: true,
+      galaxy: true,
+      localgroup: true,
+      filaments: true,
+      cmb: true,
+      grid: true
+    };
+    document.getElementById('layer-catalog').addEventListener('change', e => layers.catalog = e.target.checked);
+    document.getElementById('layer-imported').addEventListener('change', e => layers.imported = e.target.checked);
+    document.getElementById('layer-context').addEventListener('change', e => layers.context = e.target.checked);
+    document.getElementById('layer-stars').addEventListener('change', e => layers.stars = e.target.checked);
+    document.getElementById('layer-galaxy').addEventListener('change', e => layers.galaxy = e.target.checked);
+    document.getElementById('layer-localgroup').addEventListener('change', e => layers.localgroup = e.target.checked);
+    document.getElementById('layer-filaments').addEventListener('change', e => layers.filaments = e.target.checked);
+    document.getElementById('layer-cmb').addEventListener('change', e => layers.cmb = e.target.checked);
+    document.getElementById('layer-grid').addEventListener('change', e => layers.grid = e.target.checked);
+
+    let simSpeed = 1.0;
+    document.getElementById('sim-speed').addEventListener('input', e => {
+      simSpeed = parseFloat(e.target.value);
+      document.getElementById('speed-val').innerText = simSpeed.toFixed(1) + 'x';
+    });
+
+    let particleBrightness = 1.0;
+    document.getElementById('particle-brightness').addEventListener('input', e => {
+      particleBrightness = parseFloat(e.target.value);
+      document.getElementById('bright-val').innerText = particleBrightness.toFixed(1);
+    });
+
+    const searchInput = document.getElementById('object-search');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase().trim();
+      if (!q) {
+        searchResults.style.display = 'none';
+        return;
+      }
+      const matches = allScientificRecords().filter(c =>
+        c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q) || c.type.toLowerCase().includes(q) || (c.source || '').toLowerCase().includes(q) || (c.record || '').toLowerCase().includes(q) || (c.externalId || '').toLowerCase().includes(q)
+      ).slice(0,60);
+
+      if (matches.length === 0) {
+        searchResults.innerHTML = '<div style="padding:7px 10px;color:var(--text-dim);font-size:11px">No catalog match</div>';
+        searchResults.style.display = 'block';
+        return;
+      }
+
+      searchResults.innerHTML = matches.map(m => `
+        <button type="button" class="search-item" data-id="${m.id}">
+          <span>${m.name}</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${formatDistance(m.distLy)}</span>
+        </button>
+      `).join('');
+      searchResults.style.display = 'block';
+
+      searchResults.querySelectorAll('.search-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const match = allScientificRecords().find(c => c.id === el.dataset.id);
+          if (match) {
+            showInspector(match);
+            const targetDist = Math.max(15.0, distToSceneRadius(match.distLy) * 0.25);
+            flyToScale(targetDist, match.pos);
+          }
+          searchResults.style.display = 'none';
+          searchInput.value = '';
+        });
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-container')) {
+        searchResults.style.display = 'none';
+      }
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target.closest('.interactive')) return;
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      let bestMatch = null;
+      let minPixelDist = 28.0;
+
+      const pickRecords = importedCatalogRecords.length <= 5000 ? [...CELESTIAL_CATALOG, ...importedCatalogRecords] : CELESTIAL_CATALOG;
+      pickRecords.forEach(item => {
+        const sp = projectToScreen(item.pos);
+        if (sp) {
+          const pDist = Math.hypot(sp[0] - clickX, sp[1] - clickY);
+          if (pDist < minPixelDist) {
+            minPixelDist = pDist;
+            bestMatch = item;
+          }
+        }
+      });
+
+      if (bestMatch) {
+        showInspector(bestMatch);
+      }
+    });
+
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      } else if ((e.key === 'r' || e.key === 'R') && document.activeElement !== searchInput) {
+        resetView();
+      } else if ((e.key === 't' || e.key === 'T') && document.activeElement !== searchInput) {
+        showTourStep(0);
+      } else if ((e.key === 'd' || e.key === 'D') && document.activeElement !== searchInput) {
+        populateDataTable(dataSearch.value); dataModal.classList.add('open');
+      } else if (e.key === 'Escape') {
+        closeScienceModal();
+        dataModal.classList.remove('open');
+        document.getElementById('tour-panel').classList.remove('open');
+        searchResults.style.display = 'none';
+        searchInput.blur();
+        document.querySelector('.left-sidebar').classList.remove('mobile-open');
+        document.querySelector('.right-sidebar').classList.remove('mobile-open');
+        syncMobilePanelAria();
+      }
+    });
+
+    const matProj = Mat4.create();
+    const matView = Mat4.create();
+    const matMVP = Mat4.create();
+
+    let cssViewportWidth = window.innerWidth;
+    let cssViewportHeight = window.innerHeight;
+    let renderDpr = 1.0;
+
+    function resizeCanvas() {
+      cssViewportWidth = Math.max(1, window.innerWidth);
+      cssViewportHeight = Math.max(1, window.innerHeight);
+      renderDpr = Math.min(2.0, Math.max(1.0, window.devicePixelRatio || 1.0));
+      const width = Math.round(cssViewportWidth * renderDpr);
+      const height = Math.round(cssViewportHeight * renderDpr);
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+    }
+
+    function projectToScreen(pos) {
+      const x = pos[0], y = pos[1], z = pos[2];
+      const m = matMVP;
+      const cx = m[0]*x + m[4]*y + m[8]*z + m[12];
+      const cy = m[1]*x + m[5]*y + m[9]*z + m[13];
+      const cz = m[2]*x + m[6]*y + m[10]*z + m[14];
+      const cw = m[3]*x + m[7]*y + m[11]*z + m[15];
+
+      if (cw <= 0.0) return null;
+      const nx = cx / cw, ny = cy / cw, nz = cz / cw;
+      if (nx < -1.08 || nx > 1.08 || ny < -1.08 || ny > 1.08 || nz < -1.2 || nz > 1.2) return null;
+      return [
+        (nx * 0.5 + 0.5) * cssViewportWidth,
+        (-ny * 0.5 + 0.5) * cssViewportHeight
+      ];
+    }
+
+    function drawBufferBundle(bundle) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, bundle.vboPos);
+      gl.enableVertexAttribArray(pLoc.pos);
+      gl.vertexAttribPointer(pLoc.pos, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, bundle.vboCol);
+      gl.enableVertexAttribArray(pLoc.col);
+      gl.vertexAttribPointer(pLoc.col, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, bundle.vboSize);
+      gl.enableVertexAttribArray(pLoc.size);
+      gl.vertexAttribPointer(pLoc.size, 1, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.POINTS, 0, bundle.count);
+    }
+
+    let lastTime = performance.now();
+
+    function render(now) {
+      requestAnimationFrame(render);
+      const dt = Math.min(0.1, (now - lastTime) * 0.001);
+      lastTime = now;
+
+      resizeCanvas();
+
+      if (camera.animating) {
+        camera.animProgress += dt * 1.2;
+        if (camera.animProgress >= 1.0) {
+          camera.animProgress = 1.0;
+          camera.animating = false;
+        }
+        const t = camera.animProgress < 0.5 ?
+          4 * camera.animProgress * camera.animProgress * camera.animProgress :
+          1 - Math.pow(-2 * camera.animProgress + 2, 3) / 2;
+
+        camera.dist = camera.animStartDist + (camera.animEndDist - camera.animStartDist) * t;
+        camera.targetDist = camera.dist;
+        camera.lookTarget[0] = camera.animStartLook[0] + (camera.animEndLook[0] - camera.animStartLook[0]) * t;
+        camera.lookTarget[1] = camera.animStartLook[1] + (camera.animEndLook[1] - camera.animStartLook[1]) * t;
+        camera.lookTarget[2] = camera.animStartLook[2] + (camera.animEndLook[2] - camera.animStartLook[2]) * t;
+      } else {
+        camera.dist += (camera.targetDist - camera.dist) * 0.12;
+        camera.theta += (camera.targetTheta - camera.theta) * 0.14;
+        camera.phi += (camera.targetPhi - camera.phi) * 0.14;
+      }
+
+      if (!reduceMotion && simSpeed > 0 && !camera.animating && !isDragging) {
+        camera.targetTheta += dt * 0.015 * simSpeed;
+      }
+
+      const eyeX = camera.lookTarget[0] + camera.dist * Math.cos(camera.phi) * Math.sin(camera.theta);
+      const eyeY = camera.lookTarget[1] + camera.dist * Math.sin(camera.phi);
+      const eyeZ = camera.lookTarget[2] + camera.dist * Math.cos(camera.phi) * Math.cos(camera.theta);
+
+      Mat4.perspective(matProj, Math.PI * 0.32, cssViewportWidth / cssViewportHeight, 0.1, 8000.0);
+      Mat4.lookAt(matView, [eyeX, eyeY, eyeZ], camera.lookTarget, [0, 1, 0]);
+      Mat4.multiply(matMVP, matProj, matView);
+
+      gl.clearColor(0.012, 0.02, 0.04, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+      gl.disable(gl.DEPTH_TEST);
+
+      gl.useProgram(particleProg);
+      gl.uniformMatrix4fv(pLoc.uMVP, false, matMVP);
+      gl.uniform1f(pLoc.uHeight, canvas.height);
+      gl.uniform1f(pLoc.uBrightness, particleBrightness);
+
+      if (layers.catalog) drawBufferBundle(observedCatalogBundle);
+      if (layers.imported && importedCatalogBundle.count) drawBufferBundle(importedCatalogBundle);
+      if (layers.context) drawBufferBundle(contextCatalogBundle);
+      if (layers.stars) drawBufferBundle(localStarsBundle);
+      if (layers.galaxy) {
+        drawBufferBundle(mwBundle);
+      }
+      if (layers.localgroup) {
+        drawBufferBundle(localGroupBundle);
+      }
+      if (layers.filaments) {
+        drawBufferBundle(filamentsBundle);
+      }
+
+      if (layers.grid) {
+        gl.useProgram(lineProg);
+        gl.uniformMatrix4fv(lLoc.uMVP, false, matMVP);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vboRings);
+        gl.enableVertexAttribArray(lLoc.pos);
+        gl.vertexAttribPointer(lLoc.pos, 3, gl.FLOAT, false, 0, 0);
+
+        ringRanges.forEach(r => {
+          gl.uniform4f(lLoc.uColor, 0.24, 0.44, 0.72, r.d >= 1e9 ? 0.35 : 0.18);
+          gl.drawArrays(gl.LINE_STRIP, r.start, r.count);
+        });
+      }
+
+      if (layers.cmb) {
+        gl.useProgram(cmbProg);
+        gl.uniformMatrix4fv(cLoc.uMVP, false, matMVP);
+        gl.uniform1f(cLoc.uTime, now * 0.001);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vboCMB);
+        gl.enableVertexAttribArray(cLoc.pos);
+        gl.vertexAttribPointer(cLoc.pos, 3, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.TRIANGLES, 0, cmbVertexCount);
+      }
+
+      const camDistLy = sceneRadiusToDist(camera.dist);
+      const z = distToRedshift(camDistLy);
+      const lookback = distToLookback(camDistLy);
+      const a = 1.0 / (1.0 + z);
+
+      document.getElementById('hud-dist').innerText = formatDistance(camDistLy);
+      document.getElementById('hud-lookback').innerText = formatLookback(lookback);
+      document.getElementById('hud-redshift').innerText = z >= 1000 ? `z ≈ ${z.toExponential(2)}` : `z = ${z.toFixed(4)}`;
+      document.getElementById('hud-scale-factor').innerText = `${a.toFixed(4)} (${(a * 100).toFixed(1)}%)`;
+      document.getElementById('hud-realm').innerText = getRealmName(camDistLy);
+
+      if (selectedItem && selectedItem.pos) {
+        const sp = projectToScreen(selectedItem.pos);
+        if (sp) {
+          reticle.style.left = `${sp[0]}px`;
+          reticle.style.top = `${sp[1]}px`;
+          reticle.style.display = 'block';
+        } else {
+          reticle.style.display = 'none';
+        }
+      } else {
+        reticle.style.display = 'none';
+      }
+    }
+
+    requestAnimationFrame(render);
+// ]]>
+  </script>
+</body>
+</html>

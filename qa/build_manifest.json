@@ -1,0 +1,15 @@
+{
+  "file": "standalone/Cosmic_Atlas_Scientific_v4.html",
+  "bytes": 127949,
+  "sha256": "6fb8b0bc99f1eba486056e1d0b9e19c7c81cc6ab2d010bc15dbb3dd4158cc101",
+  "dom_ids": 83,
+  "unique_dom_ids": 83,
+  "duplicate_ids": [],
+  "unresolved_getElementById": [],
+  "external_script_tags": 0,
+  "stylesheet_links": 0,
+  "network_fetch_calls": 0,
+  "math_random_calls": 0,
+  "node_syntax_ok": true,
+  "node_message": ""
+}
