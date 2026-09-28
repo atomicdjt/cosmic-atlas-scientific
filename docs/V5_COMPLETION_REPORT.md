@@ -2,6 +2,10 @@
 
 Release 5.0.0, build CA-SCI-5.0-2026-09-26. Work completed from the supplied v4 package, preserving its scientific visualization identity and offline runtime. The result is a provenance-aware visualization, not a precision astrometry or survey-reduction platform.
 
+## v5.0.1 patch release
+
+Release 5.0.1, build CA-SCI-5.0.1-2026-09-28, packages the standalone at commit `9d16f2a0a391b3fc4813d7b62ef7d2aed9f0872c` plus this release-metadata update. It corrects the runtime-import trust boundary: imported rows remain external/unverified and measurement-ineligible regardless of supplied claims, while those claims are retained as exported provenance. It also validates rendering values before use and prepares GPU replacement buffers before swapping live catalog state, so failed imports retain the active catalog/render state. The original 5.0.0 evidence below remains historical evidence for its artifact and is not presented as verification of the patch artifact.
+
 ## 1. Baseline and final structure
 
 All 36 original SHA-256 manifest entries matched. The prescribed untouched `python scripts/run_qa.py` passed, including 13 original Python tests. Baseline evidence is in `qa/v5/baseline-integrity.json` and `baseline-validation-results.json`. The baseline was committed as `e3bad5ceb863090210a8c8a851374d5eca21c9ba` and tagged `v4.0.0-baseline` before v5 edits. The original archive, manifests, source HTML and standalone remain available. The v4 standalone hash remains `6fb8b0bc99f1eba486056e1d0b9e19c7c81cc6ab2d010bc15dbb3dd4158cc101`.

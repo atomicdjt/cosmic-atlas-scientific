@@ -1,6 +1,8 @@
-# Cosmic Atlas Scientific 5.0.0
+# Cosmic Atlas Scientific 5.0.1
 
-Build: CA-SCI-5.0-2026-09-26.
+Build: CA-SCI-5.0.1-2026-09-28.
+
+Patch release: imported runtime catalogs are always marked external/unverified and cannot enable scientific measurements through file-supplied tier or eligibility fields. Imported source claims remain available in exported provenance. The catalog replacement path validates rendering values before use and stages GPU buffers before replacing live state, so a malformed or failed import preserves the active catalog and render state.
 
 v5 preserves the v4 visual identity, seeded procedural context, curated landmarks and offline design while adding reproducible real catalogs and a maintainable generated-source workflow.
 
