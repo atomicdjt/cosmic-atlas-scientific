@@ -1,3 +1,5 @@
+> **v5 entry point:** see the root README and `docs/V5_MIGRATION.md`. The release pipeline uses `scripts/acquire_v5.py`, `scripts/normalize_snapshots.py`, `scripts/build_v5.py`, and `scripts/run_qa.py`. The text below describes the preserved v4 utilities. Real v5 Gaia, BSC5 and OpenNGC snapshots are recorded in the v5 manifests.
+
 # Data and release scripts
 
 All v4 scripts use the Python standard library only.

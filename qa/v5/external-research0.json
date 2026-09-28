@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"total\": 0,\n  \"count\": 0,\n  \"query\": \"contrasting_to:\\\"10.3847/1538-3881/abd806\\\"\",\n  \"limit\": 3,\n  \"offset\": 0,\n  \"suggestedTerm\": \"contrasting_to  10.3847 1538 3881 abd806\",\n  \"hint\": \"To get full details for a paper, call this tool again with its DOI in the `dois` parameter. Use `term` to search within the paper.\"\n}"
+      }
+    ],
+    "isError": false
+  }
+}

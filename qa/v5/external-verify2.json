@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"36a0b79d84635154b77f80454e273b92\", \"title\": \"How to use Gaia parallaxes for stars with poor astrometric fits\", \"text\": \"Gaia parallax measurements for stars with poor astrometric fits – as evidenced by high renormalized unit weight error (RUWE) – are often assumed to be unreliable, but the extent and nature of their biases remain poorly quantified. High RUWE is usually a consequence of binarity or higher-order multiplicity, so the parallaxes of sources with high RUWE are often of greatest astrophysical interest. Using realistic simulations of Gaia epoch astrometry, we show that the parallax uncertainties of sources with elevated RUWE are underestimated by a factor that ranges from 1 to 4 and can be robustly predicted from observables. We derive an empirical prescription to inflate reported uncertainties based on a simple analytic function of RUWE, apparent magnitude, and parallax. We validate the correction using (a) single-star solutions for Gaia sources with known orbital solutions and (b) wide binaries containing one component with elevated RUWE. The same uncertainty corrections are expected to perform well in DR4 and DR5. Our results demonstrate that Gaia parallaxes for high-RUWE sources can still yield robust distance estimates if uncertainties are appropriately inflated, enabling distance constraints for triples, binaries with periods too long or too short to be fit astrometrically, and sources blended with neighboring sources.\", \"url\": \"https://consensus.app/papers/how-to-use-gaia-parallaxes-for-stars-with-poor-astrometric-el-badry/36a0b79d84635154b77f80454e273b92/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"K. El-Badry\", \"publish_year\": \"2025\", \"journal\": \"The Open Journal of Astrophysics\", \"citation_count\": \"16\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

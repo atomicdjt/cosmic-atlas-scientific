@@ -1,0 +1,7 @@
+{
+  "name":"cosmic-atlas-scientific",
+  "version":"5.0.0",
+  "private":true,
+  "description":"Provenance-aware offline scientific visualization",
+  "scripts":{"build":"python scripts/build_v5.py","test":"python scripts/run_qa.py","test:browser":"python tests/browser_qa.py"}
+}

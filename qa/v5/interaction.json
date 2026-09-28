@@ -1,0 +1,24 @@
+{
+  "standalone_sha256": "f003f97370d7c8e05c3330045081f12d3234b957bb354664b1648c8e1521d185",
+  "passed": true,
+  "checks": {
+    "visible_table_open": true,
+    "table_paging": true,
+    "row_inspection": true,
+    "download_json": true,
+    "export_schema": true,
+    "bsc5.json_import": true,
+    "bsc5.json_angular_safe": true,
+    "openngc.json_import": true,
+    "openngc.json_angular_safe": true,
+    "name_escaped": true,
+    "url_scheme_guard": true,
+    "no_injection": true,
+    "duplicate_rejected_atomically": true,
+    "missing_fields_roundtrip": true,
+    "mobile_panel": true,
+    "resize": true,
+    "no_page_errors": true
+  },
+  "errors": []
+}

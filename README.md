@@ -1,74 +1,57 @@
-# Cosmic Atlas Scientific v4
+# Cosmic Atlas Scientific v5
 
-**Release:** 4.0.0  
-**Build:** `CA-SCI-4.0-2026-09-26`  
-**Primary artifact:** `standalone/Cosmic_Atlas_Scientific_v4.html`
+A provenance-aware interactive scientific visualization combining astronomical catalog observations, literature-adopted measurements, numerical cosmology, and explicitly identified procedural context.
 
-Cosmic Atlas Scientific is a zero-dependency, offline-capable WebGL visualization that moves continuously from the Solar neighborhood to the cosmic microwave background scale while keeping **observational records, model-derived quantities, and illustrative procedural geometry explicitly separated**.
+Open **`dist/Cosmic_Atlas_Standalone.html`** directly in a browser. It includes a genuine **5,000-record Gaia DR3 catalog** and the preserved curated core. No server, package installation, account, API key or network is required. Optional **20k and 50k Gaia**, **9,096-row BSC5**, and **14,027-row OpenNGC** catalogs are included in the full release package and can be imported locally.
 
-## What v4 adds
+Use the left panel's scientific workbench for source/tier/class, photometry, distance and astrometric-quality filters. The data table has 100-row pages; select a source to inspect its provenance. The color–magnitude diagram links to atlas selection. Epoch display is a bounded linear proper-motion approximation; exports retain source-epoch coordinates. Keyboard `/` opens search, `D` opens the table, `T` starts the tour, `R` resets and Escape closes panels.
 
-- Importable scientific catalog layer (`cosmic-atlas.catalog.v1`) with up to 50,000 in-memory records per load.
-- Physical-distance and **angular-only** record semantics. Angular-only sources are placed on a display shell and excluded from 3-D separation claims.
-- Curated core records with provenance, distance basis, uncertainty text, ICRS coordinates, derived Galactic coordinates, and observed/model velocity-redshift distinctions.
-- Local JSON import, merged CSV/JSON export, searchable data table, canvas snapshot, guided tour, catalog-only mode, and two-point angular/3-D measurement.
-- Deterministic procedural context (seeded generation), corrected Sun/Galactic-centre geometry, high-DPI rendering, touch/pinch controls, reduced-motion support, keyboard navigation, and explicit WebGL shader/program diagnostics.
-- Reproducible ingestion scripts for **Gaia DR3**, **BSC5**, and **OpenNGC**, plus validation and merge utilities.
+## Build and verify
 
-## Quick start
-
-Open `standalone/Cosmic_Atlas_Scientific_v4.html` in a modern browser. No web server, package install, or network connection is required for the embedded release.
-
-Optional external catalogs can be generated with the scripts and loaded from the UI:
-
-```bash
-python scripts/fetch_gaia_dr3.py --limit 20000 --max-g 12 --min-parallax-snr 10 -o data/gaia_dr3_subset.json
-python scripts/fetch_bsc5.py -o data/bsc5_angular.json
-python scripts/fetch_openngc.py -o data/openngc_catalog.json
-python scripts/merge_catalogs.py data/gaia_dr3_subset.json data/openngc_catalog.json -o data/merged_catalog.json
-python scripts/validate_catalog.py data/merged_catalog.json
+```text
+python scripts/build_v5.py
+pip install -r requirements-dev.txt
+python scripts/run_qa.py
+python -m playwright install chromium firefox
+python tests/browser_qa.py
 ```
 
-Then choose **Import catalog JSON** inside the application.
+Build tools are Python and Node; these are not runtime dependencies. Install development dependencies only when running QA. Source snapshots are included; regenerate larger catalogs offline with `python scripts/acquire_v5.py --offline` followed by `python scripts/normalize_snapshots.py`. The lightweight Git checkout includes Gaia 5k; the full release ZIP includes all normalized tiers.
 
-## Scientific boundaries
+## What changed
 
-This release is a **scientific/educational visualization**, not a replacement for Gaia Archive, SIMBAD, TOPCAT, Aladin, ESASky, or a survey-analysis environment.
-
-The application distinguishes:
-
-1. **Reference** — defined observer/origin information.
-2. **Observational** — curated catalog/literature-grounded core records.
-3. **Imported** — user-loaded normalized catalog records.
-4. **Context** — approximate landmarks used to orient the viewer.
-5. **Model** — quantities/surfaces derived from the adopted cosmology.
-
-Milky Way particle texture, Local Group texture, macrostructure markers, cosmic-web filaments, and the CMB color texture are illustrative procedural context. They are not represented as survey reconstructions.
-
-## Why Gaia DR3 is not embedded in the shipped HTML
-
-The build runtime used for this release could not reliably reach the Gaia TAP bulk-query service. The release therefore does **not** substitute another catalog and label it “Gaia.” `scripts/fetch_gaia_dr3.py` contains the reproducible ADQL/TAP pipeline intended for a normal networked environment, Codex, or Work. Once run, its JSON output can be loaded into v4 without changing the renderer.
+52 maintained source modules replace the monolithic development path. Worker parsing, chunked normalization, scientific filters, source-preserving exports, guarded measurements, linked diagram, epoch display, screen-grid picking and dense-catalog rendering controls build on v4. Offline/static/scientific/catalog tests and real browser checks accompany the release.
 
 ## Repository map
 
-- `standalone/` — immutable, portable release artifact.
-- `src/` — editable v4 source used to build the standalone artifact.
-- `data/` — canonical embedded catalog, schema, provenance manifest, and import example.
-- `scripts/` — catalog acquisition, normalization, merging, validation, and release build utilities.
-- `docs/` — scientific methodology, schema documentation, data-source policy, and future architecture.
-- `qa/` — release validation outputs and limitations.
-- `tests/` — dependency-free regression/static tests.
+```text
+src/app/             shell, constants and render loop
+src/astronomy/       coordinates, units, uncertainty, epochs and measurements
+src/cosmology/       documented LCDM integration and lookup
+src/catalog/         normalization, filters, provenance, storage, import/export
+src/render/          buffers, viewport, particles, lines, CMB and context
+src/shaders/         GLSL programs
+src/interaction/     camera, touch, keyboard and screen-space picking
+src/ui/              inspector, table, filters/diagram, tour and accessibility
+src/styles/          editable CSS
+data/raw/            exact source responses, query and upstream licenses
+data/generated/      normalized catalog tiers
+scripts/             acquisition, normalization, build and QA
+tests/               scientific, pipeline/schema and browser tests
+docs/V5_*.md         architecture, methodology, references, licensing and release notes
+qa/v5/               baseline capture, connector evidence, test reports and screenshots
+dist/                generated standalone and modular development edition
+standalone/          untouched historical v4 HTML
+```
 
-See `docs/FUTURE_REPOSITORY_LAYOUT.md` for the recommended multi-file architecture for a future Codex-managed repository.
+## Scientific boundaries
 
-## Core references
+Missing distances stay angular-only. The display shell never becomes a physical distance. Gaia inverse-parallax distances are approximations with explicit quality selection, not Bayesian estimates. RUWE is not a universal good/bad classifier. No full covariance, extinction correction or precision astrometric propagation is claimed. CMB texture and procedural cosmic structure remain illustrations. Catalog rows across sources are not deduplicated celestial objects.
 
-- Gaia DR3 archive/documentation: https://gea.esac.esa.int/archive/documentation/GDR3/
-- SIMBAD/CDS: https://simbad.cds.unistra.fr/
-- Planck 2018 cosmological parameters: https://arxiv.org/abs/1807.06209
-- HEASARC BSC5P: https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/bsc5p.html
-- OpenNGC: https://github.com/mattiaverga/OpenNGC
+The standalone has no analytics or database dependency. Performance varies by GPU, viewport, browser and catalog. Headless mobile emulation is not certification on a physical phone. See the completion report and measured browser results before making performance claims.
 
-## Attribution and redistribution
+## Provenance and rights
 
-Catalogs retain their own attribution/citation/licensing requirements. See `docs/DATA_SOURCES_AND_ATTRIBUTION.md` and `data/source_manifest.json` before redistributing derived catalog bundles.
+Credit ESA/Gaia/DPAC, the Gaia Collaboration and processing teams; see [Gaia DR3 papers](https://www.cosmos.esa.int/web/gaia/dr3-papers). Retain BSC5/Hoffleit & Warren and conversion attribution. OpenNGC-derived data retain CC-BY-SA-4.0. See `docs/V5_DATA_AND_LICENSES.md`, `LICENSE_SCOPE.md`, and `CITATION.cff`. A universal open-source license for the supplied application code has not been asserted.
+
+The original v4 source and release evidence remain tagged **`v4.0.0-baseline`**. v5 work is on **`refactor/modular-source-v5`**. The historical v4 README is retained as `docs/releases/README_v4.md`.

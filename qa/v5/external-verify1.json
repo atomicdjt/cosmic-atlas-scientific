@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"5f55245a1db65ee88c8aba7fdef7be95\", \"title\": \"Estimating distances from parallaxes. V: Geometric and photogeometric distances to 1.47 billion stars in Gaia Early Data Release 3.\", \"text\": \"Stellar distances constitute a foundational pillar of astrophysics. The publication of 1.47 billion stellar parallaxes from Gaia is a major contribution to this. Yet despite Gaia's precision, the majority of these stars are so distant or faint that their fractional parallax uncertainties are large, thereby precluding a simple inversion of parallax to provide a distance. Here we take a probabilistic approach to estimating stellar distances that uses a prior constructed from a three-dimensional model of our Galaxy. This model includes interstellar extinction and Gaia's variable magnitude limit. We infer two types of distance. The first, geometric, uses the parallax together with a direction-dependent prior on distance. The second, photogeometric, additionally uses the colour and apparent magnitude of a star, by exploiting the fact that stars of a given colour have a restricted range of probable absolute magnitudes (plus extinction). Tests on simulated data and external validations show that the photogeometric estimates generally have higher accuracy and precision for stars with poor parallaxes. We provide a catalogue of 1.47 billion geometric and 1.35 billion photogeometric distances together with asymmetric uncertainty measures. Our estimates are quantiles of a posterior probability distribution, so they transform invariably and can therefore also be used directly in the distance modulus (5log10(r)-5). The catalogue may be downloaded or queried using ADQL at various sites (see this http URL) where it can also be cross-matched with the Gaia catalogue.\", \"url\": \"https://consensus.app/papers/estimating-distances-from-parallaxes-v-geometric-and-bailer-jones-rybizki/5f55245a1db65ee88c8aba7fdef7be95/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"C. Bailer-Jones, J. Rybizki, Morgan Fouesneau, M. Demleitner, R. M. J. I. O. Astronomy, Heidelberg, Astronomisches Recheninstitut\", \"publish_year\": \"2020\", \"journal\": \"arXiv: Solar and Stellar Astrophysics\", \"citation_count\": \"1058\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

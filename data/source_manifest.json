@@ -1,47 +1,40 @@
 {
-  "release": "4.0.0",
-  "build_id": "CA-SCI-4.0-2026-09-26",
-  "access_date": "2026-09-26",
+  "release": "5.0.0",
+  "build_id": "CA-SCI-5.0-2026-09-26",
+  "pipeline_version": "5.0.0",
+  "source_snapshot_manifest": "data/acquisition_manifest.json",
+  "normalized_catalog_manifest": "data/generated_manifest.json",
+  "exact_gaia_query": "data/raw/gaia_50k.adql",
+  "historical_source_manifest": "historical/source_manifest_v4.json",
   "sources": [
     {
       "id": "gaia-dr3",
-      "name": "Gaia Data Release 3 / gaiadr3.gaia_source",
-      "role": "future high-density astrometric import; ingestion script included",
-      "url": "https://gea.esac.esa.int/archive/",
-      "documentation": "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html",
-      "credit": "Use Gaia/ESA/DPAC acknowledgement and DR3 citations required by Gaia documentation.",
-      "embedded_in_v4": false,
-      "reason_not_embedded": "Bulk Gaia TAP transport was not reachable from the build runtime; v4 does not mislabel surrogate data as Gaia."
-    },
-    {
-      "id": "simbad-cds",
-      "name": "SIMBAD Astronomical Database / CDS",
-      "role": "curated core sky positions, identifiers and selected astrometric/radial quantities",
-      "url": "https://simbad.cds.unistra.fr/",
-      "embedded_in_v4": true
+      "role": "embedded genuine 5000-record catalog; optional nested 20000 and 50000-record tiers",
+      "release": "DR3",
+      "reference_epoch": 2016.0,
+      "distance_method": "uncorrected inverse parallax; positive parallax, SNR >= 10, RUWE < 1.4, G <= 15",
+      "raw_snapshot": "data/raw/gaia_50k.csv"
     },
     {
       "id": "bsc5",
-      "name": "Yale Bright Star Catalogue, 5th Revised Edition",
-      "role": "optional angular bright-star import",
-      "authoritative_reference": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/bsc5p.html",
-      "access_conversion": "https://github.com/brettonw/YaleBrightStarCatalog",
-      "embedded_in_v4": false
+      "role": "9096-row bright-star conversion snapshot; angular-only without formal distance uncertainty",
+      "raw_snapshot": "data/raw/bsc5.json",
+      "conversion_license": "data/raw/BSC5-conversion-LICENSE"
     },
     {
       "id": "openngc",
-      "name": "OpenNGC",
-      "role": "optional NGC/IC and addendum import",
-      "url": "https://github.com/mattiaverga/OpenNGC",
-      "license": "CC-BY-SA-4.0",
-      "embedded_in_v4": false
+      "role": "14027 rows; redshift-derived comoving distance where valid, otherwise angular-only",
+      "raw_snapshots": [
+        "data/raw/NGC.csv",
+        "data/raw/addendum.csv"
+      ],
+      "license": "data/raw/OpenNGC-LICENSE"
     },
     {
-      "id": "planck2018",
-      "name": "Planck 2018 cosmological parameters",
-      "role": "flat-LCDM model defaults",
-      "url": "https://arxiv.org/abs/1807.06209",
-      "parameters": {"H0_km_s_Mpc": 67.4, "Omega_m": 0.315, "Omega_r": 0.000092, "Omega_Lambda": 0.684908}
+      "id": "curated-core",
+      "role": "inherited 21-record adopted catalog with v5 runtime measurement qualifications",
+      "source_manifest": "historical/source_manifest_v4.json",
+      "current_methodology": "docs/V5_METHODOLOGY.md"
     }
   ]
 }

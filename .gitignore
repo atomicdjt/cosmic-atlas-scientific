@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+node_modules/
+.vercel/
+qa/v5/*.tmp
+data/generated/*
+!data/generated/gaia_5k.json
+dist/development.html
