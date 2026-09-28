@@ -31,7 +31,7 @@ function normalizeImportedRecord(raw, idx) {
   const hasPhysicalDistance =
     raw.angular_only !== true &&
     Number.isFinite(distLy) &&
-    (distLy > 0 || (distLy === 0 && raw.tier === "reference"));
+    distLy > 0;
   const angularOnly = !hasPhysicalDistance;
   // Angular-only records are placed on a user/source supplied visualization shell.
   // This shell is never treated as a measured distance and is excluded from 3-D claims.
@@ -56,7 +56,10 @@ function normalizeImportedRecord(raw, idx) {
   const source = String(
     raw.source ?? raw.catalog ?? "Imported scientific catalog",
   );
-  const color = raw.color || colorFromBpRp(raw.bp_rp);
+  const color =
+    typeof raw.color === "string" && /^#[0-9a-f]{6}$/i.test(raw.color)
+      ? raw.color
+      : colorFromBpRp(raw.bp_rp);
   const item = {
     id: `ext:${String(raw.id ?? sourceId)}`,
     raw: Object.freeze(raw),
@@ -68,7 +71,9 @@ function normalizeImportedRecord(raw, idx) {
     refEpoch: finiteNumber(raw.ref_epoch),
     parallaxSnr: snr,
     externalId: sourceId,
-    measurementEligible: raw.measurement_eligible !== false,
+    // Imported provenance is user-controlled. A file cannot promote its own
+    // records into the curated scientific measurement set.
+    measurementEligible: false,
     name,
     tag: String(
       raw.tag ??
@@ -76,15 +81,7 @@ function normalizeImportedRecord(raw, idx) {
           ? "Imported Angular Catalog Record"
           : "Imported Catalog Record"),
     ),
-    dataClass: [
-      "reference",
-      "observational",
-      "context",
-      "model",
-      "procedural",
-    ].includes(raw.tier)
-      ? raw.tier
-      : "external",
+    dataClass: "external",
     distLy: renderDistLy,
     physicalDistanceLy: hasPhysicalDistance ? distLy : null,
     angularOnly,

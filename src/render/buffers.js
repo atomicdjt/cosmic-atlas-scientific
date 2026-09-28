@@ -1,17 +1,32 @@
 function buildBufferBundle(positions, colors, sizes) {
-  const vboPos = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboPos);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+  const created = [];
+  try {
+    const vboPos = gl.createBuffer();
+    if (!vboPos)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboPos);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboPos);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-  const vboCol = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboCol);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    const vboCol = gl.createBuffer();
+    if (!vboCol)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboCol);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboCol);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-  const vboSize = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboSize);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sizes), gl.STATIC_DRAW);
+    const vboSize = gl.createBuffer();
+    if (!vboSize)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboSize);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboSize);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sizes), gl.STATIC_DRAW);
 
-  return { vboPos, vboCol, vboSize, count: positions.length / 3 };
+    return { vboPos, vboCol, vboSize, count: positions.length / 3 };
+  } catch (error) {
+    created.forEach((buffer) => gl.deleteBuffer(buffer));
+    throw error;
+  }
 }
 
 function buildCatalogTierBundle(predicate) {

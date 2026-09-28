@@ -69,6 +69,7 @@
           ]
         },
         "tier": {
+          "description": "For runtime imports, this is a source claim only; imported records normalize to the external/unverified tier.",
           "enum": [
             "reference",
             "observational",
@@ -201,6 +202,13 @@
         "source_url": {
           "type": [
             "string",
+            "null"
+          ]
+        },
+        "measurement_eligible": {
+          "description": "Source claim only; a runtime import cannot grant measurement eligibility.",
+          "type": [
+            "boolean",
             "null"
           ]
         },

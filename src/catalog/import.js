@@ -62,17 +62,22 @@ async function importCatalogText(text, name = "catalog") {
   }
   if (!normalized.length) throw new Error("No valid sky positions.");
   importMetrics.normalizeMs = performance.now() - t;
-  importedCatalogRecords = normalized;
-  importedSourceMetadata = Array.isArray(parsed)
+  const nextSourceMetadata = Array.isArray(parsed)
     ? null
     : Object.fromEntries(
         Object.entries(parsed).filter(([k]) => k !== "records"),
       );
+  const upload = performance.now();
+  // Build the replacement GPU buffers before changing any live catalog state.
+  // Invalid input or an allocation failure therefore leaves the previous import
+  // and its render bundle intact.
+  const nextBundle = createImportedCatalogBundle(normalized);
+  importMetrics.gpuUploadSubmissionMs = performance.now() - upload;
+  importedCatalogRecords = normalized;
+  importedSourceMetadata = nextSourceMetadata;
   displayEpoch = null;
   catalogRevision++;
-  const upload = performance.now();
-  rebuildImportedCatalogBundle();
-  importMetrics.gpuUploadSubmissionMs = performance.now() - upload;
+  replaceImportedCatalogBundle(nextBundle, normalized.length);
   updateCatalogSummary();
   populateDataTable(dataSearch.value);
   drawCMD();

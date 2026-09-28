@@ -2,7 +2,7 @@
 
 ## Evidence and distance semantics
 
-Reference, observational, imported, context, model and procedural categories remain distinct. Import is a transport mechanism, not a certificate of observational validity. An imported record's supplied tier survives normalization. The display radius compresses physical scale and must never be used as a physical metric.
+Reference, observational, imported, context, model and procedural categories remain distinct. Import is a transport mechanism, not a certificate of observational validity. Runtime imports always normalize to the external, unverified tier and are excluded from physical-measurement operations; an imported file cannot promote its own records by supplying `tier: "observational"` or `measurement_eligible: true`. Original values remain in raw provenance and are exported under `source_claims` when normalization replaces either trust field. The display radius compresses physical scale and must never be used as a physical metric.
 
 `angular_only: true` overrides any supplied radial distance. Null/empty coordinates do not become zero. A missing distance may be inferred from parallax only when parallax and its formal error are positive, S/N is at least 10, and RUWE is at most 1.4 when supplied. Missing RUWE does not certify a good astrometric fit. A source-adopted explicit distance retains its documented basis; it is not silently replaced by parallax inversion.
 

@@ -17,7 +17,7 @@ function showInspector(item) {
       ? "— (no unique sky direction)"
       : `l=${gal.l.toFixed(3)}° / b=${gal.b.toFixed(3)}°`;
   document.getElementById("spec-status").innerText = item.imported
-    ? "Imported / runtime catalog"
+    ? "Imported / unverified; excluded from physical measurements"
     : item.dataClass === "observational"
       ? "Curated scientific core"
       : item.dataClass === "reference"

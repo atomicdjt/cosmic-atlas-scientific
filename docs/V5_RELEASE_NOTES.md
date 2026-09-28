@@ -6,7 +6,8 @@ v5 preserves the v4 visual identity, seeded procedural context, curated landmark
 
 - 52 source modules plus HTML shell and CSS; deterministic standalone and development builds.
 - Genuine Gaia DR3 5k embedded offline; optional 20k/50k, full BSC5 and OpenNGC bundles with raw snapshots and manifests.
-- Explicit angular-only override, high-S/N parallax inference, retained quality/provenance fields, no zero-coercion of missing coordinates, unsafe numeric-ID rejection, atomic duplicate-ID failure.
+- Explicit angular-only override, high-S/N parallax inference, retained quality/provenance fields, no zero-coercion of missing coordinates, unsafe numeric-ID rejection, atomic duplicate-ID and GPU-buffer failure handling.
+- Runtime imports remain external/unverified and measurement-ineligible regardless of file-supplied tier or eligibility claims; malformed colors fall back safely.
 - Scientific filters shared across atlas, search, table, diagram and exports; 100-row table pages and sorting.
 - Linked uncorrected Gaia color–magnitude diagram and bounded linear proper-motion epoch display.
 - Stable angular/3D calculations, context/model and incompatible-distance safeguards, optional radial-only uncertainty.

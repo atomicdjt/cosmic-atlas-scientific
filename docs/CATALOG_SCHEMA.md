@@ -81,6 +81,10 @@ Additional fields are permitted so upstream catalog columns can survive normaliz
 
 ## Import behavior
 
+- Every runtime-imported record is normalized as external and unverified. File-supplied `tier` and `measurement_eligible` values remain provenance claims and cannot promote the record into physical-measurement operations; exports retain those original claims under `source_claims`.
+- Zero distance is reserved for the curated observer reference; an imported row claiming `tier: "reference"` with `distance_ly: 0` is treated as angular-only.
+- Invalid or non-hex imported colors use the photometry-derived fallback rather than reaching the renderer.
+- Replacement GPU buffers are prepared before swapping imported catalog state; a failed preparation preserves the previous import.
 - Invalid RA/Dec records are rejected.
 - RA is normalized modulo 360.
 - If `distance_ly` is absent but positive `parallax_mas` is present, the browser derives an inverse-parallax display distance.

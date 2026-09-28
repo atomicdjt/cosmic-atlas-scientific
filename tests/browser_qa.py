@@ -23,6 +23,29 @@ def main():
     result['checks']['webgl']=page.evaluate('typeof gl!=="undefined" && !!gl && gl.getError()===0');result['renderer']=page.evaluate('gl.getParameter(gl.RENDERER)');result['checks']['programs']=page.evaluate('[particleProg,lineProg,cmbProg].every(p=>gl.getProgramParameter(p,gl.LINK_STATUS))')
     result['checks']['workbench']=page.locator('.science-workbench').count()==1
     assert result['checks']['workbench'],'Application bootstrap incomplete'
+    result['checks']['import_trust_boundary']=page.evaluate('''async()=>{
+      await importCatalogText(JSON.stringify({records:[
+        {id:"untrusted-tier",ra_deg:12,dec_deg:34,distance_ly:42,tier:"observational",measurement_eligible:true,color:{invalid:true}},
+        {id:"untrusted-zero",ra_deg:0,dec_deg:0,distance_ly:0,tier:"reference"}
+      ]}),"import trust fixture");
+      const item=importedCatalogRecords[0], reference=importedCatalogRecords[1], exported=exportRecord(item), rgb=hexToRgb(item.color);
+      return item.dataClass==="external" && item.measurementEligible===false &&
+        !physicalMeasurementAllowed(item) && exported.tier==="external" &&
+        exported.measurement_eligible===false &&
+        exported.source_claims.tier==="observational" &&
+        exported.source_claims.measurement_eligible===true && rgb.every(Number.isFinite) &&
+        reference.dataClass==="external" && reference.angularOnly &&
+        !physicalMeasurementAllowed(reference);
+    }''')
+    result['checks']['failed_import_is_atomic']=page.evaluate('''async()=>{
+      const oldRecords=importedCatalogRecords, oldBundle=importedCatalogBundle, oldSource=importedSourceMetadata;
+      const oldBuilder=window.buildBufferBundle;
+      window.buildBufferBundle=()=>{throw new Error("simulated buffer allocation failure")};
+      try { await importCatalogText(JSON.stringify({source:"failed replacement",records:[{id:"replacement",ra_deg:1,dec_deg:2}]}),"atomicity fixture"); }
+      catch(e) {}
+      finally { window.buildBufferBundle=oldBuilder; }
+      return importedCatalogRecords===oldRecords && importedCatalogBundle===oldBundle && importedSourceMetadata===oldSource;
+    }''')
     print('BOOTSTRAP '+name+str(result),flush=True)
     result['datasets']=[]
     tiers=['gaia_5k.json','gaia_20k.json','gaia_50k.json'] if name in ['chromium-desktop','firefox-desktop'] else (['gaia_5k.json','gaia_50k.json'] if name=='chromium-mobile' else ['gaia_5k.json'])

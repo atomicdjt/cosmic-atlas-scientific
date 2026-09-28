@@ -46,7 +46,7 @@ standalone/          untouched historical v4 HTML
 
 ## Scientific boundaries
 
-Missing distances stay angular-only. The display shell never becomes a physical distance. Gaia inverse-parallax distances are approximations with explicit quality selection, not Bayesian estimates. RUWE is not a universal good/bad classifier. No full covariance, extinction correction or precision astrometric propagation is claimed. CMB texture and procedural cosmic structure remain illustrations. Catalog rows across sources are not deduplicated celestial objects.
+Imported rows always remain in the external, unverified tier and are excluded from physical-measurement operations, even if a file supplies a curated tier or `measurement_eligible: true`. Source-supplied fields remain visible as source claims and in raw provenance; import does not certify them. Malformed colors use a derived fallback. Replacement render buffers are staged before the active import is swapped. Missing distances stay angular-only. The display shell never becomes a physical distance. Gaia inverse-parallax distances are approximations with explicit quality selection, not Bayesian estimates. RUWE is not a universal good/bad classifier. No full covariance, extinction correction or precision astrometric propagation is claimed. CMB texture and procedural cosmic structure remain illustrations. Catalog rows across sources are not deduplicated celestial objects.
 
 The standalone has no analytics or database dependency. Performance varies by GPU, viewport, browser and catalog. Headless mobile emulation is not certification on a physical phone. See the completion report and measured browser results before making performance claims.
 

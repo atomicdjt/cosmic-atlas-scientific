@@ -13,7 +13,8 @@ function tierLabel(item) {
   if (item.dataClass === "observational")
     return "Observational / literature grounded";
   if (item.dataClass === "reference") return "Reference origin";
-  if (item.dataClass === "external") return "Imported catalog observation";
+  if (item.dataClass === "external")
+    return "Imported / unverified; measurement-ineligible";
   if (item.dataClass === "model") return "Cosmology model";
   return "Illustrative context";
 }

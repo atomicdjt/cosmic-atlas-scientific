@@ -58,8 +58,8 @@ function matchesCatalogFilter(x, f = catalogFilter) {
       return false;
   return true;
 }
-function filteredImportedRecords() {
-  return importedCatalogRecords.filter((x) => matchesCatalogFilter(x));
+function filteredImportedRecords(records = importedCatalogRecords) {
+  return records.filter((x) => matchesCatalogFilter(x));
 }
 function visibleScientificRecords() {
   return allScientificRecords().filter((x) => matchesCatalogFilter(x));
@@ -87,6 +87,22 @@ function exportRecord(x) {
     source: x.source,
     source_ref: x.sourceRef,
     source_url: x.sourceUrl,
+    ...(x.imported
+      ? {
+          source_claims: {
+            tier:
+              x.raw?.source_claims?.tier ??
+              x.raw?.source_claimed_tier ??
+              x.raw?.tier ??
+              null,
+            measurement_eligible:
+              x.raw?.source_claims?.measurement_eligible ??
+              x.raw?.source_claimed_measurement_eligible ??
+              x.raw?.measurement_eligible ??
+              null,
+          },
+        }
+      : {}),
     ...(x.angularOnly ? { display_shell_ly: x.displayShellLy } : {}),
     ...(x.displayEpoch !== null && x.displayEpoch !== undefined
       ? {
