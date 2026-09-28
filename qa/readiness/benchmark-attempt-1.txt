@@ -1,0 +1,36 @@
+{"label": "after", "engine": "chromium", "browserVersion": "151.0.7922.34", "tier": 5, "startupMs": 714.3736000289209, "parseMs": 61.80000001192093, "normalizeMs": 89.89999997615814, "gpuUploadSubmissionMs": 0.5, "totalMs": 181.89999997615814, "count": 5000, "rejected": 0, "execution": "worker / transferable buffers", "renderBytes": 140000, "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)", "firstPickMs": 3.400000035762787, "cachedPickMs": 0.09999996423721313, "filterInteractionMs": 16.19999998807907, "tableMs": 14.600000023841858, "heapBytes": 50400000, "renderDetail": {"pointCap": 4, "resolutionScale": 1, "mode": "full", "lastUpdate": 1302}, "importResponsiveness": {"maxTimerGapMs": 40.39999997615814, "timerSamples": 4}, "frames": {"samples": 138, "p50": 33.30000000000018, "p95": 50.100000000000364, "p99": 66.69999999999982, "max": 66.69999999999982, "mean": 28.98405797101449, "stallsOver100ms": 0}, "errors": [], "externalRequests": []}
+{"label": "after", "engine": "chromium", "browserVersion": "151.0.7922.34", "tier": 20, "startupMs": 997.633200022392, "parseMs": 428.0999999642372, "normalizeMs": 773.5, "gpuUploadSubmissionMs": 58, "totalMs": 1333.800000011921, "count": 20000, "rejected": 0, "execution": "worker / transferable buffers", "renderBytes": 560000, "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)", "firstPickMs": 9.699999988079071, "cachedPickMs": 0.10000002384185791, "filterInteractionMs": 42.89999997615814, "tableMs": 93.90000003576279, "heapBytes": 91700000, "renderDetail": {"pointCap": 4, "resolutionScale": 1, "mode": "full", "lastUpdate": 3392.3}, "importResponsiveness": {"maxTimerGapMs": 99.69999998807907, "timerSamples": 56}, "frames": {"samples": 107, "p50": 33.30000000000109, "p95": 66.69999999999982, "p99": 83.29999999999927, "max": 83.39999999999964, "mean": 37.84859813084111, "stallsOver100ms": 0}, "errors": [], "externalRequests": []}
+{"label": "after", "engine": "chromium", "browserVersion": "151.0.7922.34", "tier": 50, "startupMs": 990.4247000231408, "parseMs": 4292.599999964237, "normalizeMs": 2260, "gpuUploadSubmissionMs": 48.30000001192093, "totalMs": 6713.800000011921, "count": 50000, "rejected": 0, "execution": "worker / transferable buffers", "renderBytes": 1400000, "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)", "firstPickMs": 19.399999976158142, "cachedPickMs": 0.10000002384185791, "filterInteractionMs": 85.89999997615814, "tableMs": 262.5, "heapBytes": 188000000, "renderDetail": {"pointCap": 2, "resolutionScale": 0.75, "mode": "adaptive", "lastUpdate": 9541.1}, "importResponsiveness": {"maxTimerGapMs": 1416.300000011921, "timerSamples": 314}, "frames": {"samples": 99, "p50": 33.399999999999636, "p95": 66.70000000000073, "p99": 83.39999999999964, "max": 83.39999999999964, "mean": 40.907070707070716, "stallsOver100ms": 0}, "errors": [], "externalRequests": []}
+{"label": "after", "engine": "firefox", "browserVersion": "153.0", "tier": 5, "startupMs": 2106.3741999678314, "parseMs": 130, "normalizeMs": 126, "gpuUploadSubmissionMs": 0, "totalMs": 351, "count": 5000, "rejected": 0, "execution": "worker / transferable buffers", "renderBytes": 140000, "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar", "firstPickMs": 4, "cachedPickMs": 0, "filterInteractionMs": 9, "tableMs": 18, "heapBytes": null, "renderDetail": {"pointCap": 4, "resolutionScale": 1, "mode": "full", "lastUpdate": 2055.5}, "importResponsiveness": {"maxTimerGapMs": 42, "timerSamples": 3}, "frames": {"samples": 578, "p50": 6.940000000000509, "p95": 6.960000000000036, "p99": 6.960000000000036, "max": 13.900000000000546, "mean": 6.956435986159169, "stallsOver100ms": 0}, "errors": [], "externalRequests": []}
+{"label": "after", "engine": "firefox", "browserVersion": "153.0", "tier": 20, "startupMs": 800.6213000044227, "parseMs": 467, "normalizeMs": 621, "gpuUploadSubmissionMs": 9, "totalMs": 1204, "count": 20000, "rejected": 0, "execution": "worker / transferable buffers", "renderBytes": 560000, "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar", "firstPickMs": 8, "cachedPickMs": 1, "filterInteractionMs": 22, "tableMs": 163, "heapBytes": null, "renderDetail": {"pointCap": 4, "resolutionScale": 1, "mode": "full", "lastUpdate": 2048.6}, "importResponsiveness": {"maxTimerGapMs": 89, "timerSamples": 38}, "frames": {"samples": 553, "p50": 6.940000000000509, "p95": 6.960000000000036, "p99": 13.899999999999636, "max": 13.900000000000546, "mean": 7.2583363471971065, "stallsOver100ms": 0}, "errors": [], "externalRequests": []}
+
+Traceback (most recent call last):
+  File "<repo-root>\tests\benchmark_readiness.py", line 18, in <module>
+    start=time.perf_counter();page.goto(artifact.as_uri());page.evaluate('window.atlasReady');startup=(time.perf_counter()-start)*1000
+                                                           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "<python-user-site>\site-packages\playwright\sync_api\_generated.py", line 9413, in evaluate
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.evaluate(expression=expression, arg=mapping.to_impl(arg))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "<python-user-site>\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "<python-user-site>\site-packages\playwright\_impl\_page.py", line 474, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<python-user-site>\site-packages\playwright\_impl\_frame.py", line 346, in evaluate
+    await self._channel.send(
+    ...<6 lines>...
+    )
+  File "<python-user-site>\site-packages\playwright\_impl\_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "<python-user-site>\site-packages\playwright\_impl\_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: Target crashed

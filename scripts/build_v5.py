@@ -5,7 +5,10 @@ ROOT=Path(__file__).resolve().parents[1]
 def build():
     names=json.loads((ROOT/'src/modules.json').read_text())
     chunks=[(ROOT/'src'/n).read_text(encoding='utf-8') for n in names]
-    js='\n'.join(chunks)
+    version=(ROOT/'VERSION').read_text().strip()
+    fingerprint=hashlib.sha256(('\n'.join(chunks)+(ROOT/'src/styles/app.css').read_text(encoding='utf-8')+(ROOT/'src/app/shell.html').read_text(encoding='utf-8')+(ROOT/'data/generated/gaia_5k.json').read_text(encoding='utf-8')+version).encode()).hexdigest()[:12]
+    identity='CA-SCI-'+version+'-'+fingerprint
+    js='\n'.join(chunks).replace('{{VERSION}}',version).replace('{{BUILD_ID}}',identity)
     css=(ROOT/'src/styles/app.css').read_text(encoding='utf-8')
     shell=(ROOT/'src/app/shell.html').read_text(encoding='utf-8')
     embedded=ROOT/'data/generated/gaia_5k.json'
@@ -18,6 +21,7 @@ def build():
     (out/'Cosmic_Atlas_Standalone.html').write_text(html,encoding='utf-8',newline='\n')
     # Modular development edition uses ordered classic scripts to retain v4 lexical semantics.
     dev=shell.replace('<style>\n{{CSS}}\n</style>','<link rel="stylesheet" href="../src/styles/app.css">').replace('<script>\n{{JS}}\n</script>','\n'.join('<script src="../src/'+n+'"></script>' for n in names))
+    dev=dev.replace('<body>', '<body><script>window.atlasBuildIdentity='+json.dumps({'version':version,'buildId':identity})+';</script>')
     (out/'development.html').write_text(dev.replace('</body>',boot+'</body>'),encoding='utf-8',newline='\n')
     temp=ROOT/'qa/v5/syntax.tmp';temp.write_text(js,encoding='utf-8')
     # Node requires a JS extension on Windows.
@@ -29,9 +33,9 @@ def build():
     if p.returncode: errors.append(p.stderr)
     if len(ids)!=len(set(ids)): errors.append('duplicate DOM ids')
     if set(refs)-set(ids): errors.append('unresolved DOM ids: '+str(set(refs)-set(ids)))
-    for pattern in [r'<script[^>]+src=',r'<link[^>]+stylesheet',r'\bfetch\s*\(',r'Math\.random\s*\(',r'@import\s',r'url\(["\']?https?']:
+    for pattern in [r'<script[^>]+src=',r'<link[^>]+stylesheet',r'\bfetch\s*\(',r'Math\.random\s*\(',r'\bXMLHttpRequest\b',r'\bWebSocket\b',r'\bEventSource\b',r'\bsendBeacon\s*\(',r'\bimportScripts\s*\(',r'@import\s',r'url\(["\']?https?']:
         if re.search(pattern,html,re.I): errors.append('offline/determinism violation: '+pattern)
-    result={'modules':len(names),'bytes':len(html.encode()),'sha256':hashlib.sha256(html.encode()).hexdigest(),'errors':errors,'passed':not errors}
+    result={'version':version,'buildId':identity,'modules':len(names),'bytes':len(html.encode()),'sha256':hashlib.sha256(html.encode()).hexdigest(),'errors':errors,'passed':not errors}
     (ROOT/'qa/v5/build.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result));return result
 if __name__=='__main__': raise SystemExit(0 if build()['passed'] else 1)

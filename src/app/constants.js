@@ -1,8 +1,8 @@
 const RELEASE_MANIFEST = Object.freeze({
   product: "Cosmic Atlas Scientific",
-  version: "5.0.0",
-  buildId: "CA-SCI-5.0-2026-09-26",
-  releaseDate: "2026-09-26",
+  version: window.atlasBuildIdentity?.version || "{{VERSION}}",
+  buildId: window.atlasBuildIdentity?.buildId || "{{BUILD_ID}}",
+  releaseDate: null,
   coordinateFrame: "ICRS directions; Sol-centered display coordinates",
   cosmology: {
     model: "flat Planck-2018-like ΛCDM",

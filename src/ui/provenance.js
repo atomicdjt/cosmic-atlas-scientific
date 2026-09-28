@@ -29,6 +29,10 @@ function updateProvenance(item) {
     `${item.record || ""}${item.sourceRef ? ` • ${item.sourceRef}` : ""}`;
   document.getElementById("prov-distance").innerText =
     `Distance basis: ${item.distanceBasis || "Not specified"}`;
+  let details = document.getElementById("provenance-detail");
+  if (!details) { details=document.createElement("p"); details.id="provenance-detail"; document.getElementById("prov-distance").after(details); }
+  const number = (v, unit) => Number.isFinite(v) ? `${v} ${unit}` : "not supplied";
+  details.textContent = `Data class: ${tierLabel(item)}. Distance kind: ${item.angularOnly ? "angular only; arbitrary display shell" : item.dataClass === "reference" ? "defined reference" : item.dataClass === "model" ? "cosmology model" : item.distanceKind || "literature adopted"}. Formal distance σ: ${number(item.distanceSigmaLy,"ly")}. Parallax: ${number(item.parallaxMas,"mas")}; formal σπ: ${number(item.parallaxErrorMas,"mas")}. RUWE: ${number(item.ruwe,"")}. Source epoch: ${Number.isFinite(item.refEpoch) ? "J"+item.refEpoch : "not supplied"}; display epoch: ${Number.isFinite(item.displayEpoch) ? "J"+item.displayEpoch : "source epoch"}. Missing uncertainty is not zero uncertainty. Imported metadata are source claims, not certification.`;
   const links = [];
   if (safeSourceUrl(item.sourceUrl))
     links.push(

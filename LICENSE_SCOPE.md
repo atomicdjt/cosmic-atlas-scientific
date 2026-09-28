@@ -1,7 +1,5 @@
-# License scope note
+# License scope
 
-No new universal license is imposed on upstream astronomical catalog data by this release package.
+The root `LICENSE` applies the MIT License to original Cosmic Atlas Scientific application source code and project documentation authored by David Turner. It does not apply to upstream astronomical data, generated catalog records, third-party code, or other materials with separate notices. Those retain the terms and attributions recorded with the relevant files and in `docs/V5_DATA_AND_LICENSES.md`.
 
-The application/source code and documentation can be licensed separately by the repository owner in a future GitHub publication. Upstream catalog extracts retain their own attribution, citation, and licensing conditions. In particular, OpenNGC declares CC-BY-SA-4.0 for its database project, while Gaia products require the official Gaia/DPAC acknowledgement/citations.
-
-Before publishing a public repository, choose an explicit software license (for example MIT/Apache-2.0 if desired) for original code **without implying that the same license overrides upstream data terms**.
+In particular, OpenNGC-derived data retain CC-BY-SA-4.0 and OpenNGC attribution; Gaia records retain the applicable ESA/Gaia/DPAC terms and citations; and the BSC5 conversion retains its own MIT notice. This repository license does not replace or extend those upstream terms.

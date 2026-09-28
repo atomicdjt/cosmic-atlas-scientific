@@ -1,22 +1,6 @@
-function createImportedCatalogBundle(records = importedCatalogRecords) {
-  const pos = [],
-    col = [],
-    size = [];
-  filteredImportedRecords(records).forEach((item) => {
-    if (
-      !item.pos ||
-      item.pos.length !== 3 ||
-      !item.pos.every((value) => Number.isFinite(Math.fround(value))) ||
-      !Number.isFinite(Math.fround(item.size))
-    ) {
-      throw new Error("Imported record is outside supported render precision.");
-    }
-    pos.push(item.pos[0], item.pos[1], item.pos[2]);
-    const rgb = hexToRgb(item.color);
-    col.push(rgb[0], rgb[1], rgb[2]);
-    size.push(item.size * (records.length > 20000 ? 0.8 : 1.4));
-  });
-  return buildBufferBundle(pos, col, size);
+function createImportedCatalogBundle(records = importedCatalogRecords, data = null) {
+  const compact = data || prepareCatalogRenderData(records);
+  return buildBufferBundle(compact.positions, compact.colors, compact.sizes);
 }
 
 function replaceImportedCatalogBundle(

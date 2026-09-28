@@ -1,3 +1,17 @@
+# Cosmic Atlas Scientific 5.1.0
+
+Reliability, performance, scientific communication, and accessibility release.
+
+- Cancellable file/text imports with bounded worker batches, shared normalization, transferable compact render data and atomic catalog replacement.
+- Transactional filter and epoch buffer updates; fixed source-coordinate preservation for accepted coordinate aliases; clear obsolete imported selections after replacement.
+- Cached numeric filtering/table pages, deferred hidden diagrams, incremental settled-view picking with viewport invalidation and cold-pick neighborhood cache.
+- Adaptive dense point footprint / render resolution without dropping scientific records.
+- Nonlinear-scale orientation, data-class / epoch / formal-uncertainty detail, browser zoom, inert dialog backgrounds, focus restoration and dynamic reduced-motion support.
+- Build identity derived from VERSION and inputs, stronger offline checks, behavioral/performance evidence and versioned technical review guide.
+- MIT licensing for original application code and project documentation; upstream astronomical data retain their separate terms.
+
+Prior released behavior and evidence follow; historical version statements below are retained for those releases.
+
 # Cosmic Atlas Scientific 5.0.1
 
 Build: CA-SCI-5.0.1-2026-09-28.

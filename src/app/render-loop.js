@@ -35,9 +35,9 @@ function render(now) {
       camera.animStartLook[2] +
       (camera.animEndLook[2] - camera.animStartLook[2]) * t;
   } else {
-    camera.dist += (camera.targetDist - camera.dist) * 0.12;
-    camera.theta += (camera.targetTheta - camera.theta) * 0.14;
-    camera.phi += (camera.targetPhi - camera.phi) * 0.14;
+    camera.dist += (camera.targetDist - camera.dist) * (reduceMotion ? 1 : 0.12);
+    camera.theta += (camera.targetTheta - camera.theta) * (reduceMotion ? 1 : 0.14);
+    camera.phi += (camera.targetPhi - camera.phi) * (reduceMotion ? 1 : 0.14);
   }
 
   if (!reduceMotion && simSpeed > 0 && !camera.animating && !isDragging) {
@@ -62,6 +62,8 @@ function render(now) {
   Mat4.lookAt(matView, [eyeX, eyeY, eyeZ], camera.lookTarget, [0, 1, 0]);
   Mat4.multiply(matMVP, matProj, matView);
 
+  updatePickIndex(now);
+  updateRenderDetail(now);
   gl.clearColor(0.012, 0.02, 0.04, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.BLEND);

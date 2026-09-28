@@ -12,9 +12,11 @@ const dataModal = document.getElementById("data-modal-backdrop"),
 let tablePage = 0,
   tableSort = "name",
   tableDescending = false;
+let tableCache = {key:null, records:[]};
 function populateDataTable(query = "") {
   const q = query.toLowerCase().trim(),
-    all = visibleScientificRecords().filter(
+    key = [catalogRevision, JSON.stringify(catalogFilter), q, tableSort, tableDescending].join(":"),
+    all = key === tableCache.key ? tableCache.records : visibleScientificRecords().filter(
       (x) =>
         !q ||
         [x.name, x.id, x.externalId, x.type, x.source]
@@ -22,7 +24,7 @@ function populateDataTable(query = "") {
           .toLowerCase()
           .includes(q),
     );
-  all.sort((a, b) => {
+  if (key !== tableCache.key) all.sort((a, b) => {
     const aa = a[tableSort],
       bb = b[tableSort],
       v =
@@ -31,10 +33,13 @@ function populateDataTable(query = "") {
           : String(aa ?? "").localeCompare(String(bb ?? ""));
     return tableDescending ? -v : v;
   });
+  tableCache = {key, records:all};
   tablePage = Math.max(0, Math.min(tablePage, Math.ceil(all.length / 100) - 1));
   const rows = all.slice(tablePage * 100, (tablePage + 1) * 100);
   document.getElementById("data-modal-summary").textContent =
     `${all.length.toLocaleString()} matching records • page ${tablePage + 1}/${Math.max(1, Math.ceil(all.length / 100))} • 100 rows per page. Select a name for provenance and uncertainty.`;
+  document.getElementById("table-prev").disabled = tablePage === 0;
+  document.getElementById("table-next").disabled = (tablePage + 1) * 100 >= all.length;
   document.getElementById("data-table-body").innerHTML = rows
     .map(
       (x) =>
@@ -47,19 +52,18 @@ function populateDataTable(query = "") {
         const x = rows.find((x) => x.id === el.dataset.recordId);
         showInspector(x);
         flyToScale(Math.max(15, distToSceneRadius(x.distLy) * 0.25), x.pos);
-        dataModal.classList.remove("open");
+        closeAtlasDialog(dataModal);
       }),
   );
 }
 document.getElementById("data-table-btn").onclick = () => {
   populateDataTable(dataSearch.value);
-  dataModal.classList.add("open");
-  dataSearch.focus();
+  openAtlasDialog(dataModal, dataSearch);
 };
 document.getElementById("data-modal-close").onclick = () =>
-  dataModal.classList.remove("open");
+  closeAtlasDialog(dataModal);
 dataModal.onclick = (e) => {
-  if (e.target === dataModal) dataModal.classList.remove("open");
+  if (e.target === dataModal) closeAtlasDialog(dataModal);
 };
 dataSearch.oninput = () => {
   tablePage = 0;

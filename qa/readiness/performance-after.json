@@ -1,0 +1,265 @@
+{
+  "platform": "Windows-10-10.0.19045-SP0",
+  "viewport": "1440x1000 DPR1; reduced motion; fixed initial camera; 1s settle then 4s frames after S/N20 filter; 20ms timer during import",
+  "standaloneSha256": "bcccbc9cf2daf276d06c0dd9954df134399fc1e22bfcec3fd347c7138366f6e3",
+  "results": [
+    {
+      "label": "after",
+      "engine": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "tier": 5,
+      "startupMs": 593.4317999635823,
+      "parseMs": 57.5,
+      "normalizeMs": 72.80000001192093,
+      "gpuUploadSubmissionMs": 0.40000003576278687,
+      "totalMs": 154.69999998807907,
+      "count": 5000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 140000,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "firstPickMs": 3.399999976158142,
+      "cachedPickMs": 0,
+      "filterInteractionMs": 13.600000023841858,
+      "firstOpenTableMs": 9.899999976158142,
+      "tableMs": 2.699999988079071,
+      "heapBytes": 50400000,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 1219
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 28,
+        "timerSamples": 3
+      },
+      "frames": {
+        "samples": 178,
+        "p50": 16.699999999999818,
+        "p95": 33.400000000000546,
+        "p99": 50,
+        "max": 50.100000000000364,
+        "mean": 22.47134831460674,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "after",
+      "engine": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "tier": 20,
+      "startupMs": 654.8640999826603,
+      "parseMs": 342.5,
+      "normalizeMs": 1218.8999999761581,
+      "gpuUploadSubmissionMs": 4.099999964237213,
+      "totalMs": 1612,
+      "count": 20000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 560000,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "firstPickMs": 7.5,
+      "cachedPickMs": 0.10000002384185791,
+      "filterInteractionMs": 32.5,
+      "firstOpenTableMs": 48.09999996423721,
+      "tableMs": 3.600000023841858,
+      "heapBytes": 91700000,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 2038.2
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 986.1999999880791,
+        "timerSamples": 23
+      },
+      "frames": {
+        "samples": 133,
+        "p50": 33.30000000000018,
+        "p95": 50,
+        "p99": 66.69999999999982,
+        "max": 66.79999999999973,
+        "mean": 30.324060150375942,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "after",
+      "engine": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "tier": 50,
+      "startupMs": 819.7007999988273,
+      "parseMs": 771.8000000119209,
+      "normalizeMs": 1770.5,
+      "gpuUploadSubmissionMs": 2.800000011920929,
+      "totalMs": 2594.399999976158,
+      "count": 50000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 1400000,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "firstPickMs": 16.599999964237213,
+      "cachedPickMs": 0.20000004768371582,
+      "filterInteractionMs": 69.5,
+      "firstOpenTableMs": 121.89999997615814,
+      "tableMs": 3.199999988079071,
+      "heapBytes": 188000000,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 3304.5
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 1353.199999988079,
+        "timerSamples": 40
+      },
+      "frames": {
+        "samples": 106,
+        "p50": 33.30000000000109,
+        "p95": 83.29999999999927,
+        "p99": 83.30000000000109,
+        "max": 83.39999999999964,
+        "mean": 37.73490566037736,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "after",
+      "engine": "firefox",
+      "browserVersion": "153.0",
+      "tier": 5,
+      "startupMs": 877.396600029897,
+      "parseMs": 99,
+      "normalizeMs": 150,
+      "gpuUploadSubmissionMs": 1,
+      "totalMs": 349,
+      "count": 5000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 140000,
+      "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar",
+      "firstPickMs": 2,
+      "cachedPickMs": 0,
+      "filterInteractionMs": 7,
+      "firstOpenTableMs": 13,
+      "tableMs": 2,
+      "heapBytes": null,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 1030.06
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 42,
+        "timerSamples": 3
+      },
+      "frames": {
+        "samples": 579,
+        "p50": 6.940000000000055,
+        "p95": 6.960000000000036,
+        "p99": 6.960000000000036,
+        "max": 6.960000000000036,
+        "mean": 6.9444214162348885,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "after",
+      "engine": "firefox",
+      "browserVersion": "153.0",
+      "tier": 20,
+      "startupMs": 663.645299966447,
+      "parseMs": 353,
+      "normalizeMs": 510,
+      "gpuUploadSubmissionMs": 10,
+      "totalMs": 971,
+      "count": 20000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 560000,
+      "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar",
+      "firstPickMs": 6,
+      "cachedPickMs": 0,
+      "filterInteractionMs": 15,
+      "firstOpenTableMs": 115,
+      "tableMs": 3,
+      "heapBytes": null,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 2004.06
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 65,
+        "timerSamples": 32
+      },
+      "frames": {
+        "samples": 577,
+        "p50": 6.940000000000055,
+        "p95": 6.960000000000036,
+        "p99": 6.960000000000036,
+        "max": 6.960000000000036,
+        "mean": 6.944367417677643,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "after",
+      "engine": "firefox",
+      "browserVersion": "153.0",
+      "tier": 50,
+      "startupMs": 645.6703000003472,
+      "parseMs": 936,
+      "normalizeMs": 1271,
+      "gpuUploadSubmissionMs": 2,
+      "totalMs": 2294,
+      "count": 50000,
+      "rejected": 0,
+      "execution": "worker / transferable buffers",
+      "renderBytes": 1400000,
+      "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar",
+      "firstPickMs": 10,
+      "cachedPickMs": 0,
+      "filterInteractionMs": 30,
+      "firstOpenTableMs": 319,
+      "tableMs": 2,
+      "heapBytes": null,
+      "renderDetail": {
+        "pointCap": 4,
+        "resolutionScale": 1,
+        "mode": "full",
+        "lastUpdate": 3013.34
+      },
+      "importResponsiveness": {
+        "maxTimerGapMs": 63,
+        "timerSamples": 76
+      },
+      "frames": {
+        "samples": 576,
+        "p50": 6.940000000000509,
+        "p95": 6.960000000000036,
+        "p99": 6.960000000000946,
+        "max": 13.899999999999636,
+        "mean": 6.956458333333332,
+        "stallsOver100ms": 0
+      },
+      "errors": [],
+      "externalRequests": []
+    }
+  ]
+}

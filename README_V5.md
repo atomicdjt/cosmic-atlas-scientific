@@ -14,13 +14,14 @@ pip install -r requirements-dev.txt
 python scripts/run_qa.py
 python -m playwright install chromium firefox
 python tests/browser_qa.py
+python tests/readiness_qa.py
 ```
 
 Build tools are Python and Node; these are not runtime dependencies. Install development dependencies only when running QA. Source snapshots are included; regenerate larger catalogs offline with `python scripts/acquire_v5.py --offline` followed by `python scripts/normalize_snapshots.py`. The lightweight Git checkout includes Gaia 5k; the full release ZIP includes all normalized tiers.
 
 ## What changed
 
-52 maintained source modules replace the monolithic development path. Worker parsing, chunked normalization, scientific filters, source-preserving exports, guarded measurements, linked diagram, epoch display, screen-grid picking and dense-catalog rendering controls build on v4. Offline/static/scientific/catalog tests and real browser checks accompany the release.
+53 maintained source modules replace the monolithic development path. Cancellable worker parsing/normalization with bounded batches and transferable render arrays, scientific filters, source-preserving exports, guarded measurements, linked diagram, epoch display, incremental screen-grid picking and dense-catalog rendering controls build on v4. Offline/static/scientific/catalog tests and real browser checks accompany the release.
 
 ## Repository map
 
@@ -52,6 +53,12 @@ The standalone has no analytics or database dependency. Performance varies by GP
 
 ## Provenance and rights
 
-Credit ESA/Gaia/DPAC, the Gaia Collaboration and processing teams; see [Gaia DR3 papers](https://www.cosmos.esa.int/web/gaia/dr3-papers). Retain BSC5/Hoffleit & Warren and conversion attribution. OpenNGC-derived data retain CC-BY-SA-4.0. See `docs/V5_DATA_AND_LICENSES.md`, `LICENSE_SCOPE.md`, and `CITATION.cff`. A universal open-source license for the supplied application code has not been asserted.
+Original Cosmic Atlas application code and project documentation are MIT-licensed; see `LICENSE` and `LICENSE_SCOPE.md`. This does not relicense bundled astronomical data or third-party materials. Credit ESA/Gaia/DPAC, the Gaia Collaboration and processing teams; retain BSC5/Hoffleit & Warren and conversion attribution; and keep OpenNGC-derived data under CC-BY-SA-4.0. See `docs/V5_DATA_AND_LICENSES.md` and `CITATION.cff` for details.
 
-The original v4 source and release evidence remain tagged **`v4.0.0-baseline`**. v5 work is on **`refactor/modular-source-v5`**. The historical v4 README is retained as `docs/releases/README_v4.md`.
+The original v4 source and release evidence remain tagged **`v4.0.0-baseline`**. Cosmic Atlas Scientific 5.1.0 continues the modular v5 source and offline release path. The historical v4 README is retained as `docs/releases/README_v4.md`.
+
+## Cosmic Atlas Scientific 5.1.0
+
+The 5.1.0 release adds cancellable imports, bounded render data, transactional GPU updates, cached table/filter work, incremental picking, dense-catalog quality controls, clearer scientific context, and improved keyboard and reduced-motion behavior. See `docs/TECHNICAL_REVIEW_5.1.md` for source and selection semantics, `docs/READINESS_REPORT_5.1.md` for validation evidence and limits, and `qa/readiness/` for benchmark inputs/results and behavioral checks. The Vercel production standalone is published separately from this source tree.
+
+Imports report reading/parsing, validated row counts and upload progress; Cancel preserves the active catalog. Limits are 100,000 rows and 256 MiB of file bytes (or 256 million string code units). Without Worker support, JSON parsing remains a synchronous fallback; validation yields between 1,000-row chunks. Adaptive dense rendering reduces point footprint and canvas resolution while retaining all filtered rows, canonical records and export metadata. The table and diagram compute on demand. Dialogs isolate background controls, trap focus and return focus to an available control; browser zoom and changing reduced-motion preferences are supported.

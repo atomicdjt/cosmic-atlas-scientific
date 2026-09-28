@@ -56,6 +56,7 @@ fields.oninput = () => {
   filterTimer = setTimeout(applyScientificFilters, 120);
 };
 function applyScientificFilters() {
+  const previousFilter = {...catalogFilter};
   for (const [key, , type] of defs) {
     const el = document.getElementById("filter-" + key);
     catalogFilter[key] =
@@ -66,59 +67,70 @@ function applyScientificFilters() {
         : el.value;
   }
   catalogFilter.rvOnly = document.getElementById("filter-rv").checked;
+  let nextImported, nextCore;
+  try {
+    nextImported=createImportedCatalogBundle(); nextCore=stageCoreFilteredBundles();
+  } catch(error) {
+    if(nextImported)deleteBufferBundle(nextImported);
+    Object.assign(catalogFilter,previousFilter);
+    for(const [key,,type] of defs)document.getElementById("filter-"+key).value=previousFilter[key] ?? "";
+    document.getElementById("filter-rv").checked=previousFilter.rvOnly;
+    document.getElementById("filter-summary").textContent="Filter failed; prior view preserved: "+error.message;
+    throw error;
+  }
   catalogRevision++;
-  rebuildImportedCatalogBundle();
-  rebuildCoreFilteredBundles();
+  replaceImportedCatalogBundle(nextImported); commitCoreFilteredBundles(nextCore);
   tablePage = 0;
-  populateDataTable(dataSearch.value);
+  if (dataModal.classList.contains("open")) populateDataTable(dataSearch.value);
   drawCMD();
   document.getElementById("filter-summary").textContent =
     visibleScientificRecords().length.toLocaleString() + " records match";
 }
-function rebuildCoreFilteredBundles() {
-  deleteBufferBundle(observedCatalogBundle);
-  deleteBufferBundle(contextCatalogBundle);
-  observedCatalogBundle = buildCatalogTierBundle(
-    (x) =>
-      matchesCatalogFilter(x) &&
-      ["observational", "reference"].includes(x.dataClass),
-  );
-  contextCatalogBundle = buildCatalogTierBundle(
-    (x) =>
-      matchesCatalogFilter(x) && ["context", "model"].includes(x.dataClass),
-  );
+function stageCoreFilteredBundles() {
+  let observed=null, context=null;
+  try {
+    observed=buildCatalogTierBundle(x=>matchesCatalogFilter(x) && ["observational","reference"].includes(x.dataClass));
+    context=buildCatalogTierBundle(x=>matchesCatalogFilter(x) && ["context","model"].includes(x.dataClass));
+    return {observed,context};
+  } catch(error) { if(observed)deleteBufferBundle(observed); if(context)deleteBufferBundle(context); throw error; }
 }
+function commitCoreFilteredBundles(next) {
+  const oldObserved=observedCatalogBundle,oldContext=contextCatalogBundle;
+  observedCatalogBundle=next.observed;contextCatalogBundle=next.context;
+  deleteBufferBundle(oldObserved);deleteBufferBundle(oldContext);
+}
+function rebuildCoreFilteredBundles() { commitCoreFilteredBundles(stageCoreFilteredBundles()); }
 function setDisplayEpoch(epoch) {
-  displayEpoch = Number.isFinite(epoch) ? epoch : null;
+  const nextEpoch = Number.isFinite(epoch) ? epoch : null;
   let changed = 0;
-  for (const x of importedCatalogRecords) {
-    const raw = x.raw,
-      p =
-        displayEpoch === null
-          ? { ra_deg: raw.ra_deg, dec_deg: raw.dec_deg }
-          : propagateEpoch(raw, displayEpoch);
-    x.displayEpoch = p && displayEpoch !== null ? displayEpoch : null;
-    x.ra = p?.ra_deg ?? raw.ra_deg;
-    x.dec = p?.dec_deg ?? raw.dec_deg;
-    x.raText = x.ra.toFixed(6) + "°";
-    x.decText = x.dec.toFixed(6) + "°";
-    x.pos = astronomicalToCartesian(x.ra, x.dec, x.distLy);
-    if (p) changed++;
-  }
-  catalogRevision++;
-  rebuildImportedCatalogBundle();
-  populateDataTable(dataSearch.value);
-  if (selectedItem) showInspector(selectedItem);
+  const staged = importedCatalogRecords.map(x => {
+    const p = nextEpoch === null ? {ra_deg:x.sourceRa, dec_deg:x.sourceDec} :
+      propagateEpoch({...x.raw, ra_deg:x.sourceRa, dec_deg:x.sourceDec}, nextEpoch);
+    const ra=p?.ra_deg ?? x.sourceRa, dec=p?.dec_deg ?? x.sourceDec;
+    if(p)changed++;
+    return {...x, displayEpoch:p && nextEpoch !== null ? nextEpoch : null,
+      ra, dec, raText:ra.toFixed(6)+"°", decText:dec.toFixed(6)+"°",
+      pos:astronomicalToCartesian(ra,dec,x.distLy)};
+  });
+  const bundle=createImportedCatalogBundle(staged);
+  staged.forEach((x,i)=>Object.assign(importedCatalogRecords[i],x));
+  displayEpoch=nextEpoch; catalogRevision++;
+  replaceImportedCatalogBundle(bundle);
+  if(dataModal.classList.contains("open"))populateDataTable(dataSearch.value);
+  if(selectedItem)showInspector(selectedItem);
   document.getElementById("filter-summary").textContent =
     `Epoch applied to ${changed} records; unsupported records retain source positions.`;
 }
+
 document.getElementById("apply-epoch").onclick = () => {
   const v = finiteNumber(document.getElementById("display-epoch").value);
   if (Number.isFinite(v)) setDisplayEpoch(v);
 };
 document.getElementById("reset-epoch").onclick = () => setDisplayEpoch(null);
 let cmdPoints = [];
+workbench.addEventListener("toggle", () => { if (workbench.open) drawCMD(); });
 function drawCMD() {
+  if (!workbench.open) return;
   const c = document.getElementById("cmd-canvas");
   if (!c) return;
   const ctx = c.getContext("2d");

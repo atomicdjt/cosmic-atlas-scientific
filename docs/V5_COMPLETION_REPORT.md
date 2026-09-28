@@ -158,6 +158,6 @@ Vercel project: `prj_zNLd833awlhqWqEz2deW4tqsdQjM`; deployment: `dpl_81WLMUQYrt1
 2. Replace verbose working copies and structured-clone transfer with a validated compact/transferable representation while retaining lossless provenance in the source/export layer.
 3. Introduce explicit module interfaces and independent rendering/catalog lifecycle tests before a broader architectural change.
 4. Add versioned posterior distances, extinction and full covariance only with documented scientific models and independent verification; commission an astronomer review of the curated core.
-5. Resolve a deliberate application-code license and publication policy before making the source repository public. Preserve upstream data attribution and share-alike obligations.
+5. The original application and documentation license scope is resolved under MIT. Continue preserving upstream data attribution and share-alike obligations when redistributing catalog data.
 
 The available implementation, acquisition, numerical verification, local tests, browser QA, static deployment and release packaging have been completed. Human scientific review, physical-device certification, PR approval and merge are separate states and are not claimed here.

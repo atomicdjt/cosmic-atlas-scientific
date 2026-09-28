@@ -17,7 +17,7 @@ def main():
      candidates=list(cache.glob('chromium_headless_shell-*/chrome-headless-shell-win64/chrome-headless-shell.exe' if engine=='chromium' else 'firefox-*/firefox/firefox.exe'))
      if candidates:kwargs['executable_path']=str(sorted(candidates)[-1])
     if engine=='chromium':kwargs['args']=['--use-angle=swiftshader','--enable-unsafe-swiftshader']
-    browser=getattr(pw,engine).launch(**kwargs);context=browser.new_context(**options);page=context.new_page();page.on('pageerror',lambda e:result['errors'].append(str(e)))
+    browser=getattr(pw,engine).launch(**kwargs);result['browser_version']=browser.version;context=browser.new_context(**options);context.set_offline(True);page=context.new_page();page.on('pageerror',lambda e:result['errors'].append(str(e)))
     network=[];page.on('request',lambda r:network.append(r.url) if r.url.startswith(('http:','https:')) else None)
     t=time.perf_counter();page.goto((ROOT/'dist'/filename).as_uri());page.evaluate('window.atlasReady');page.wait_for_timeout(1000);result['startup_ms']=(time.perf_counter()-t)*1000
     result['checks']['webgl']=page.evaluate('typeof gl!=="undefined" && !!gl && gl.getError()===0');result['renderer']=page.evaluate('gl.getParameter(gl.RENDERER)');result['checks']['programs']=page.evaluate('[particleProg,lineProg,cmbProg].every(p=>gl.getProgramParameter(p,gl.LINK_STATUS))')

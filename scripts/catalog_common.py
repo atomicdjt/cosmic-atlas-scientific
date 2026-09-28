@@ -42,7 +42,7 @@ def write_payload(path: str | Path, records: list[dict], source: dict, **metadat
         "records": records,
         **metadata,
     }
-    Path(path).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    Path(path).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def parse_hms_ra(value: str) -> float:
@@ -102,7 +102,10 @@ def comoving_distance_ly(z: float, steps: int | None = None) -> float:
     for i in range(1, n):
         total += (4.0 if i % 2 else 2.0) / E(i * h)
     integral = total * h / 3.0
-    return (C_KM_S / H0) * integral * MPC_TO_LY
+    # Catalog snapshots are committed and hashed across Windows/Linux runners.
+    # Six decimal places is far below the precision warranted by the adopted
+    # redshift model, while avoiding last-bit libm differences in JSON output.
+    return round((C_KM_S / H0) * integral * MPC_TO_LY, 6)
 
 
 def safe_float(v):

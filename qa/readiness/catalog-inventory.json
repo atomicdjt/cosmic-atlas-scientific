@@ -1,0 +1,32 @@
+[
+  {
+    "file": "data/generated/bsc5.json",
+    "records": 9096,
+    "angularOnly": 9096,
+    "sha256": "fb43f1e083fed20973c77c3396858accddf2c46498783290607718e9b7fe3aab"
+  },
+  {
+    "file": "data/generated/gaia_20k.json",
+    "records": 20000,
+    "angularOnly": 0,
+    "sha256": "2646367d476a06e058a135f0e1cab10d85747d193d93df9aebd665f91780413a"
+  },
+  {
+    "file": "data/generated/gaia_50k.json",
+    "records": 50000,
+    "angularOnly": 0,
+    "sha256": "bf0c832c9abc8d61ed52d5693057d23b71424c40eda44f303f2c2da9fdbdcb3f"
+  },
+  {
+    "file": "data/generated/gaia_5k.json",
+    "records": 5000,
+    "angularOnly": 0,
+    "sha256": "6bdc0b8e410f21c72973daf0d00310e900ba555f4016749e0165ce680b0cc97f"
+  },
+  {
+    "file": "data/generated/openngc.json",
+    "records": 14027,
+    "angularOnly": 6663,
+    "sha256": "3dcb59bc7a7b8dab2726845fb9a15aababe2543481c7875932cfce9a24a8da02"
+  }
+]

@@ -1,0 +1,4 @@
+PASS C:\Python314\python.exe scripts/build_v5.py
+PASS node tests/scientific.cjs
+PASS C:\Python314\python.exe -m unittest discover -s tests -v
+PASS C:\Python314\python.exe -m compileall -q scripts

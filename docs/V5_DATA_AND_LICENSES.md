@@ -19,7 +19,7 @@ python scripts/build_v5.py
 python scripts/run_qa.py
 ```
 
-For a fresh retrieval, omit `--offline`. A fresh retrieval can differ as upstream services change; it is a new data product with its own timestamp and hashes. Some legacy normalization timestamps reflect generation time. Preserve the supplied normalized files for byte-identical release rebuilding. The HTML build itself is deterministic for fixed inputs.
+For a fresh retrieval, omit `--offline`. A fresh retrieval can differ as upstream services change; it is a new data product with its own timestamp and hashes. Offline normalization takes timestamps from the saved acquisition manifest, writes LF-terminated JSON, and rounds the derived OpenNGC comoving display distance to six decimal light-years before serialization. This is far more numerical precision than the adopted redshift model supports and prevents last-bit platform math differences from changing catalog hashes. Preserve the supplied normalized files for byte-identical release rebuilding. The HTML build itself is deterministic for fixed inputs.
 
 Gaia ADQL: `data/raw/gaia_50k.adql`. Raw Gaia response: `data/raw/gaia_50k.csv`. BSC5 full conversion snapshot: `data/raw/bsc5.json`. OpenNGC snapshots: `data/raw/NGC.csv` and `data/raw/addendum.csv`. `scripts/normalize_snapshots.py` augments the existing OpenNGC ingestion output with every upstream field and emits the full BSC5 conversion with angular-only distances. The original compact BSC5/DR3 scripts remain available for historical compatibility.
 
@@ -31,4 +31,4 @@ BSC5: Hoffleit & Warren (1991), Bright Star Catalogue, 5th Revised Edition. The 
 
 OpenNGC-derived data are distributed under CC-BY-SA-4.0. Credit [OpenNGC and contributors](https://github.com/mattiaverga/OpenNGC), retain its source metadata, indicate Cosmic Atlas normalization and cosmology-derived distances as modifications, and retain the same license for this derived dataset. Full license: `data/raw/OpenNGC-LICENSE`. The OpenNGC project's software MIT license does not replace its database license.
 
-No universal software license is retroactively asserted for the supplied Cosmic Atlas code. `LICENSE_SCOPE.md` remains the owner's licensing boundary. The source repository is private. A public source release should select an explicit code license separately from catalog terms. The hosted static demonstration does not change those rights.
+Original Cosmic Atlas application code and project documentation are licensed under MIT as described in the root `LICENSE` and `LICENSE_SCOPE.md`. This license does not replace or extend the separate terms for upstream data, catalog conversions, or third-party materials. The hosted static demonstration does not change those data or attribution requirements.

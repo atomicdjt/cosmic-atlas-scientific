@@ -13,6 +13,7 @@ function resizeCanvas() {
     window.innerWidth < 700 ? 1.5 : 2.0,
     Math.max(1.0, window.devicePixelRatio || 1.0),
   );
+  renderDpr *= denseRenderDetail.resolutionScale;
   const width = Math.round(cssViewportWidth * renderDpr);
   const height = Math.round(cssViewportHeight * renderDpr);
   if (canvas.width !== width || canvas.height !== height) {
@@ -22,11 +23,10 @@ function resizeCanvas() {
   }
 }
 
-function projectToScreen(pos) {
+function projectToScreen(pos, m = matMVP, width = cssViewportWidth, height = cssViewportHeight) {
   const x = pos[0],
     y = pos[1],
     z = pos[2];
-  const m = matMVP;
   const cx = m[0] * x + m[4] * y + m[8] * z + m[12];
   const cy = m[1] * x + m[5] * y + m[9] * z + m[13];
   const cz = m[2] * x + m[6] * y + m[10] * z + m[14];
@@ -46,7 +46,7 @@ function projectToScreen(pos) {
   )
     return null;
   return [
-    (nx * 0.5 + 0.5) * cssViewportWidth,
-    (-ny * 0.5 + 0.5) * cssViewportHeight,
+    (nx * 0.5 + 0.5) * width,
+    (-ny * 0.5 + 0.5) * height,
   ];
 }

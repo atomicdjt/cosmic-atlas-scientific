@@ -1,0 +1,10 @@
+{
+  "source": "src/catalog/core.js",
+  "counts": {
+    "reference": 1,
+    "observational": 13,
+    "context": 6,
+    "model": 1
+  },
+  "records": 21
+}
