@@ -25,11 +25,10 @@ document.getElementById("measure-clear-btn").addEventListener("click", () => {
 
 const scienceModal = document.getElementById("science-modal-backdrop");
 function openScienceModal() {
-  scienceModal.classList.add("open");
-  document.getElementById("science-modal-close").focus();
+  openAtlasDialog(scienceModal, document.getElementById("science-modal-close"));
 }
 function closeScienceModal() {
-  scienceModal.classList.remove("open");
+  closeAtlasDialog(scienceModal);
 }
 document
   .getElementById("science-info-btn")

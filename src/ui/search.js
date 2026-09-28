@@ -51,6 +51,7 @@ searchInput.addEventListener("input", () => {
       }
       searchResults.style.display = "none";
       searchInput.value = "";
+      searchInput.focus();
     });
   });
 });

@@ -34,35 +34,28 @@ function matchesCatalogFilter(x, f = catalogFilter) {
   if (f.type && !x.type.toLowerCase().includes(f.type.toLowerCase()))
     return false;
   if (f.rvOnly && !Number.isFinite(x.rv)) return false;
-  const pairs = [
-    ["magMax", x.photG ?? finiteNumber(x.raw?.vmag), "<"],
-    ["colorMin", x.bpRp, ">"],
-    ["colorMax", x.bpRp, "<"],
-    [
-      "distanceMax",
-      x.angularOnly ? null : (x.physicalDistanceLy ?? x.distLy),
-      "<",
-    ],
-    ["parallaxMin", x.parallaxMas, ">"],
-    ["snrMin", x.parallaxSnr, ">"],
-    ["ruweMax", x.ruwe, "<"],
-    ["redshiftMin", x.zObs, ">"],
-    ["uncertaintyMax", x.distanceSigmaLy, "<"],
-  ];
-  for (const [key, value, op] of pairs)
-    if (
-      f[key] !== null &&
-      (!Number.isFinite(value) ||
-        (op === "<" ? value > f[key] : value < f[key]))
-    )
-      return false;
+  if (f.magMax !== null) { const v = x.photG ?? finiteNumber(x.raw?.vmag); if (!Number.isFinite(v) || v > f.magMax) return false; }
+  if (f.colorMin !== null) { const v = x.bpRp; if (!Number.isFinite(v) || v < f.colorMin) return false; }
+  if (f.colorMax !== null) { const v = x.bpRp; if (!Number.isFinite(v) || v > f.colorMax) return false; }
+  if (f.distanceMax !== null) { const v = x.angularOnly ? null : (x.physicalDistanceLy ?? x.distLy); if (!Number.isFinite(v) || v > f.distanceMax) return false; }
+  if (f.parallaxMin !== null) { const v = x.parallaxMas; if (!Number.isFinite(v) || v < f.parallaxMin) return false; }
+  if (f.snrMin !== null) { const v = x.parallaxSnr; if (!Number.isFinite(v) || v < f.snrMin) return false; }
+  if (f.ruweMax !== null) { const v = x.ruwe; if (!Number.isFinite(v) || v > f.ruweMax) return false; }
+  if (f.redshiftMin !== null) { const v = x.zObs; if (!Number.isFinite(v) || v < f.redshiftMin) return false; }
+  if (f.uncertaintyMax !== null) { const v = x.distanceSigmaLy; if (!Number.isFinite(v) || v > f.uncertaintyMax) return false; }
   return true;
 }
 function filteredImportedRecords(records = importedCatalogRecords) {
-  return records.filter((x) => matchesCatalogFilter(x));
+  return records === importedCatalogRecords
+    ? visibleScientificRecords().filter(x => x.imported)
+    : records.filter(x => matchesCatalogFilter(x));
 }
+let visibleCatalogCache = {key:null, records:[]};
 function visibleScientificRecords() {
-  return allScientificRecords().filter((x) => matchesCatalogFilter(x));
+  const key = catalogRevision + ":" + JSON.stringify(catalogFilter);
+  if (key !== visibleCatalogCache.key) visibleCatalogCache = {
+    key, records:allScientificRecords().filter(x => matchesCatalogFilter(x)) };
+  return visibleCatalogCache.records;
 }
 function exportRecord(x) {
   return {
@@ -70,8 +63,8 @@ function exportRecord(x) {
     id: x.raw?.id ?? x.externalId ?? x.id,
     name: x.name,
     tier: x.dataClass,
-    ra_deg: x.raw?.ra_deg ?? x.ra,
-    dec_deg: x.raw?.dec_deg ?? x.dec,
+    ra_deg: x.raw?.ra_deg ?? x.sourceRa ?? x.ra,
+    dec_deg: x.raw?.dec_deg ?? x.sourceDec ?? x.dec,
     distance_ly: x.angularOnly ? null : (x.physicalDistanceLy ?? x.distLy),
     angular_only: !!x.angularOnly,
     distance_kind:

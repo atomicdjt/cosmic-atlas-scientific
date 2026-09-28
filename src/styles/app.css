@@ -1158,3 +1158,13 @@ input:checked + .slider:before {
     margin-bottom: 30px;
   }
 }
+
+[hidden] { display: none !important; }
+.skip-link { position:fixed; top:8px; left:8px; z-index:10000; padding:12px; background:#07101c; color:#fff; transform:translateY(-160%); }
+.skip-link:focus { transform:none; }
+#provenance-detail, .science-note, #render-detail-status { font-size:12px; line-height:1.6; color:#c9d7e7; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
+
+.orientation-note { position:fixed; top:96px; left:50%; transform:translateX(-50%); width:calc(100% - 760px); max-width:640px; z-index:4; pointer-events:none; border:1px solid #334f69; border-radius:8px; padding:10px 12px; background:rgba(7,16,28,.94); color:#dce9f8; font:12px/1.5 sans-serif; }
+@media (max-width:1100px) { .orientation-note { top:100px; width:calc(100% - 680px); font-size:11px; } }
+@media (max-width:900px) { .orientation-note { top:140px; width:calc(100% - 56px); max-width:600px; } }

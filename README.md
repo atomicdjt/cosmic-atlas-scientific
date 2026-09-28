@@ -52,6 +52,6 @@ The standalone has no analytics or database dependency. Performance varies by GP
 
 ## Provenance and rights
 
-Credit ESA/Gaia/DPAC, the Gaia Collaboration and processing teams; see [Gaia DR3 papers](https://www.cosmos.esa.int/web/gaia/dr3-papers). Retain BSC5/Hoffleit & Warren and conversion attribution. OpenNGC-derived data retain CC-BY-SA-4.0. See `docs/V5_DATA_AND_LICENSES.md`, `LICENSE_SCOPE.md`, and `CITATION.cff`. A universal open-source license for the supplied application code has not been asserted.
+Original Cosmic Atlas application code and project documentation are MIT-licensed; see `LICENSE` and `LICENSE_SCOPE.md`. This does not relicense bundled astronomical data or third-party materials. Credit ESA/Gaia/DPAC, the Gaia Collaboration and processing teams; retain BSC5/Hoffleit & Warren and conversion attribution; and keep OpenNGC-derived data under CC-BY-SA-4.0. See `docs/V5_DATA_AND_LICENSES.md` and `CITATION.cff` for details.
 
-The original v4 source and release evidence remain tagged **`v4.0.0-baseline`**. v5 work is on **`refactor/modular-source-v5`**. The historical v4 README is retained as `docs/releases/README_v4.md`.
+The original v4 source and release evidence remain tagged **`v4.0.0-baseline`**. The 5.1.0 release preserves those historical tags. The historical v4 README is retained as `docs/releases/README_v4.md`.

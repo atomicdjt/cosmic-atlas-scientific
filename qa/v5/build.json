@@ -1,7 +1,9 @@
 {
-  "modules": 52,
-  "bytes": 9301038,
-  "sha256": "e987d72c10c5c91c7a3f29cc45ad592693d627d29cc2b151c5fbc26b14a6c8d8",
+  "version": "5.1.0",
+  "buildId": "CA-SCI-5.1.0-87345f7c053d",
+  "modules": 53,
+  "bytes": 9318144,
+  "sha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e",
   "errors": [],
   "passed": true
 }

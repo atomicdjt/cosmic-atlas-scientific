@@ -1,0 +1,21 @@
+{
+  "artifactSha256": "e15cdcfb2a73158532852d884a3a1e95fa03619456dd5e7e9214723c84d2899a",
+  "command": [
+    "python",
+    "tests/benchmark_readiness.py",
+    "--label",
+    "after",
+    "--output",
+    "qa/readiness/performance-after.json"
+  ],
+  "failure": "Firefox Page.evaluate: Target crashed during startup of the 50k case, before its import",
+  "completedCases": [
+    "chromium 5k",
+    "chromium 20k",
+    "chromium 50k",
+    "firefox 5k",
+    "firefox 20k"
+  ],
+  "cause": "not established",
+  "log": "qa/readiness/benchmark-attempt-1.txt"
+}

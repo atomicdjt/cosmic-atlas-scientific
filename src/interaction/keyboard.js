@@ -1,8 +1,9 @@
-const reduceMotion =
+let reduceMotion =
   window.matchMedia &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 window.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape" && document.querySelector(".science-modal-backdrop.open")) return;
   if (
     e.key !== "Escape" &&
     /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName)
@@ -25,16 +26,16 @@ window.addEventListener("keydown", (e) => {
     (e.key === "d" || e.key === "D") &&
     document.activeElement !== searchInput
   ) {
-    populateDataTable(dataSearch.value);
-    dataModal.classList.add("open");
+    document.getElementById("data-table-btn").click();
   } else if (e.key === "Escape") {
-    closeScienceModal();
-    dataModal.classList.remove("open");
-    document.getElementById("tour-panel").classList.remove("open");
-    searchResults.style.display = "none";
-    searchInput.blur();
     document.querySelector(".left-sidebar").classList.remove("mobile-open");
     document.querySelector(".right-sidebar").classList.remove("mobile-open");
     syncMobilePanelAria();
+    closeScienceModal();
+    closeAtlasDialog(dataModal);
+    document.getElementById("tour-panel").classList.remove("open");
+    searchResults.style.display = "none";
+    if (document.activeElement === searchInput) searchInput.blur();
+
   }
 });

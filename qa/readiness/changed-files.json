@@ -1,0 +1,275 @@
+{
+  "releaseVersion": "5.1.0",
+  "baseCommit": "8ddf104da2626733e4d15e9696f4e99340ea0eb6",
+  "branch": "improve/review-readiness-v5.1",
+  "standaloneSha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e",
+  "files": [
+    {
+      "file": "CHANGELOG.md",
+      "sha256": "aff46161ca8f9616138c9625c01ce602c0a14bc5bca10b0da016ab2d8eea2f56"
+    },
+    {
+      "file": "CITATION.cff",
+      "sha256": "6f4c3e76e10904ed626e953cd1a4533ae3a3e8da91fb201054981a0b78111d88"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "24b490662e6e8b0f6e6a1b6674374bfd0457d20583e9993b00dd2e4eb96cb282"
+    },
+    {
+      "file": "LICENSE_SCOPE.md",
+      "sha256": "1d72892a27402e3873af61f444907602f23a6c4b85fd61fc3c4ea096f2906936"
+    },
+    {
+      "file": "README.md",
+      "sha256": "05fe5e2707f1c0a4a61df1be1d9afb2d2a64a50a24fd704b7604230fd65a68c9"
+    },
+    {
+      "file": "README_V5.md",
+      "sha256": "f0c10a407fcb578a70fd005c8c867abbbee12de52d17e40ac19fd943cbe356ce"
+    },
+    {
+      "file": "VERSION",
+      "sha256": "c0eacacd7e27bbf341d21e7e0e2997a363840a210d8e358d4babaebd765b5bfd"
+    },
+    {
+      "file": "dist/Cosmic_Atlas_Standalone.html",
+      "sha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e"
+    },
+    {
+      "file": "docs/READINESS_REPORT_5.1.md",
+      "sha256": "d32721f686b6e2dda823c38574745582234fa020a4ac85b9fdb489ab685c1af0"
+    },
+    {
+      "file": "docs/TECHNICAL_REVIEW_5.1.md",
+      "sha256": "946d3d010cde6272e327270bb2c1200ccc491f06cd8d3b731f7407a4ec4384a9"
+    },
+    {
+      "file": "docs/V5_ARCHITECTURE.md",
+      "sha256": "fa06a8fd08f453f92403aec4170690813ba3c5221a476a061e7c6be6fd4e7c1c"
+    },
+    {
+      "file": "docs/V5_DATA_AND_LICENSES.md",
+      "sha256": "b59a92464e8fe066b7e4515246c9e0cc1dc1779eae3946d129f6389f9ce2b099"
+    },
+    {
+      "file": "hosted/index.html",
+      "sha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e"
+    },
+    {
+      "file": "qa/readiness/additional-run-1.txt",
+      "sha256": "73eae3b0d7467b840fac6efce713836f77abf889f7d22025512598db462a0e6a"
+    },
+    {
+      "file": "qa/readiness/additional-run-2.txt",
+      "sha256": "7216822b477fac42393f3f668f87d471c0eed29af3d354bed6d27642671b2af0"
+    },
+    {
+      "file": "qa/readiness/baseline-browser.json",
+      "sha256": "1cf3cc069477edbed12b8778696d6dc623426e816b1f82f75ee884d58686a96e"
+    },
+    {
+      "file": "qa/readiness/behavior.json",
+      "sha256": "a6ff9f01da1aa547f81015139616fa1da18e973056e62269e4ba7d49b9bd90c4"
+    },
+    {
+      "file": "qa/readiness/benchmark-attempt-1.json",
+      "sha256": "ef36b6d264d706b06064aeff89226d3accb90d577eeac52165c17486c8128d96"
+    },
+    {
+      "file": "qa/readiness/benchmark-attempt-1.txt",
+      "sha256": "af4f3de58e4bf96ae4faba84f1e9a63fd1e835a85eaa96e951693e772e4e74fb"
+    },
+    {
+      "file": "qa/readiness/catalog-inventory.json",
+      "sha256": "438671493e2e178ff50904eec3f6d15216dc08cbb991ac25bb1987e8edb463e9"
+    },
+    {
+      "file": "qa/readiness/chromium.png",
+      "sha256": "0c3e6ba8747c3da4a0e7eeb315405ee814b4200be55a1cff3a1c277b9b57dfaf"
+    },
+    {
+      "file": "qa/readiness/commands.json",
+      "sha256": "6a7e41a5af5db12fe4e617a9ad0a45c8fefe20f926815601d2a7f949581a28b7"
+    },
+    {
+      "file": "qa/readiness/core-counts.json",
+      "sha256": "7d154035615962b1a9182ea84043911c606b5c13ca3c02cab6904b18a5b8a41c"
+    },
+    {
+      "file": "qa/readiness/final-run-1.txt",
+      "sha256": "c27e07f8fcc997f69b437a4514bd01abed10ae3f10f695e688d0abe46d1073b0"
+    },
+    {
+      "file": "qa/readiness/final-run-2.txt",
+      "sha256": "c815afef3e2883929361f9cb39f51cb6002bce3cefa75e01cfa4e68692eddb1a"
+    },
+    {
+      "file": "qa/readiness/final-run-3.txt",
+      "sha256": "9c2d001d7689dedd5a31f98a432d3d5274be7d1f1239f8275338797ec1523470"
+    },
+    {
+      "file": "qa/readiness/final-run-4.txt",
+      "sha256": "dcf72096956ea9023c13f6aeac9e8e6273c15d84ddb5c2a8cb438366c2c72c12"
+    },
+    {
+      "file": "qa/readiness/firefox.png",
+      "sha256": "cc805da90c6e87b7184c528986efe165b6ae0d1a6c20ffba4d50620e4495c1ef"
+    },
+    {
+      "file": "qa/readiness/mobile-emulation.png",
+      "sha256": "101df57e517853e6e8b6e726efbf5250bbaa5d53a5b0c55e202e813e44642c7d"
+    },
+    {
+      "file": "qa/readiness/performance-after.json",
+      "sha256": "c3ea36d676fa107e97930c3565105936b3fb60ed56e682fca6a46385ccdd6888"
+    },
+    {
+      "file": "qa/readiness/performance-before.json",
+      "sha256": "5821a9404db83133288f2b6be70b1e2501d5dfe1b12455d053e91ece70f70ee0"
+    },
+    {
+      "file": "qa/v5/browser.json",
+      "sha256": "a90129c5f9a48facc39bb9074a0c6daa93cbae618f9cef804903a406dfbdcfb5"
+    },
+    {
+      "file": "qa/v5/build.json",
+      "sha256": "3421be9f2abca79d5127730787571f371d6f739eedf553a7ae4ffe883f3bd695"
+    },
+    {
+      "file": "qa/v5/chromium-desktop.png",
+      "sha256": "2f2eb373bc9f656e55a65766332c6947e40368ec155592ed588472ba6700e9de"
+    },
+    {
+      "file": "qa/v5/chromium-development.png",
+      "sha256": "c4d8c34409cc3f4e406f221839fa04b5360ef90fb6dd104f9c73d01ce76f8396"
+    },
+    {
+      "file": "qa/v5/chromium-mobile.png",
+      "sha256": "16b559b8f23f1ab8490a1ec01f4d8600a7976174e7c41b56c52ab6748debc373"
+    },
+    {
+      "file": "qa/v5/firefox-desktop.png",
+      "sha256": "f09334e7142ae4cb4b584f7334ba6caf4ff3b17418526934f61b6f72a9c866f4"
+    },
+    {
+      "file": "qa/v5/validation_results.json",
+      "sha256": "46c289770d4414d46e3204ee7f39587f586f38b7e6518ff5ef641758a40e0e91"
+    },
+    {
+      "file": "scripts/build_v5.py",
+      "sha256": "ff9b46da4ebef7556ea8314d0177e516386ccd10004c92945f51fff5e5dd5570"
+    },
+    {
+      "file": "scripts/run_v5_qa.py",
+      "sha256": "048f6efc96006e9f1961f1e3274a61f8931647394de1cebada1ebc9db8219c9e"
+    },
+    {
+      "file": "src/README.md",
+      "sha256": "f6d95022707464c31ca1782875a6bbd3d0eda265816b830f2ba803dd429cc86d"
+    },
+    {
+      "file": "src/app/constants.js",
+      "sha256": "cbefd708d3df64db837f6cbc435453a74e71e8a3cf85f4959dd581b1f7ced268"
+    },
+    {
+      "file": "src/app/render-loop.js",
+      "sha256": "023c19850867333b976baa0281a45e2a8a10a2097a4d8d63a4f3da9335bd35b9"
+    },
+    {
+      "file": "src/app/shell.html",
+      "sha256": "134a9e0cd3cbb01658d22a5f17643045631fd474e9995b81f073bdebae3058f7"
+    },
+    {
+      "file": "src/catalog/filtering.js",
+      "sha256": "a71816d84347b423521fba9780d3cab35e1ba666b619718688a41ee4683e9fa2"
+    },
+    {
+      "file": "src/catalog/gpu-upload.js",
+      "sha256": "d43797ed6d68d7dfdd38b838161b81003facb05628e85c0eb7e815a8b9afcb86"
+    },
+    {
+      "file": "src/catalog/import.js",
+      "sha256": "0dd2ec7f7a359c3138604ce6e50bae0e4b1522e77b82b1cbe440fb6bf59a7fff"
+    },
+    {
+      "file": "src/catalog/normalize.js",
+      "sha256": "a9a1284811f666b1c64de950bb081884374ff6aa964fe170265c38a53678d78f"
+    },
+    {
+      "file": "src/catalog/render-data.js",
+      "sha256": "c60d1313acc13b2668e0cb4d94ef6528a638fcead05fdf979c53d58a164ba449"
+    },
+    {
+      "file": "src/interaction/keyboard.js",
+      "sha256": "19bbb1bc9299aeeb1ddbb1621763d2c2009d300f7448c39a82c90897eff07527"
+    },
+    {
+      "file": "src/interaction/spatial-index.js",
+      "sha256": "fb4bfcce51b70b79c2a46d99f31a0d0b4b6960e8a2307c312b487dc986c23e1e"
+    },
+    {
+      "file": "src/modules.json",
+      "sha256": "742fec7a12663e14948a532d8333453cbdcd9ea9301d5d374b2ed65515764b4a"
+    },
+    {
+      "file": "src/render/buffers.js",
+      "sha256": "78935cd01be061a93fb296304471fe308bf98915e9bd3e81c0248bf37d7164bf"
+    },
+    {
+      "file": "src/render/particles.js",
+      "sha256": "cc3a68b0c1410377fa0714d74b50095ee5fa666a54b0ba9bc13fec5d5cbcc7f9"
+    },
+    {
+      "file": "src/render/viewport.js",
+      "sha256": "0adc414e0dcbde264e9f1cfa413d44ffb686ddaf5e4a2305e06432c70396a476"
+    },
+    {
+      "file": "src/styles/app.css",
+      "sha256": "473bab6a4299e59e67cd5bfc72286a4f7a7a077cda478d8df37ca21c27945585"
+    },
+    {
+      "file": "src/ui/accessibility.js",
+      "sha256": "68f5dd9e472a8308420563fce7671fbd59393b56cb497168f7c55e8b4e479be9"
+    },
+    {
+      "file": "src/ui/data-table.js",
+      "sha256": "23e57e4f7e8157c4a0c51ee3486bdd88cbcc4ba528978fb649f8c538062a0f8d"
+    },
+    {
+      "file": "src/ui/overview.js",
+      "sha256": "e59c0e8f415d8fadcf9a40bfe9f9f1632f24c079714b8f62521cb6d39be0c9b2"
+    },
+    {
+      "file": "src/ui/provenance.js",
+      "sha256": "32dab48b33cd631a718bc9f0edb8a345c9073a2acc2c09133efe612eb44406c1"
+    },
+    {
+      "file": "src/ui/science-workbench.js",
+      "sha256": "edef99494cf3b5076a8472b21a870e6b50d54f61dfc5c6c36daeee6ff38c20f0"
+    },
+    {
+      "file": "src/ui/search.js",
+      "sha256": "deb74de3388105de1847daf7932e2865558fec8f7e9fdb59fcac4f265c647297"
+    },
+    {
+      "file": "tests/benchmark_readiness.py",
+      "sha256": "965ea5711e6a83e3cbd82f87c07cd45cd330260721973c6a094443dc761f5af0"
+    },
+    {
+      "file": "tests/browser_qa.py",
+      "sha256": "471c4c7da168272bf2b84b7cf320e2c658081d8d1124056267286ed320ebcb66"
+    },
+    {
+      "file": "tests/readiness_qa.py",
+      "sha256": "b8c229b36cf0b5822f6ddca8195a9b061abc1b1b25f0130fba57cd6d8b842710"
+    },
+    {
+      "file": "tests/test_readiness.py",
+      "sha256": "3f3ecc75fab64b02b48deca9c7875cdc081f227a00a1d3d97c2e407e2c546ea1"
+    }
+  ],
+  "inventoryExcludes": [
+    "qa/readiness/changed-files.json (self-referential)"
+  ]
+}

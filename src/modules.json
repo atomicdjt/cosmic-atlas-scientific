@@ -24,6 +24,7 @@
   "astronomy/photometry.js",
   "catalog/normalize.js",
   "catalog/filtering.js",
+  "catalog/render-data.js",
   "catalog/gpu-upload.js",
   "render/procedural.js",
   "render/lines.js",

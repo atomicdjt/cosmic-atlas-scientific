@@ -63,6 +63,7 @@ function normalizeImportedRecord(raw, idx) {
   const item = {
     id: `ext:${String(raw.id ?? sourceId)}`,
     raw: Object.freeze(raw),
+    sourceRa: ra, sourceDec: dec,
     distanceKind:
       raw.distance_kind ??
       (inferred ? "parallax_approximation" : "source_adopted"),

@@ -1,0 +1,44 @@
+{
+  "releaseVersion": "5.1.0",
+  "standaloneSha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e",
+  "baselineStandaloneSha256": "e987d72c10c5c91c7a3f29cc45ad592693d627d29cc2b151c5fbc26b14a6c8d8",
+  "runs": [
+    {
+      "result": "qa/v5/validation_results.json and qa/v5/build.json",
+      "returncode": 0,
+      "command": [
+        "python",
+        "scripts/run_qa.py"
+      ]
+    },
+    {
+      "result": "qa/v5/browser.json",
+      "returncode": 0,
+      "command": [
+        "python",
+        "tests/browser_qa.py"
+      ]
+    },
+    {
+      "result": "qa/readiness/behavior.json",
+      "returncode": 0,
+      "command": [
+        "python",
+        "tests/readiness_qa.py"
+      ]
+    },
+    {
+      "result": "qa/readiness/performance-after.json",
+      "returncode": 0,
+      "command": [
+        "python",
+        "tests/benchmark_readiness.py",
+        "--label",
+        "after",
+        "--output",
+        "qa/readiness/performance-after.json"
+      ]
+    }
+  ],
+  "passed": true
+}
