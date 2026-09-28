@@ -2596,19 +2596,34 @@ const cLoc = {
 };
 
 function buildBufferBundle(positions, colors, sizes) {
-  const vboPos = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboPos);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+  const created = [];
+  try {
+    const vboPos = gl.createBuffer();
+    if (!vboPos)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboPos);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboPos);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-  const vboCol = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboCol);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    const vboCol = gl.createBuffer();
+    if (!vboCol)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboCol);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboCol);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-  const vboSize = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboSize);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sizes), gl.STATIC_DRAW);
+    const vboSize = gl.createBuffer();
+    if (!vboSize)
+      throw new Error("WebGL could not allocate an imported catalog buffer.");
+    created.push(vboSize);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboSize);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sizes), gl.STATIC_DRAW);
 
-  return { vboPos, vboCol, vboSize, count: positions.length / 3 };
+    return { vboPos, vboCol, vboSize, count: positions.length / 3 };
+  } catch (error) {
+    created.forEach((buffer) => gl.deleteBuffer(buffer));
+    throw error;
+  }
 }
 
 function buildCatalogTierBundle(predicate) {
@@ -2667,6 +2682,7 @@ function parallaxDistance(raw) {
 function physicalMeasurementAllowed(item) {
   return (
     !item.angularOnly &&
+    !item.imported &&
     item.measurementEligible !== false &&
     !["context", "model", "procedural"].includes(item.dataClass) &&
     Number.isFinite(item.physicalDistanceLy ?? item.distLy)
@@ -2784,7 +2800,7 @@ function normalizeImportedRecord(raw, idx) {
   const hasPhysicalDistance =
     raw.angular_only !== true &&
     Number.isFinite(distLy) &&
-    (distLy > 0 || (distLy === 0 && raw.tier === "reference"));
+    distLy > 0;
   const angularOnly = !hasPhysicalDistance;
   // Angular-only records are placed on a user/source supplied visualization shell.
   // This shell is never treated as a measured distance and is excluded from 3-D claims.
@@ -2809,7 +2825,10 @@ function normalizeImportedRecord(raw, idx) {
   const source = String(
     raw.source ?? raw.catalog ?? "Imported scientific catalog",
   );
-  const color = raw.color || colorFromBpRp(raw.bp_rp);
+  const color =
+    typeof raw.color === "string" && /^#[0-9a-f]{6}$/i.test(raw.color)
+      ? raw.color
+      : colorFromBpRp(raw.bp_rp);
   const item = {
     id: `ext:${String(raw.id ?? sourceId)}`,
     raw: Object.freeze(raw),
@@ -2821,7 +2840,9 @@ function normalizeImportedRecord(raw, idx) {
     refEpoch: finiteNumber(raw.ref_epoch),
     parallaxSnr: snr,
     externalId: sourceId,
-    measurementEligible: raw.measurement_eligible !== false,
+    // Imported provenance is user-controlled. A file cannot promote its own
+    // records into the curated scientific measurement set.
+    measurementEligible: false,
     name,
     tag: String(
       raw.tag ??
@@ -2829,15 +2850,7 @@ function normalizeImportedRecord(raw, idx) {
           ? "Imported Angular Catalog Record"
           : "Imported Catalog Record"),
     ),
-    dataClass: [
-      "reference",
-      "observational",
-      "context",
-      "model",
-      "procedural",
-    ].includes(raw.tier)
-      ? raw.tier
-      : "external",
+    dataClass: "external",
     distLy: renderDistLy,
     physicalDistanceLy: hasPhysicalDistance ? distLy : null,
     angularOnly,
@@ -2960,8 +2973,8 @@ function matchesCatalogFilter(x, f = catalogFilter) {
       return false;
   return true;
 }
-function filteredImportedRecords() {
-  return importedCatalogRecords.filter((x) => matchesCatalogFilter(x));
+function filteredImportedRecords(records = importedCatalogRecords) {
+  return records.filter((x) => matchesCatalogFilter(x));
 }
 function visibleScientificRecords() {
   return allScientificRecords().filter((x) => matchesCatalogFilter(x));
@@ -2989,6 +3002,22 @@ function exportRecord(x) {
     source: x.source,
     source_ref: x.sourceRef,
     source_url: x.sourceUrl,
+    ...(x.imported
+      ? {
+          source_claims: {
+            tier:
+              x.raw?.source_claims?.tier ??
+              x.raw?.source_claimed_tier ??
+              x.raw?.tier ??
+              null,
+            measurement_eligible:
+              x.raw?.source_claims?.measurement_eligible ??
+              x.raw?.source_claimed_measurement_eligible ??
+              x.raw?.measurement_eligible ??
+              null,
+          },
+        }
+      : {}),
     ...(x.angularOnly ? { display_shell_ly: x.displayShellLy } : {}),
     ...(x.displayEpoch !== null && x.displayEpoch !== undefined
       ? {
@@ -3002,19 +3031,49 @@ function exportRecord(x) {
   };
 }
 
-function rebuildImportedCatalogBundle() {
-  document.body.classList.toggle('large-catalog',importedCatalogRecords.length>=5000);
-  deleteBufferBundle(importedCatalogBundle);
+function createImportedCatalogBundle(records = importedCatalogRecords) {
   const pos = [],
     col = [],
     size = [];
-  filteredImportedRecords().forEach((item) => {
+  filteredImportedRecords(records).forEach((item) => {
+    if (
+      !item.pos ||
+      item.pos.length !== 3 ||
+      !item.pos.every((value) => Number.isFinite(Math.fround(value))) ||
+      !Number.isFinite(Math.fround(item.size))
+    ) {
+      throw new Error("Imported record is outside supported render precision.");
+    }
     pos.push(item.pos[0], item.pos[1], item.pos[2]);
     const rgb = hexToRgb(item.color);
     col.push(rgb[0], rgb[1], rgb[2]);
-    size.push(item.size * (importedCatalogRecords.length > 20000 ? 0.8 : 1.4));
+    size.push(item.size * (records.length > 20000 ? 0.8 : 1.4));
   });
-  importedCatalogBundle = buildBufferBundle(pos, col, size);
+  return buildBufferBundle(pos, col, size);
+}
+
+function replaceImportedCatalogBundle(
+  nextBundle,
+  recordCount = importedCatalogRecords.length,
+) {
+  const previousBundle = importedCatalogBundle;
+  importedCatalogBundle = nextBundle;
+  document.body.classList.toggle("large-catalog", recordCount >= 5000);
+  try {
+    deleteBufferBundle(previousBundle);
+  } catch (error) {
+    // The new bundle is already active; a cleanup error must not roll the
+    // catalog state back or turn a successful import into a reported failure.
+    console.warn(
+      "Could not release the previous imported catalog buffers.",
+      error,
+    );
+  }
+}
+
+function rebuildImportedCatalogBundle() {
+  const nextBundle = createImportedCatalogBundle();
+  replaceImportedCatalogBundle(nextBundle);
 }
 
 const localPos = [],
@@ -3449,7 +3508,8 @@ function tierLabel(item) {
   if (item.dataClass === "observational")
     return "Observational / literature grounded";
   if (item.dataClass === "reference") return "Reference origin";
-  if (item.dataClass === "external") return "Imported catalog observation";
+  if (item.dataClass === "external")
+    return "Imported / unverified; measurement-ineligible";
   if (item.dataClass === "model") return "Cosmology model";
   return "Illustrative context";
 }
@@ -3566,7 +3626,7 @@ function showInspector(item) {
       ? "— (no unique sky direction)"
       : `l=${gal.l.toFixed(3)}° / b=${gal.b.toFixed(3)}°`;
   document.getElementById("spec-status").innerText = item.imported
-    ? "Imported / runtime catalog"
+    ? "Imported / unverified; excluded from physical measurements"
     : item.dataClass === "observational"
       ? "Curated scientific core"
       : item.dataClass === "reference"
@@ -3838,17 +3898,22 @@ async function importCatalogText(text, name = "catalog") {
   }
   if (!normalized.length) throw new Error("No valid sky positions.");
   importMetrics.normalizeMs = performance.now() - t;
-  importedCatalogRecords = normalized;
-  importedSourceMetadata = Array.isArray(parsed)
+  const nextSourceMetadata = Array.isArray(parsed)
     ? null
     : Object.fromEntries(
         Object.entries(parsed).filter(([k]) => k !== "records"),
       );
+  const upload = performance.now();
+  // Build the replacement GPU buffers before changing any live catalog state.
+  // Invalid input or an allocation failure therefore leaves the previous import
+  // and its render bundle intact.
+  const nextBundle = createImportedCatalogBundle(normalized);
+  importMetrics.gpuUploadSubmissionMs = performance.now() - upload;
+  importedCatalogRecords = normalized;
+  importedSourceMetadata = nextSourceMetadata;
   displayEpoch = null;
   catalogRevision++;
-  const upload = performance.now();
-  rebuildImportedCatalogBundle();
-  importMetrics.gpuUploadSubmissionMs = performance.now() - upload;
+  replaceImportedCatalogBundle(nextBundle, normalized.length);
   updateCatalogSummary();
   populateDataTable(dataSearch.value);
   drawCMD();
