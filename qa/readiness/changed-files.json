@@ -2,7 +2,7 @@
   "releaseVersion": "5.1.0",
   "baseCommit": "8ddf104da2626733e4d15e9696f4e99340ea0eb6",
   "branch": "improve/review-readiness-v5.1",
-  "standaloneSha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e",
+  "standaloneSha256": "bcccbc9cf2daf276d06c0dd9954df134399fc1e22bfcec3fd347c7138366f6e3",
   "files": [
     {
       "file": "CHANGELOG.md",
@@ -33,12 +33,20 @@
       "sha256": "c0eacacd7e27bbf341d21e7e0e2997a363840a210d8e358d4babaebd765b5bfd"
     },
     {
+      "file": "data/generated/gaia_5k.json",
+      "sha256": "6bdc0b8e410f21c72973daf0d00310e900ba555f4016749e0165ce680b0cc97f"
+    },
+    {
+      "file": "data/generated_manifest.json",
+      "sha256": "89b6657cdc2e0e188958062c00ebe89fbb0c1acdc710f505cb8dd68175118907"
+    },
+    {
       "file": "dist/Cosmic_Atlas_Standalone.html",
-      "sha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e"
+      "sha256": "bcccbc9cf2daf276d06c0dd9954df134399fc1e22bfcec3fd347c7138366f6e3"
     },
     {
       "file": "docs/READINESS_REPORT_5.1.md",
-      "sha256": "d32721f686b6e2dda823c38574745582234fa020a4ac85b9fdb489ab685c1af0"
+      "sha256": "b39ee5ee319598c1503fbdbebbc64a9338e56e0a0f2ce56380d814e904fbb8bc"
     },
     {
       "file": "docs/TECHNICAL_REVIEW_5.1.md",
@@ -49,12 +57,20 @@
       "sha256": "fa06a8fd08f453f92403aec4170690813ba3c5221a476a061e7c6be6fd4e7c1c"
     },
     {
+      "file": "docs/V5_COMPLETION_REPORT.md",
+      "sha256": "e39cbe8a497883ade35d03d9fcebc7777ae6e783ae8fb8d130c419af5fa40ced"
+    },
+    {
       "file": "docs/V5_DATA_AND_LICENSES.md",
       "sha256": "b59a92464e8fe066b7e4515246c9e0cc1dc1779eae3946d129f6389f9ce2b099"
     },
     {
+      "file": "docs/V5_MIGRATION.md",
+      "sha256": "83cd6035d03722170df31af4da44918058bd62ae8d8355972acc93cdafce1a53"
+    },
+    {
       "file": "hosted/index.html",
-      "sha256": "b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e"
+      "sha256": "bcccbc9cf2daf276d06c0dd9954df134399fc1e22bfcec3fd347c7138366f6e3"
     },
     {
       "file": "qa/readiness/additional-run-1.txt",
@@ -70,7 +86,7 @@
     },
     {
       "file": "qa/readiness/behavior.json",
-      "sha256": "a6ff9f01da1aa547f81015139616fa1da18e973056e62269e4ba7d49b9bd90c4"
+      "sha256": "b6635525c0a4776d5022812395ffad638d0dfd821ff2e08c1a0b8afa5471df14"
     },
     {
       "file": "qa/readiness/benchmark-attempt-1.json",
@@ -82,7 +98,7 @@
     },
     {
       "file": "qa/readiness/catalog-inventory.json",
-      "sha256": "438671493e2e178ff50904eec3f6d15216dc08cbb991ac25bb1987e8edb463e9"
+      "sha256": "d5e7e4503e1721d9b53dc686feeddb19dcf64320047a5c6ddc99ca15d39e10ff"
     },
     {
       "file": "qa/readiness/chromium.png",
@@ -90,7 +106,7 @@
     },
     {
       "file": "qa/readiness/commands.json",
-      "sha256": "6a7e41a5af5db12fe4e617a9ad0a45c8fefe20f926815601d2a7f949581a28b7"
+      "sha256": "aa4c120397a5522a07768d2e39b82e3f28f1322c803c74a075c5654081065f75"
     },
     {
       "file": "qa/readiness/core-counts.json",
@@ -122,7 +138,7 @@
     },
     {
       "file": "qa/readiness/performance-after.json",
-      "sha256": "c3ea36d676fa107e97930c3565105936b3fb60ed56e682fca6a46385ccdd6888"
+      "sha256": "61dc26c79097aa2b5a14945b1f91aa6e8bd53a2030c7383fc9de39c42b7ae29b"
     },
     {
       "file": "qa/readiness/performance-before.json",
@@ -130,19 +146,19 @@
     },
     {
       "file": "qa/v5/browser.json",
-      "sha256": "a90129c5f9a48facc39bb9074a0c6daa93cbae618f9cef804903a406dfbdcfb5"
+      "sha256": "9c5daa845dca7b7129aece4e6b249c4ae894166626ec8b5aff86de42eea6c716"
     },
     {
       "file": "qa/v5/build.json",
-      "sha256": "3421be9f2abca79d5127730787571f371d6f739eedf553a7ae4ffe883f3bd695"
+      "sha256": "4fafbb5dc166dd08ae9a99be4d991cf8bcafe8750c2f8c656fe58cd1d51e748c"
     },
     {
       "file": "qa/v5/chromium-desktop.png",
-      "sha256": "2f2eb373bc9f656e55a65766332c6947e40368ec155592ed588472ba6700e9de"
+      "sha256": "58b1b332e7fed969a3b9d8f590887f0b3fda500c399dd16806a0b719b280b337"
     },
     {
       "file": "qa/v5/chromium-development.png",
-      "sha256": "c4d8c34409cc3f4e406f221839fa04b5360ef90fb6dd104f9c73d01ce76f8396"
+      "sha256": "970f7f4a311f39ebe523eef5ee0244b2365ceedd910d35e1d795f819201ae75d"
     },
     {
       "file": "qa/v5/chromium-mobile.png",
@@ -150,15 +166,23 @@
     },
     {
       "file": "qa/v5/firefox-desktop.png",
-      "sha256": "f09334e7142ae4cb4b584f7334ba6caf4ff3b17418526934f61b6f72a9c866f4"
+      "sha256": "bf3f0732665afdb2fc59d3caab064109964a2ab0b67fddc2810b1b705a2a37cb"
     },
     {
       "file": "qa/v5/validation_results.json",
-      "sha256": "46c289770d4414d46e3204ee7f39587f586f38b7e6518ff5ef641758a40e0e91"
+      "sha256": "da9e61258bbcf94f929b840a026308c3f4dbc8384afc6f3934852e8c8412cde5"
     },
     {
       "file": "scripts/build_v5.py",
       "sha256": "ff9b46da4ebef7556ea8314d0177e516386ccd10004c92945f51fff5e5dd5570"
+    },
+    {
+      "file": "scripts/catalog_common.py",
+      "sha256": "a066f6b0124c5b8cfae7b44cacc392410bc6fd5227fbe4db7562859327d93800"
+    },
+    {
+      "file": "scripts/normalize_snapshots.py",
+      "sha256": "4faae0d89c2344769e4398f22edf71e3b276ffc09f2caf1776742362b5293c20"
     },
     {
       "file": "scripts/run_v5_qa.py",
@@ -266,7 +290,7 @@
     },
     {
       "file": "tests/test_readiness.py",
-      "sha256": "3f3ecc75fab64b02b48deca9c7875cdc081f227a00a1d3d97c2e407e2c546ea1"
+      "sha256": "aabc8d1b25f4c9c3fff497f2592037a6bd372e53785c9dedf3130adaff3268cd"
     }
   ],
   "inventoryExcludes": [

@@ -42,7 +42,7 @@ def write_payload(path: str | Path, records: list[dict], source: dict, **metadat
         "records": records,
         **metadata,
     }
-    Path(path).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    Path(path).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def parse_hms_ra(value: str) -> float:

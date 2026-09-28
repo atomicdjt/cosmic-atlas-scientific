@@ -18,9 +18,9 @@ No catalog rows, source snapshots, cosmological parameters, physical assumptions
 
 ## Validation and artifact identity
 
-Standalone `dist/Cosmic_Atlas_Standalone.html`: 9,318,144 bytes. Build ID: `CA-SCI-5.1.0-87345f7c053d`.
+Standalone `dist/Cosmic_Atlas_Standalone.html`: 9,318,151 bytes. Build ID: `CA-SCI-5.1.0-b56863604d12`.
 
-SHA-256: `b41ab540a7938a6219cea330e3da552a8c843c7ba672c00c58937067ccb38d1e`. `hosted/index.html` has the same SHA-256.
+SHA-256: `bcccbc9cf2daf276d06c0dd9954df134399fc1e22bfcec3fd347c7138366f6e3`. `hosted/index.html` has the same SHA-256.
 
 - `python scripts/run_qa.py`: PASS on 5.1.0 — deterministic build/syntax/DOM/offline checks; 32 scientific Node checks; 22 Python tests covering pipeline/schema/source manifests/baseline integrity/reproducibility; Python script compilation. Results are in `qa/v5/validation_results.json` and `qa/v5/build.json`.
 - `python tests/browser_qa.py`: PASS on the 5.1.0 standalone — Chromium desktop, Chromium mobile emulation, modular development edition, Firefox desktop. Browser contexts explicitly offline; no HTTP(S) runtime requests or page errors recorded. Imported raw-source round trips, scientific guards, table/search/filter/epoch paths passed. Results and artifact hash are in `qa/v5/browser.json`.
@@ -35,32 +35,32 @@ Windows-10-10.0.19045-SP0. Chromium 151.0.7922.34 used explicit ANGLE/Vulkan Swi
 
 | Browser / rows | Startup ms before → after | Import ms before → after | Cold pick ms before → after | Cached adjacent pick ms before → after | Filter interaction ms before → after | First table refresh ms before → after | Cached table ms before → after |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| chromium / 5k | 795.8 → 589.5 | 140.7 → 139.7 | 11.0 → 2.8 | 0.1 → 0.1 | 50.5 → 12.3 | 8.5 → 9.7 | 8.7 → 3.2 |
-| chromium / 20k | 672.6 → 611.3 | 1739.9 → 1600.5 | 17.8 → 9.5 | 0.1 → 0.1 | 152.7 → 29.3 | 67.8 → 44.7 | 56.6 → 3.2 |
-| chromium / 50k | 661.7 → 628.8 | 3531.3 → 2321.3 | 33.2 → 18.1 | 0.1 → 0.1 | 319.1 → 67.2 | 166.7 → 139.3 | 188.0 → 3.4 |
-| firefox / 5k | 3035.5 → 855.8 | 302.0 → 371.0 | 6.0 → 2.0 | 0.0 → 0.0 | 39.0 → 6.0 | 15.0 → 13.0 | 15.0 → 2.0 |
-| firefox / 20k | 849.4 → 639.7 | 1398.0 → 989.0 | 19.0 → 3.0 | 0.0 → 1.0 | 200.0 → 16.0 | 123.0 → 139.0 | 122.0 → 3.0 |
-| firefox / 50k | 829.9 → 735.9 | 2827.0 → 2165.0 | 42.0 → 9.0 | 1.0 → 0.0 | 523.0 → 27.0 | 320.0 → 306.0 | 291.0 → 2.0 |
+| chromium / 5k | 795.8 → 593.4 | 140.7 → 154.7 | 11.0 → 3.4 | 0.1 → 0.0 | 50.5 → 13.6 | 8.5 → 9.9 | 8.7 → 2.7 |
+| chromium / 20k | 672.6 → 654.9 | 1739.9 → 1612.0 | 17.8 → 7.5 | 0.1 → 0.1 | 152.7 → 32.5 | 67.8 → 48.1 | 56.6 → 3.6 |
+| chromium / 50k | 661.7 → 819.7 | 3531.3 → 2594.4 | 33.2 → 16.6 | 0.1 → 0.2 | 319.1 → 69.5 | 166.7 → 121.9 | 188.0 → 3.2 |
+| firefox / 5k | 3035.5 → 877.4 | 302.0 → 349.0 | 6.0 → 2.0 | 0.0 → 0.0 | 39.0 → 7.0 | 15.0 → 13.0 | 15.0 → 2.0 |
+| firefox / 20k | 849.4 → 663.6 | 1398.0 → 971.0 | 19.0 → 6.0 | 0.0 → 0.0 | 200.0 → 15.0 | 123.0 → 115.0 | 122.0 → 3.0 |
+| firefox / 50k | 829.9 → 645.7 | 2827.0 → 2294.0 | 42.0 → 10.0 | 1.0 → 0.0 | 523.0 → 30.0 | 320.0 → 319.0 | 291.0 → 2.0 |
 
 
 | Browser / rows | p50 ms before → after | p95 ms before → after | p99 ms before → after | Max ms before → after | >100 ms stalls before → after | Samples before → after |
 |---|---:|---:|---:|---:|---:|---:|
-| chromium / 5k | 16.7 → 16.7 | 49.9 → 33.4 | 50.0 → 50.1 | 50.0 → 50.1 | 0.0 → 0.0 | 171.0 → 172.0 |
-| chromium / 20k | 33.3 → 33.3 | 50.0 → 50.0 | 66.6 → 66.7 | 66.7 → 66.7 | 0.0 → 0.0 | 130.0 → 137.0 |
-| chromium / 50k | 33.4 → 33.3 | 83.3 → 66.7 | 100.1 → 83.3 | 783.2 → 83.4 | 2.0 → 0.0 | 93.0 → 108.0 |
-| firefox / 5k | 6.9 → 6.9 | 7.0 → 7.0 | 7.0 → 7.0 | 13.9 → 7.0 | 0.0 → 0.0 | 578.0 → 577.0 |
-| firefox / 20k | 6.9 → 6.9 | 13.9 → 7.0 | 13.9 → 7.0 | 20.8 → 7.0 | 0.0 → 0.0 | 541.0 → 578.0 |
-| firefox / 50k | 6.9 → 6.9 | 7.0 → 7.0 | 7.0 → 7.0 | 13.9 → 7.0 | 0.0 → 0.0 | 573.0 → 578.0 |
+| chromium / 5k | 16.7 → 16.7 | 49.9 → 33.4 | 50.0 → 50.0 | 50.0 → 50.1 | 0.0 → 0.0 | 171.0 → 178.0 |
+| chromium / 20k | 33.3 → 33.3 | 50.0 → 50.0 | 66.6 → 66.7 | 66.7 → 66.8 | 0.0 → 0.0 | 130.0 → 133.0 |
+| chromium / 50k | 33.4 → 33.3 | 83.3 → 83.3 | 100.1 → 83.3 | 783.2 → 83.4 | 2.0 → 0.0 | 93.0 → 106.0 |
+| firefox / 5k | 6.9 → 6.9 | 7.0 → 7.0 | 7.0 → 7.0 | 13.9 → 7.0 | 0.0 → 0.0 | 578.0 → 579.0 |
+| firefox / 20k | 6.9 → 6.9 | 13.9 → 7.0 | 13.9 → 7.0 | 20.8 → 7.0 | 0.0 → 0.0 | 541.0 → 577.0 |
+| firefox / 50k | 6.9 → 6.9 | 7.0 → 7.0 | 7.0 → 7.0 | 13.9 → 13.9 | 0.0 → 0.0 | 573.0 → 576.0 |
 
 
 | Browser / rows | Largest 20 ms timer gap during import, ms before → after | Coarse JS heap MB before → after |
 |---|---:|---:|
-| chromium / 5k | 27.8 → 29.6 | 81.4 → 53.5 |
-| chromium / 20k | 1285.2 → 1170.4 | 123.0 → 91.7 |
-| chromium / 50k | 1059.9 → 1169.7 | 269.0 → 188.0 |
-| firefox / 5k | 63.0 → 41.0 | unavailable → unavailable |
-| firefox / 20k | 439.0 → 71.0 | unavailable → unavailable |
-| firefox / 50k | 676.0 → 70.0 | unavailable → unavailable |
+| chromium / 5k | 27.8 → 28.0 | 81.4 → 50.4 |
+| chromium / 20k | 1285.2 → 986.2 | 123.0 → 91.7 |
+| chromium / 50k | 1059.9 → 1353.2 | 269.0 → 188.0 |
+| firefox / 5k | 63.0 → 42.0 | unavailable → unavailable |
+| firefox / 20k | 439.0 → 65.0 | unavailable → unavailable |
+| firefox / 50k | 676.0 → 63.0 | unavailable → unavailable |
 
 
 Import totals include staging and commit work and differ from complete file-selection-to-ready wall time. The 20ms timer probe spans file input and import, includes scheduler/GC effects, and is not a pure JS task-duration profiler. CPU upload submission timing does not establish GPU completion. Heap readings are coarse, may vary with GC and exclude worker/GPU/process memory; Firefox does not expose the same heap API. One earlier benchmark attempt crashed the Firefox target during startup of the 50k case, before its import. The failed log and artifact identity are retained in `qa/readiness/benchmark-attempt-1.*`. A subsequent full six-case run passed; the cause of the crash is not established. Short frame intervals can conceal pauses outside the sampled window. No broad browser, physical-device or universal FPS claim is justified.
@@ -77,47 +77,7 @@ The evidence supports a material improvement in failure containment, scientific 
 
 ## Exact changed files
 
-Paths below are relative to the repository root stated above; `qa/readiness/changed-files.json` also contains absolute paths and per-file hashes. The local review ZIP contains maintained source/build/test files, changed documentation and QA evidence; it is a review overlay, not a full data release. Apply/review it against the stated base repository. Large unchanged source datasets and the frozen historical standalone remain in the project.
-
-- `CHANGELOG.md`
-- `CITATION.cff`
-- `README_V5.md`
-- `VERSION`
-- `dist/Cosmic_Atlas_Standalone.html`
-- `docs/READINESS_REPORT_5.1.md`
-- `docs/TECHNICAL_REVIEW_5.1.md`
-- `docs/V5_ARCHITECTURE.md`
-- `qa/readiness/additional-run-1.txt`
-- `qa/readiness/additional-run-2.txt`
-- `qa/readiness/baseline-browser.json`
-- `qa/readiness/behavior.json`
-- `qa/readiness/benchmark-attempt-1.json`
-- `qa/readiness/benchmark-attempt-1.txt`
-- `qa/readiness/catalog-inventory.json`
-- `qa/readiness/changed-files.json`
-- `qa/readiness/chromium.png`
-- `qa/readiness/commands.json`
-- `qa/readiness/core-counts.json`
-- `qa/readiness/final-run-1.txt`
-- `qa/readiness/final-run-2.txt`
-- `qa/readiness/final-run-3.txt`
-- `qa/readiness/final-run-4.txt`
-- `qa/readiness/firefox.png`
-- `qa/readiness/mobile-emulation.png`
-- `qa/readiness/performance-after.json`
-- `qa/readiness/performance-before.json`
-- `qa/v5/browser.json`
-- `qa/v5/build.json`
-- `qa/v5/chromium-desktop.png`
-- `qa/v5/chromium-development.png`
-- `qa/v5/chromium-mobile.png`
-- `qa/v5/firefox-desktop.png`
-- `qa/v5/validation_results.json`
-- `scripts/build_v5.py`
-- `scripts/run_v5_qa.py`
-- `src/README.md`
-- `src/app/constants.js`
-- `src/app/render-loop.js`
+The complete repository-relative change list and per-file SHA-256 values are in [`qa/readiness/changed-files.json`](../qa/readiness/changed-files.json). The manifest is compared with the stated base commit and omits only itself to avoid a self-referential hash. This release-readiness artifact is a review overlay, not a full data release; unchanged source datasets and the frozen historical standalone remain in the project.
 - `src/app/shell.html`
 - `src/catalog/filtering.js`
 - `src/catalog/gpu-upload.js`
