@@ -19,7 +19,7 @@ python scripts/build_v5.py
 python scripts/run_qa.py
 ```
 
-For a fresh retrieval, omit `--offline`. A fresh retrieval can differ as upstream services change; it is a new data product with its own timestamp and hashes. Some legacy normalization timestamps reflect generation time. Preserve the supplied normalized files for byte-identical release rebuilding. The HTML build itself is deterministic for fixed inputs.
+For a fresh retrieval, omit `--offline`. A fresh retrieval can differ as upstream services change; it is a new data product with its own timestamp and hashes. Offline normalization takes timestamps from the saved acquisition manifest, writes LF-terminated JSON, and rounds the derived OpenNGC comoving display distance to six decimal light-years before serialization. This is far more numerical precision than the adopted redshift model supports and prevents last-bit platform math differences from changing catalog hashes. Preserve the supplied normalized files for byte-identical release rebuilding. The HTML build itself is deterministic for fixed inputs.
 
 Gaia ADQL: `data/raw/gaia_50k.adql`. Raw Gaia response: `data/raw/gaia_50k.csv`. BSC5 full conversion snapshot: `data/raw/bsc5.json`. OpenNGC snapshots: `data/raw/NGC.csv` and `data/raw/addendum.csv`. `scripts/normalize_snapshots.py` augments the existing OpenNGC ingestion output with every upstream field and emits the full BSC5 conversion with angular-only distances. The original compact BSC5/DR3 scripts remain available for historical compatibility.
 

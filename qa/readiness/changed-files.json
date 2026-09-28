@@ -38,7 +38,7 @@
     },
     {
       "file": "data/generated_manifest.json",
-      "sha256": "89b6657cdc2e0e188958062c00ebe89fbb0c1acdc710f505cb8dd68175118907"
+      "sha256": "bdb7f07a1fa9eb9d12df34a4d909dea893cba19f875c57b82ee57ff2155b6dd3"
     },
     {
       "file": "dist/Cosmic_Atlas_Standalone.html",
@@ -62,7 +62,7 @@
     },
     {
       "file": "docs/V5_DATA_AND_LICENSES.md",
-      "sha256": "b59a92464e8fe066b7e4515246c9e0cc1dc1779eae3946d129f6389f9ce2b099"
+      "sha256": "b36fc275fce0d4523b8845594e1fe6ba3183e039993acbd4c79c117e03c2c500"
     },
     {
       "file": "docs/V5_MIGRATION.md",
@@ -98,7 +98,7 @@
     },
     {
       "file": "qa/readiness/catalog-inventory.json",
-      "sha256": "d5e7e4503e1721d9b53dc686feeddb19dcf64320047a5c6ddc99ca15d39e10ff"
+      "sha256": "301489cd0427e39aec666f5c2c72e41c2f43ca60a7a665e7acb743f24284a168"
     },
     {
       "file": "qa/readiness/chromium.png",
@@ -170,7 +170,7 @@
     },
     {
       "file": "qa/v5/validation_results.json",
-      "sha256": "da9e61258bbcf94f929b840a026308c3f4dbc8384afc6f3934852e8c8412cde5"
+      "sha256": "c5c3a383da9be7bc823a7840bf978fad9f589ca685f42087ca6f9578da290439"
     },
     {
       "file": "scripts/build_v5.py",
@@ -178,7 +178,7 @@
     },
     {
       "file": "scripts/catalog_common.py",
-      "sha256": "a066f6b0124c5b8cfae7b44cacc392410bc6fd5227fbe4db7562859327d93800"
+      "sha256": "74f4d671933bac54804db625c094be6c289fbd9c341092936919df6341e85a8e"
     },
     {
       "file": "scripts/normalize_snapshots.py",
