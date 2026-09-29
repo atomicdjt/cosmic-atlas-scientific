@@ -1,6 +1,6 @@
-# Cosmic Atlas Scientific v5
+# Cosmic Atlas Scientific v6
 
-A provenance-aware interactive scientific visualization combining astronomical catalog observations, literature-adopted measurements, numerical cosmology, and explicitly identified procedural context.
+A provenance-aware offline astronomy atlas combining catalog observations, literature-adopted measurements, numerical cosmology, and explicitly identified procedural context. Version 6 adds a bounded N-body laboratory, an explicitly approximate observer-direction utility, a patched-conic mission estimator, catalog-pack contracts and terrain/body metadata foundations.
 
 Open **`dist/Cosmic_Atlas_Standalone.html`** directly in a browser. It includes a genuine **5,000-record Gaia DR3 catalog** and the preserved curated core. No server, package installation, account, API key or network is required. Optional **20k and 50k Gaia**, **9,096-row BSC5**, and **14,027-row OpenNGC** catalogs are included in the full release package and can be imported locally.
 
@@ -16,11 +16,11 @@ python -m playwright install chromium firefox
 python tests/browser_qa.py
 ```
 
-Build tools are Python and Node; these are not runtime dependencies. Install development dependencies only when running QA. Source snapshots are included; regenerate larger catalogs offline with `python scripts/acquire_v5.py --offline` followed by `python scripts/normalize_snapshots.py`. The lightweight Git checkout includes Gaia 5k; the full release ZIP includes all normalized tiers.
+Build tools are Python and Node; these are not runtime dependencies. Install development dependencies only when running QA. Source snapshots are included; regenerate larger catalogs offline with `python scripts/acquire_v5.py --offline` followed by `python scripts/normalize_snapshots.py`. The lightweight Git checkout includes Gaia 5k; the full release ZIP includes all normalized tiers. A normal `python scripts/run_qa.py` validates the embedded tier; CI also sets `COSMIC_ATLAS_VALIDATE_FULL_CATALOGS=1` after materializing the optional tiers.
 
 ## What changed
 
-52 maintained source modules replace the monolithic development path. Worker parsing, chunked normalization, scientific filters, source-preserving exports, guarded measurements, linked diagram, epoch display, screen-grid picking and dense-catalog rendering controls build on v4. Offline/static/scientific/catalog tests and real browser checks accompany the release.
+The v6 platform adds an AU/solar-mass/Julian-day velocity-Verlet lab with energy and momentum diagnostics, a clearly limited mean-sidereal observer orientation, a coplanar circular Hohmann estimator, explicit catalog-pack delivery/provenance contracts and terrain ellipsoid metadata. These are model tools and foundations—not a claim of JPL ephemerides, SOFA-grade astrometry, a full-sky HEALPix pack, or bundled terrain imagery. See `docs/SCIENTIFIC_PLATFORM_V6.md`.
 
 ## Repository map
 

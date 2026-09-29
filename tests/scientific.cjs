@@ -8,9 +8,18 @@ const names = [
   "astronomy/distance-scale.js",
   "astronomy/random.js",
   "astronomy/coordinates.js",
+  "astronomy/time.js",
   "astronomy/galactic.js",
   "ui/format.js",
   "astronomy/units.js",
+  "astronomy/frames.js",
+  "astronomy/observer.js",
+  "physics/model.js",
+  "physics/gravity.js",
+  "physics/integrator.js",
+  "physics/diagnostics.js",
+  "missions/model.js",
+  "missions/trajectory.js",
   "astronomy/uncertainty.js",
   "astronomy/distance-semantics.js",
   "catalog/provenance.js",
@@ -21,6 +30,8 @@ const names = [
   "catalog/normalize.js",
   "astronomy/measurement.js",
   "catalog/filtering.js",
+  "catalog/pack-index.js",
+  "terrain/model.js",
   "interaction/spatial-index.js",
 ];
 const ctx = vm.createContext({ console, structuredClone });
@@ -148,4 +159,11 @@ test('Large IDs require strings',`assert.equal(normalizeImportedRecord({id:90071
 test('Unverified tier and angular-only provenance round trip',`const a=normalizeImportedRecord({id:'a',ra_deg:1,dec_deg:2,angular_only:true,display_shell_ly:1000,custom:{a:1},tier:'context'},0),b=normalizeImportedRecord(exportRecord(a),0);assert.equal(a.dataClass,'external');assert.equal(b.dataClass,'external');assert.equal(b.angularOnly,true);assert.equal(b.raw.custom.a,1);assert.equal(exportRecord(b).source_claims.tier,'context');assert.equal(exportRecord(b).distance_ly,null)`);
 test('Numeric filters exclude unknowns',`const a=normalizeImportedRecord({id:'a',ra_deg:1,dec_deg:2,angular_only:true},0);assert.equal(matchesCatalogFilter(a,{...catalogFilter,snrMin:10}),false);assert.equal(matchesCatalogFilter(a),true)`);
 test('Screen grid nearest and misses',`const g=new ScreenGrid();const a={id:'a',pos:[10,10]},b={id:'b',pos:[200,100]};g.build([a,b],x=>x);assert.equal(g.nearest(11,11).id,'a');assert.equal(g.nearest(500,500),null)`);
+test('Julian year and Julian date round trip',`assert.ok(Math.abs(jdToJulianYear(julianYearToJd(2026.25))-2026.25)<1e-12)`);
+test('Observer rejects invalid latitude and preserves horizontal bounds',`assert.equal(validateObserver({latitudeDeg:91,longitudeDeg:0}),null);const h=icrsToHorizontalApprox(0,0,J2000_JD,{latitudeDeg:0,longitudeDeg:0});assert.ok(h.altitudeDeg>=-90&&h.altitudeDeg<=90&&h.azimuthDeg>=0&&h.azimuthDeg<360)`);
+test('Velocity Verlet retains a near-circular two-body orbit',`let s=createSimulationState([{id:'sun',massSolar:1,positionAu:[0,0,0],velocityAuDay:[0,0,0]},{id:'planet',massSolar:3e-6,positionAu:[1,0,0],velocityAuDay:[0,Math.sqrt(GRAVITATIONAL_CONSTANT_AU3_SOLAR_MASS_DAY2),0]}],{stepDays:.25});const e0=simulationDiagnostics(s).totalEnergy;s=advanceSimulation(s,365.25,2000);const d=Math.hypot(...s.bodies[1].positionAu);assert.ok(Math.abs(d-1)<.003);assert.ok(Math.abs(simulationDiagnostics(s).totalEnergy/e0-1)<2e-5)`);
+test('N-body model refuses duplicate identities and invalid masses',`assert.equal(createBody({id:'bad',massSolar:0,positionAu:[0,0,0],velocityAuDay:[0,0,0]}),null);assert.throws(()=>createSimulationState([{id:'x',massSolar:1,positionAu:[0,0,0],velocityAuDay:[0,0,0]},{id:'x',massSolar:1,positionAu:[1,0,0],velocityAuDay:[0,0,0]}]))`);
+test('Catalog pack metadata distinguishes embedded data from a contract',`const a=validateCatalogPack({id:'a',label:'A',recordCount:2,provenance:'p',delivery:'embedded standalone'}),b=validateCatalogPack({id:'b',label:'B',recordCount:0,provenance:'p',delivery:'optional local pack'});assert.equal(catalogPacksForCapability([a,b],'embedded standalone').length,1);assert.ok(catalogPackSummary(a).includes('2 records'))`);
+test('Terrain ellipsoid places equator and rejects invalid body',`const earth={id:'earth',equatorialRadiusKm:6378.137,polarRadiusKm:6356.752};assert.ok(Math.abs(terrainEllipsoidPoint(earth,0,0,0)[0]-6378.137)<1e-9);assert.equal(validateTerrainBody({id:'bad',equatorialRadiusKm:0}),null)`);
+test('Mission Hohmann estimate is bounded and records assumptions',`const h=hohmannTransferEstimate(1,1.524);assert.ok(h.timeDays>200&&h.timeDays<300);assert.ok(h.deltaVAuDay>0);assert.equal(createMissionScenario({id:'x',name:'x',departureJd:2,arrivalJd:1}),null)`);
 console.log(JSON.stringify({ passed: count }));

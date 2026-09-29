@@ -8,6 +8,7 @@ function render(now) {
   if (frameDurations.length > 600) frameDurations.shift();
   const dt = Math.min(0.1, (now - lastTime) * 0.001);
   lastTime = now;
+  if (typeof physicsLabTick === "function") physicsLabTick(now);
 
   resizeCanvas();
 

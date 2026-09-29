@@ -1,0 +1,10 @@
+# Cosmic Atlas is built from exact source snapshots and deterministic text inputs.
+# Keep all source text LF across platforms; raw source responses and historic
+# release artifacts are byte-preserved evidence and must not be transformed.
+* text=auto eol=lf
+*.png binary
+*.zip binary
+data/raw/** -text
+standalone/** -text
+historical/** -text
+dist/** -text
