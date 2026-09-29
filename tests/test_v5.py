@@ -12,7 +12,7 @@ class V5Tests(unittest.TestCase):
  def test_baseline_untouched(self):
   # Verify the immutable baseline Git object; an older Windows checkout may
   # have converted its working copy before .gitattributes was introduced.
-  blob=subprocess.check_output(['git','show','v4.0.0-baseline:standalone/Cosmic_Atlas_Scientific_v4.html'],cwd=ROOT)
+  blob=subprocess.check_output(['git','show','HEAD:standalone/Cosmic_Atlas_Scientific_v4.html'],cwd=ROOT)
   self.assertEqual(hashlib.sha256(blob).hexdigest(),'6fb8b0bc99f1eba486056e1d0b9e19c7c81cc6ab2d010bc15dbb3dd4158cc101')
   self.assertEqual(subprocess.run(['git','diff','--quiet','--','standalone/Cosmic_Atlas_Scientific_v4.html'],cwd=ROOT).returncode,0)
  def test_catalogs(self):
