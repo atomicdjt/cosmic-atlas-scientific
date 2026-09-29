@@ -1,0 +1,16 @@
+{
+  "schema": "cosmic-atlas.terrain-bodies.v1",
+  "bodies": [
+    {
+      "id": "earth-reference-ellipsoid",
+      "name": "Earth reference ellipsoid",
+      "equatorialRadiusKm": 6378.137,
+      "polarRadiusKm": 6356.752314245,
+      "rotationPeriodHours": 23.9344696,
+      "terrain": null,
+      "texture": null,
+      "provenance": "WGS 84 reference ellipsoid parameters",
+      "limitations": ["Reference ellipsoid only; no DEM or imagery is bundled", "Not a geodetic authority"]
+    }
+  ]
+}

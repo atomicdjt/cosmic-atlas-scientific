@@ -7,6 +7,9 @@ def main():
  results=[]
  with sync_playwright() as pw:
   cases=[('chromium-desktop','chromium',{'viewport':{'width':1440,'height':1000}},'Cosmic_Atlas_Standalone.html'),('chromium-mobile','chromium',{'viewport':{'width':390,'height':844},'device_scale_factor':2,'is_mobile':True,'has_touch':True,'reduced_motion':'reduce'},'Cosmic_Atlas_Standalone.html'),('chromium-development','chromium',{'viewport':{'width':1440,'height':1000}},'development.html'),('firefox-desktop','firefox',{'viewport':{'width':1440,'height':1000}},'Cosmic_Atlas_Standalone.html')]
+  requested=os.environ.get('COSMIC_ATLAS_BROWSER_CASE')
+  if requested: cases=[case for case in cases if case[0]==requested]
+  if not cases: raise ValueError('Unknown COSMIC_ATLAS_BROWSER_CASE')
   for name,engine,options,filename in cases:
    print('START '+name,flush=True)
    result={'case':name,'artifact_sha256':hashlib.sha256((ROOT/'dist'/filename).read_bytes()).hexdigest(),'checks':{},'errors':[]};browser=None
@@ -23,6 +26,11 @@ def main():
     result['checks']['webgl']=page.evaluate('typeof gl!=="undefined" && !!gl && gl.getError()===0');result['renderer']=page.evaluate('gl.getParameter(gl.RENDERER)');result['checks']['programs']=page.evaluate('[particleProg,lineProg,cmbProg].every(p=>gl.getProgramParameter(p,gl.LINK_STATUS))')
     result['checks']['workbench']=page.locator('.science-workbench').count()==1
     assert result['checks']['workbench'],'Application bootstrap incomplete'
+    result['checks']['physics_lab']=page.locator('.physics-lab').count()==1
+    page.locator('#physics-step-btn').click();result['checks']['physics_step']=page.locator('#physics-lab-output').inner_text().find('E=')>=0
+    page.locator('#mission-estimate-btn').click();result['checks']['mission_estimate']=page.locator('#mission-output').inner_text().find('Hohmann')>=0
+    page.locator('#observer-update-btn').click();result['checks']['observer_estimate']=page.locator('#observer-output').inner_text().find('altitude')>=0
+    assert all(result['checks'].values()),'Scientific platform controls did not initialize'
     result['checks']['import_trust_boundary']=page.evaluate('''async()=>{
       await importCatalogText(JSON.stringify({records:[
         {id:"untrusted-tier",ra_deg:12,dec_deg:34,distance_ly:42,tier:"observational",measurement_eligible:true,color:{invalid:true}},

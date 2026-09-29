@@ -2,6 +2,8 @@
 from pathlib import Path
 import json,hashlib,re,subprocess
 ROOT=Path(__file__).resolve().parents[1]
+def write_lf(path,text):
+    with Path(path).open('w',encoding='utf-8',newline='\n') as output: output.write(text)
 def build():
     names=json.loads((ROOT/'src/modules.json').read_text())
     chunks=[(ROOT/'src'/n).read_text(encoding='utf-8') for n in names]
@@ -36,6 +38,6 @@ def build():
     for pattern in [r'<script[^>]+src=',r'<link[^>]+stylesheet',r'\bfetch\s*\(',r'Math\.random\s*\(',r'\bXMLHttpRequest\b',r'\bWebSocket\b',r'\bEventSource\b',r'\bsendBeacon\s*\(',r'\bimportScripts\s*\(',r'@import\s',r'url\(["\']?https?']:
         if re.search(pattern,html,re.I): errors.append('offline/determinism violation: '+pattern)
     result={'version':version,'buildId':identity,'modules':len(names),'bytes':len(html.encode()),'sha256':hashlib.sha256(html.encode()).hexdigest(),'errors':errors,'passed':not errors}
-    (ROOT/'qa/v5/build.json').write_text(json.dumps(result,indent=2)+'\n')
+    write_lf(ROOT/'qa/v5/build.json',json.dumps(result,indent=2)+'\n')
     print(json.dumps(result));return result
 if __name__=='__main__': raise SystemExit(0 if build()['passed'] else 1)

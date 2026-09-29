@@ -1,0 +1,24 @@
+{
+  "schema": "cosmic-atlas.catalog-packs.v1",
+  "packs": [
+    {
+      "id": "gaia-dr3-5k-embedded",
+      "label": "Gaia DR3 5k embedded sample",
+      "recordCount": 5000,
+      "coordinateFrame": "ICRS",
+      "delivery": "embedded standalone",
+      "provenance": "ESA Gaia DR3 archive snapshot; normalized locally",
+      "limitations": ["Selected sample, not a complete sky survey", "No HEALPix partition is claimed for this embedded sample"]
+    },
+    {
+      "id": "gaia-dr3-tiled-contract",
+      "label": "Gaia tiled-pack contract",
+      "recordCount": 0,
+      "coordinateFrame": "ICRS",
+      "spatialIndex": "HEALPix required at pack-build time",
+      "delivery": "optional local pack",
+      "provenance": "No data bundled; manifest contract only",
+      "limitations": ["Requires a separately built, versioned tile pack", "No runtime network acquisition"]
+    }
+  ]
+}

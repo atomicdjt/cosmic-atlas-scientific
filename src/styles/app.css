@@ -1075,7 +1075,8 @@ input:checked + .slider:before {
 /* ]]> */
 
 /* v5 scientific controls */
-.science-workbench {
+.science-workbench,
+.physics-lab {
   margin-top: 16px;
   padding: 12px;
   border: 1px solid #34516a;
@@ -1084,7 +1085,8 @@ input:checked + .slider:before {
   color: #c9daea;
   font-size: 12px;
 }
-.science-workbench summary {
+.science-workbench summary,
+.physics-lab summary {
   cursor: pointer;
   font-weight: 600;
   padding: 8px 0;
@@ -1095,12 +1097,15 @@ input:checked + .slider:before {
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
-.science-workbench label {
+.science-workbench label,
+.physics-lab label {
   display: block;
   margin: 8px 0;
 }
 .science-workbench input:not([type="checkbox"]),
-.science-workbench select {
+.science-workbench select,
+.physics-lab input:not([type="checkbox"]),
+.physics-lab select {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -1154,7 +1159,8 @@ input:checked + .slider:before {
   .workbench-fields {
     grid-template-columns: 1fr;
   }
-  .science-workbench {
+  .science-workbench,
+  .physics-lab {
     margin-bottom: 30px;
   }
 }
@@ -1166,5 +1172,6 @@ input:checked + .slider:before {
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
 
 .orientation-note { position:fixed; top:96px; left:50%; transform:translateX(-50%); width:calc(100% - 760px); max-width:640px; z-index:4; pointer-events:none; border:1px solid #334f69; border-radius:8px; padding:10px 12px; background:rgba(7,16,28,.94); color:#dce9f8; font:12px/1.5 sans-serif; }
+.science-rule { border:0; border-top:1px solid rgba(143,234,255,.2); margin:14px 0; }
 @media (max-width:1100px) { .orientation-note { top:100px; width:calc(100% - 680px); font-size:11px; } }
 @media (max-width:900px) { .orientation-note { top:140px; width:calc(100% - 56px); max-width:600px; } }
