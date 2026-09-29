@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import re, unittest
+import json, re, unittest
 from collections import Counter
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -20,5 +20,9 @@ class StaticReleaseTests(unittest.TestCase):
     def test_scientific_guards(self):
         for token in ['angularOnly','distanceBasis','procedural','cosmic-atlas.catalog.v1','Imported Scientific Catalog','Guided tour']:
             self.assertIn(token,self.s)
+    def test_vercel_root_serves_standalone(self):
+        config=json.loads((ROOT/'vercel.json').read_text(encoding='utf-8'))
+        self.assertEqual(config['outputDirectory'],'dist')
+        self.assertIn({'source':'/','destination':'/Cosmic_Atlas_Standalone.html'},config['rewrites'])
 
 if __name__=='__main__': unittest.main()
