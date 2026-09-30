@@ -8,17 +8,27 @@
       "coordinateFrame": "ICRS",
       "delivery": "embedded standalone",
       "provenance": "ESA Gaia DR3 archive snapshot; normalized locally",
-      "limitations": ["Selected sample, not a complete sky survey", "No HEALPix partition is claimed for this embedded sample"]
+      "limitations": [
+        "Selected sample, not a complete sky survey",
+        "No HEALPix partition is claimed for this embedded sample"
+      ]
     },
     {
-      "id": "gaia-dr3-tiled-contract",
-      "label": "Gaia tiled-pack contract",
-      "recordCount": 0,
+      "id": "gaia-dr3-local-ring",
+      "label": "Gaia DR3 generated local HEALPix pack",
+      "recordCount": 50000,
       "coordinateFrame": "ICRS",
-      "spatialIndex": "HEALPix required at pack-build time",
+      "spatialIndex": "HEALPix RING; order 3; nside 8",
       "delivery": "optional local pack",
-      "provenance": "No data bundled; manifest contract only",
-      "limitations": ["Requires a separately built, versioned tile pack", "No runtime network acquisition"]
+      "provenance": "Deterministically generated from the supplied normalized Gaia DR3 50k source; parent hash in generated pack manifest",
+      "builder": "scripts/build_catalog_pack.py",
+      "runtime": "src/catalog/local-pack.js",
+      "limitations": [
+        "Generated locally or in CI; duplicate 50k tile assets are not embedded",
+        "Selected quality/brightness sample, not full Gaia DR3",
+        "Runtime records remain external/unverified",
+        "Loaded cone only; strict retained-source-byte/row budgets"
+      ]
     }
   ]
 }

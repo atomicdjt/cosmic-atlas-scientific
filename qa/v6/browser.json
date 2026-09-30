@@ -1,0 +1,144 @@
+{
+  "platform": "Windows-10-10.0.19045-SP0",
+  "artifactSha256": "970662e47c61da8624983ace2669d6a56879d052a5e72caf2e3fc672a50b0ceb",
+  "packSourceSha256": "bf0c832c9abc8d61ed52d5693057d23b71424c40eda44f303f2c2da9fdbdcb3f",
+  "results": [
+    {
+      "case": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "checks": {
+        "workspace_accessibility": true,
+        "ephemeris_visible_provenance": true,
+        "range_refusal": true,
+        "state_export": true,
+        "simulation_worker_quality": true,
+        "simulation_cancellation": true,
+        "lambert_visible_result": true,
+        "grid_transferable_and_missing_cells": true,
+        "grid_cancellation": true,
+        "pack_trust_and_budgets": true,
+        "pack_source_preservation": true,
+        "pack_cone_matches_source_directions": true,
+        "overbudget_cone_refused_without_publication": true,
+        "bad_hash_rejected": true,
+        "streaming_reader_cancellation": true,
+        "cache_eviction": true,
+        "workspace_focus_restore": true,
+        "offline_no_network": true,
+        "no_page_errors": true
+      },
+      "metrics": {
+        "embeddedStartupMs": 3342.2030999936396,
+        "simulation360WallMs": 359.24180000438355,
+        "simulation4000WorkerWallMs": 68.70000000298023,
+        "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
+        "grid625WallMs": 306.5459000063129,
+        "ephemeris10000Ms": 14.700000002980232,
+        "lambert1000Ms": 21.69999998807907,
+        "pack50kConeWallMs": 2453.7420999986352,
+        "pack": {
+          "sourceRows": 50000,
+          "manifestTiles": 768,
+          "cachedRows": 2283,
+          "cachedBytes": 4172265,
+          "publishedRows": 1334
+        }
+      },
+      "pageErrors": [],
+      "externalRequests": [],
+      "passed": true
+    },
+    {
+      "case": "firefox",
+      "browserVersion": "153.0",
+      "checks": {
+        "workspace_accessibility": true,
+        "ephemeris_visible_provenance": true,
+        "range_refusal": true,
+        "state_export": true,
+        "simulation_worker_quality": true,
+        "simulation_cancellation": true,
+        "lambert_visible_result": true,
+        "grid_transferable_and_missing_cells": true,
+        "grid_cancellation": true,
+        "pack_trust_and_budgets": true,
+        "pack_source_preservation": true,
+        "pack_cone_matches_source_directions": true,
+        "overbudget_cone_refused_without_publication": true,
+        "bad_hash_rejected": true,
+        "streaming_reader_cancellation": true,
+        "cache_eviction": true,
+        "workspace_focus_restore": true,
+        "offline_no_network": true,
+        "no_page_errors": true
+      },
+      "metrics": {
+        "embeddedStartupMs": 1490.6422000058228,
+        "simulation360WallMs": 149.9467999965418,
+        "simulation4000WorkerWallMs": 57,
+        "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
+        "grid625WallMs": 198.61579999269452,
+        "ephemeris10000Ms": 18,
+        "lambert1000Ms": 19,
+        "pack50kConeWallMs": 1828.8898000027984,
+        "pack": {
+          "sourceRows": 50000,
+          "manifestTiles": 768,
+          "cachedRows": 2283,
+          "cachedBytes": 4172265,
+          "publishedRows": 1334
+        }
+      },
+      "pageErrors": [],
+      "externalRequests": [],
+      "passed": true
+    },
+    {
+      "case": "mobile",
+      "browserVersion": "151.0.7922.34",
+      "checks": {
+        "workspace_accessibility": true,
+        "ephemeris_visible_provenance": true,
+        "range_refusal": true,
+        "state_export": true,
+        "simulation_worker_quality": true,
+        "simulation_cancellation": true,
+        "lambert_visible_result": true,
+        "grid_transferable_and_missing_cells": true,
+        "grid_cancellation": true,
+        "pack_trust_and_budgets": true,
+        "pack_source_preservation": true,
+        "pack_cone_matches_source_directions": true,
+        "overbudget_cone_refused_without_publication": true,
+        "bad_hash_rejected": true,
+        "streaming_reader_cancellation": true,
+        "cache_eviction": true,
+        "workspace_focus_restore": true,
+        "offline_no_network": true,
+        "no_page_errors": true
+      },
+      "metrics": {
+        "embeddedStartupMs": 1593.2778999995207,
+        "simulation360WallMs": 167.52760000235867,
+        "simulation4000WorkerWallMs": 70.5,
+        "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
+        "grid625WallMs": 252.6953000051435,
+        "ephemeris10000Ms": 37.70000000298023,
+        "lambert1000Ms": 20.200000002980232,
+        "pack50kConeWallMs": 1589.970600005472,
+        "pack": {
+          "sourceRows": 50000,
+          "manifestTiles": 768,
+          "cachedRows": 2283,
+          "cachedBytes": 4172265,
+          "publishedRows": 1334
+        }
+      },
+      "pageErrors": [],
+      "externalRequests": [],
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "conditions": "Offline file://; Chromium SwiftShader; reduced motion; single samples, no thermal/device/heap certification"
+}

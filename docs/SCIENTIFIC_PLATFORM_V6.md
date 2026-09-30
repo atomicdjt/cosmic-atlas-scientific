@@ -1,25 +1,29 @@
-# Scientific Platform v6 architecture
+# Scientific platform v6 capability map
 
-This branch extends the offline atlas with bounded scientific tools while preserving the v5 distinction among observed catalog records, adopted literature values, model output, and procedural context.
+Status: implemented development engine, based on main 62f202c. The formal
+v5.1.0 release remains published and frozen. The 6.0.0 build identity does not
+assert a new formal release or scientific certification.
 
-## Simulation laboratory
+| Subsystem | Current implementation | Boundary |
+|---|---|---|
+| Ephemerides | Nine DE441/Horizons targets, six-hour offline state asset, cubic Hermite, barycentric/relative states | 2026–2027 only; geometric ICRF/TDB; explicit planet-system barycenters; no extrapolation or browser SPICE |
+| Time/frames | Explicit scale/origin/units, UTC→TT with caller offset, approximate TT→TDB and ERFA fixtures | No leap-second instant, UT1/EOP or precision apparent/topocentric pointing |
+| Simulation | Fixed-step Verlet, strict input/budget checks, corrected step count, conservation residuals, convergence tests, worker propagation | Newtonian small systems; source initial state becomes separate numerical model |
+| Missions | Validated zero-revolution short/long Lambert, C3/v∞, worker sampled grid and exports; original Hohmann retained | No flight dynamics, capture/launch certification, multi-revolution or singular endpoints |
+| Catalogs | Real HEALPix RING builder and local streaming/hash-verifying cone loader, bounded retained cache, progressive atlas publication | 50k genuine source tested; not full Gaia; loaded-cone search/export; external/unverified trust |
+| Terrain | Ellipsoid and external asset provenance validator | No elevation-grid ingestion, DEM/imagery or terrain renderer |
+| Product | Main-navigation scientific workspace, AU orbital plots, numerical outputs, export and provenance | 2D projection; no full 3D solar-system/terrain scene |
 
-The laboratory state schema is `cosmic-atlas.nbody.v1`. Its units are AU, solar masses and Julian days, using `G = 2.959122082855911e-4 AU^3 / (solar mass day^2)`. The implementation is a pairwise velocity-Verlet integrator with optional Plummer-style softening. It exposes total energy, momentum and centre of mass so a user can assess numerical drift. The bundled presets are defined pedagogical initial conditions, not SPICE/JPL ephemerides. Collisions, relativity, tidal physics, radiation pressure and stellar evolution are outside the model.
+Architecture decisions, worker/cancellation contracts and scientific/data boundaries:
 
-## Time, frames and observer orientation
+- [V6_ARCHITECTURE.md](V6_ARCHITECTURE.md)
+- [V6_METHODOLOGY.md](V6_METHODOLOGY.md)
+- [V6_DATA_AND_PROVENANCE.md](V6_DATA_AND_PROVENANCE.md)
+- [V6_NUMERICAL_VALIDATION.md](V6_NUMERICAL_VALIDATION.md)
+- [V6_LIMITATIONS.md](V6_LIMITATIONS.md)
 
-Internal astronomical time helpers use Julian Date and Julian years. Catalog exchange directions remain ICRS. The current observer utility is a mean-sidereal approximate ICRS-to-horizontal transform, intentionally labelled as such. It omits Earth-orientation parameters, precession/nutation, aberration, polar motion, refraction and a local horizon model; it is not suitable for telescope pointing. A future precision adapter must pin its engine/version and include independent fixtures before becoming the default.
-
-## Missions
-
-Mission scenarios use `cosmic-atlas.mission.v1`. The currently interactive estimate is only the textbook, coplanar, circular two-body Hohmann transfer. It is not Lambert targeting, a launch window, low-thrust optimisation, an encounter design, or a navigation solution. Build-time Horizons/SPICE-derived source data may be added only with raw-query/source-response provenance and independent validation.
-
-## Catalog packs and terrain
-
-`data/catalog_packs.json` declares what is actually embedded and what is merely a future local-pack contract. The embedded Gaia sample is not labelled HEALPix. A real tiled pack must record its HEALPix scheme/order, source release, selection query, artifact hash, build tool version and per-tile counts.
-
-`data/terrain_bodies.json` is body/ellipsoid metadata. Terrain height grids, imagery and map projections are separate assets with their source, datum, resolution, no-data policy, licensing, and hash; no terrain is bundled merely by providing the ellipsoid helper.
-
-## Reproducibility on Windows
-
-`.gitattributes` forces normalized LF source text and preserves `data/raw`, historical evidence and distribution artifacts as bytes. Run the QA command from a fresh checkout to verify source snapshots rather than relying on a pre-existing Windows worktree whose text files may have been checked out with an older `core.autocrlf` policy.
+Existing v5.1 filters, source-preserving imports/exports, measurement safeguards,
+canonical source epochs, accessibility improvements, offline operation and
+seeded procedural layers remain. Raw scientific snapshots and historical
+release artifacts are byte-preserved. Windows/source LF policy includes exact
+Horizons raw responses under a separate -text rule.

@@ -1,3 +1,24 @@
+# v6 scientific engine — development, unreleased
+
+- Add bounded offline NASA/JPL Horizons DE441 geometric states, relative origins,
+  six-hour Hermite interpolation and 26,280 held-out midpoint comparisons.
+- Add explicit time-scale helper, independent ERFA time/sidereal fixtures and
+  machine-readable scientific provenance envelopes.
+- Correct simulation step bookkeeping; reject malformed/over-budget/singular
+  input; expose energy/angular/linear momentum and COM residuals, convergence
+  tests and cancellable worker propagation.
+- Add independently validated zero-revolution Lambert, C3/v∞ and cancellable
+  sampled mission grids; retain original Hohmann/approximate observer paths.
+- Implement genuine HEALPix RING local packs with source-preserving deterministic
+  tiles, streaming/hash-verifying workers, bounded cache and progressive cone
+  publication through existing catalog safeguards.
+- Add a primary-navigation scientific workspace, AU orbital projections and
+  scientific result exports. Terrain remains metadata with explicit adapter gates.
+- Extend offline Chromium/Firefox/mobile, regression and hosted CI coverage;
+  fix the pre-existing hidden-mobile-sidebar QA click path and portable harnesses.
+- Preserve v5.1.0 release/tag/artifacts and all upstream data license boundaries.
+  No formal v6 release, expert endorsement or device certification is implied.
+
 # Cosmic Atlas Scientific 5.1.0
 
 Reliability, performance, scientific communication, and accessibility release.
