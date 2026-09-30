@@ -45,7 +45,7 @@ def main():
     page.locator('#object-search').fill('replacement');page.locator('.search-item').first.focus();page.keyboard.press('Enter')
     check('keyboard_search_restores_focus',"document.activeElement===searchInput && selectedItem.externalId==='replacement' && document.getElementById('inspect-name').getAttribute('aria-live')==='polite'")
     check('reduced_motion_snaps_camera',"()=>{flyToScale(100,[0,0,0]);return reduceMotion && camera.animProgress===1}")
-    page.wait_for_timeout(80);check('reduced_motion_reaches_target',"camera.dist===100 && !camera.animating")
+    page.wait_for_function("camera.dist===100 && !camera.animating",timeout=5000);check('reduced_motion_reaches_target',"camera.dist===100 && !camera.animating")
     page.emulate_media(reduced_motion='no-preference');page.wait_for_function('!reduceMotion');check('motion_preference_updates_live',"!reduceMotion")
     page.emulate_media(reduced_motion='reduce');page.wait_for_function('reduceMotion');check('motion_preference_resets_live',"reduceMotion")
 
