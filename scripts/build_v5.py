@@ -8,11 +8,15 @@ def build():
     names=json.loads((ROOT/'src/modules.json').read_text())
     chunks=[(ROOT/'src'/n).read_text(encoding='utf-8') for n in names]
     version=(ROOT/'VERSION').read_text().strip()
-    fingerprint=hashlib.sha256(('\n'.join(chunks)+(ROOT/'src/styles/app.css').read_text(encoding='utf-8')+(ROOT/'src/app/shell.html').read_text(encoding='utf-8')+(ROOT/'data/generated/gaia_5k.json').read_text(encoding='utf-8')+version).encode()).hexdigest()[:12]
+    ephemeris=json.loads((ROOT/'data/ephemeris/solar-system-2026-2027.json').read_text(encoding='utf-8'))
+    ephemeris['assetSha256']=hashlib.sha256((ROOT/'data/ephemeris/solar-system-2026-2027.json').read_bytes()).hexdigest()
+    ephemeris_json=json.dumps(ephemeris,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c')
+    fingerprint=hashlib.sha256(('\n'.join(chunks)+(ROOT/'src/styles/app.css').read_text(encoding='utf-8')+(ROOT/'src/app/shell.html').read_text(encoding='utf-8')+(ROOT/'data/generated/gaia_5k.json').read_text(encoding='utf-8')+version+ephemeris_json).encode()).hexdigest()[:12]
     identity='CA-SCI-'+version+'-'+fingerprint
     js='\n'.join(chunks).replace('{{VERSION}}',version).replace('{{BUILD_ID}}',identity)
     css=(ROOT/'src/styles/app.css').read_text(encoding='utf-8')
     shell=(ROOT/'src/app/shell.html').read_text(encoding='utf-8')
+    shell=shell.replace('<script>\n{{JS}}\n</script>','<script type="application/json" id="embedded-ephemeris">'+ephemeris_json+'</script>\n<script>\n{{JS}}\n</script>')
     embedded=ROOT/'data/generated/gaia_5k.json'
     boot=''
     if embedded.exists():

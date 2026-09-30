@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: pip install -r requirements-dev.txt
+      - run: pip install -r requirements-dev.txt -r requirements-science.txt
       - run: python scripts/acquire_v5.py --offline
       - run: python scripts/normalize_snapshots.py
       - run: python scripts/run_qa.py
@@ -21,4 +21,35 @@ jobs:
         if: always()
         with:
           name: scientific-qa
-          path: qa/v5/
+          path: |
+            qa/v5/
+            qa/v6/
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -r requirements-dev.txt -r requirements-science.txt
+      - run: python -m playwright install --with-deps chromium firefox
+      - run: python scripts/acquire_v5.py --offline
+      - run: python scripts/normalize_snapshots.py
+      - run: python scripts/build_v5.py
+      - run: python tests/browser_qa.py
+      - run: python tests/readiness_qa.py
+      - run: python tests/interaction_qa.py
+      - run: python tests/scales_qa.py
+      - run: python tests/v6_browser_qa.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-qa
+          path: |
+            qa/v5/
+            qa/v6/
+            qa/readiness/behavior.json

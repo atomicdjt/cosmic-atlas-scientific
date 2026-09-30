@@ -5,6 +5,7 @@ function utcToTimeScales(isoUtc, taiMinusUtcSeconds) {
       taiMinusUtcSeconds < 10 || taiMinusUtcSeconds > 100) throw new Error("Explicit UTC Z timestamp and TAI−UTC offset required.");
   const utc=isoToJulianDate(isoUtc);
   if (!Number.isFinite(utc)) throw new Error("Invalid UTC date; leap-second labels unsupported.");
+  if (utc<2441317.5) throw new RangeError("Integer TAI−UTC helper supports post-1972 UTC only; historical rate offsets unsupported.");
   // Date.parse normalizes invalid dates; reject that normalization.
   if (new Date(Date.parse(isoUtc)).toISOString().slice(0,19)!==isoUtc.slice(0,19)) throw new Error("Invalid UTC calendar date.");
   const tt=utc+(taiMinusUtcSeconds+32.184)/86400;
@@ -15,8 +16,8 @@ function utcToTimeScales(isoUtc, taiMinusUtcSeconds) {
     scientificMetadata:{category:"approximate",source:"caller-supplied TAI−UTC; two-term TT→TDB",
       epoch:utc,timeScale:"UTC",frame:null,units:{time:"Julian day",offset:"seconds"},
       method:"UTC→TT offset and two-term geocentric TT→TDB",assumptions:["Explicit leap-second offset; no leap-second instant"],
-      uncertainty:null,validRange:[2415020.5,2488069.5]},
+      uncertainty:null,validRange:[2441317.5,2488069.5]},
     category:"computed / approximate TDB",method:"TT = UTC + (TAI−UTC) + 32.184 s; two-term TT→TDB",
     limitations:["UTC JD does not represent leap-second instants.","TAI−UTC must be verified by caller.",
-      "Approximate TT→TDB; not SOFA/ERFA execution; limited to 1900–2100."],validRangeJd:[2415020.5,2488069.5]};
+      "Approximate TT→TDB; not SOFA/ERFA execution; UTC helper limited to 1972–2099 civil dates."],validRangeJd:[2441317.5,2488069.5]};
 }

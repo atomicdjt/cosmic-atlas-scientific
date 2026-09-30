@@ -146,6 +146,7 @@ async function importCatalogText(input, name = "catalog") {
 }
 fileInput.onchange = async () => {
   const file = fileInput.files?.[0]; if (!file) return;
+  if(typeof activeLocalPack!=="undefined"){activeLocalPack?.cancel();localPackJob++;}
   // Pass the File into the worker; avoid a main-thread text copy before parsing.
   try { await importCatalogText(file, file.name); } catch (_) { /* status is reported by the job */ }
   finally { fileInput.value = ""; }

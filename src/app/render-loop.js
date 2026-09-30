@@ -11,6 +11,7 @@ function render(now) {
   if (typeof physicsLabTick === "function") physicsLabTick(now);
 
   resizeCanvas();
+  if (typeof localPackCameraTick === "function") localPackCameraTick(now);
 
   if (camera.animating) {
     camera.animProgress += dt * 1.2;

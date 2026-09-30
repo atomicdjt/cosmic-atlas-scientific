@@ -18,7 +18,9 @@
   "catalog/pack-index.js",
   "astronomy/units.js",
   "astronomy/frames.js",
+  "astronomy/time-scales.js",
   "astronomy/observer.js",
+  "astronomy/ephemeris.js",
   "physics/model.js",
   "physics/gravity.js",
   "physics/integrator.js",
@@ -26,6 +28,8 @@
   "physics/presets.js",
   "missions/model.js",
   "missions/trajectory.js",
+  "missions/lambert.js",
+  "physics/worker.js",
   "astronomy/uncertainty.js",
   "astronomy/distance-semantics.js",
   "catalog/provenance.js",
@@ -52,6 +56,7 @@
   "ui/overview.js",
   "catalog/export.js",
   "catalog/import.js",
+  "catalog/local-pack.js",
   "ui/data-table.js",
   "ui/tour.js",
   "ui/layers.js",
@@ -66,5 +71,6 @@
   "ui/mission-planner.js",
   "ui/observer-panel.js",
   "ui/science-workbench.js",
-  "ui/accessibility.js"
+  "ui/accessibility.js",
+  "ui/scientific-platform.js"
 ]

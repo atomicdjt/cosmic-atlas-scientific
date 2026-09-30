@@ -3,7 +3,9 @@ import os,json,hashlib
 from playwright.sync_api import sync_playwright
 R=Path(__file__).resolve().parents[1];result={'scales':[],'errors':[]}
 with sync_playwright() as pw:
- exe=sorted((Path(os.environ['LOCALAPPDATA'])/'ms-playwright').glob('firefox-*/firefox/firefox.exe'))[-1];browser=pw.firefox.launch(headless=True,executable_path=str(exe));ctx=browser.new_context(viewport={'width':1280,'height':900},reduced_motion='reduce');page=ctx.new_page();page.on('pageerror',lambda e:result['errors'].append(str(e)));page.goto((R/'dist/Cosmic_Atlas_Standalone.html').as_uri());page.evaluate('window.atlasReady')
+ candidates=sorted((Path(os.environ.get('LOCALAPPDATA',''))/'ms-playwright').glob('firefox-*/firefox/firefox.exe'));kw={'headless':True}
+ if candidates:kw['executable_path']=str(candidates[-1])
+ browser=pw.firefox.launch(**kw);ctx=browser.new_context(viewport={'width':1280,'height':900},reduced_motion='reduce');page=ctx.new_page();page.on('pageerror',lambda e:result['errors'].append(str(e)));page.goto((R/'dist/Cosmic_Atlas_Standalone.html').as_uri());page.evaluate('window.atlasReady')
  for i in range(6):
   page.locator('.scale-btn').nth(i).click();page.wait_for_timeout(800);result['scales'].append(page.evaluate('({scale:currentScale,name:selectedItem.name,cameraDistance:camera.dist,glError:gl.getError(),motionFinished:!camera.animating})'))
  page.screenshot(path=str(R/'qa/v5/cmb-scale.png'));browser.close()

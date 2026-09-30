@@ -27,6 +27,8 @@ def main():
     result['checks']['workbench']=page.locator('.science-workbench').count()==1
     assert result['checks']['workbench'],'Application bootstrap incomplete'
     result['checks']['physics_lab']=page.locator('.physics-lab').count()==1
+
+    if name=='chromium-mobile': page.locator('#toggle-telemetry-btn').click()
     page.locator('#physics-step-btn').click();result['checks']['physics_step']=page.locator('#physics-lab-output').inner_text().find('E=')>=0
     page.locator('#mission-estimate-btn').click();result['checks']['mission_estimate']=page.locator('#mission-output').inner_text().find('Hohmann')>=0
     page.locator('#observer-update-btn').click();result['checks']['observer_estimate']=page.locator('#observer-output').inner_text().find('altitude')>=0
