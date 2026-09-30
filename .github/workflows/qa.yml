@@ -27,6 +27,11 @@ jobs:
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      # Linux headless Firefox cannot reliably create a WebGL context.
+      # Use a virtual display and Mesa; this remains software/browser QA.
+      COSMIC_ATLAS_FIREFOX_HEADLESS: "0"
+      LIBGL_ALWAYS_SOFTWARE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,14 +42,15 @@ jobs:
           node-version: '22'
       - run: pip install -r requirements-dev.txt -r requirements-science.txt
       - run: python -m playwright install --with-deps chromium firefox
+      - run: sudo apt-get install -y xvfb xauth libgl1-mesa-dri
       - run: python scripts/acquire_v5.py --offline
       - run: python scripts/normalize_snapshots.py
       - run: python scripts/build_v5.py
-      - run: python tests/browser_qa.py
-      - run: python tests/readiness_qa.py
+      - run: xvfb-run -a python tests/browser_qa.py
+      - run: xvfb-run -a python tests/readiness_qa.py
       - run: python tests/interaction_qa.py
-      - run: python tests/scales_qa.py
-      - run: python tests/v6_browser_qa.py
+      - run: xvfb-run -a python tests/scales_qa.py
+      - run: xvfb-run -a python tests/v6_browser_qa.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

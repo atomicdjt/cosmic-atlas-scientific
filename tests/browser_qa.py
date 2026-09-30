@@ -14,7 +14,7 @@ def main():
    print('START '+name,flush=True)
    result={'case':name,'artifact_sha256':hashlib.sha256((ROOT/'dist'/filename).read_bytes()).hexdigest(),'checks':{},'errors':[]};browser=None
    try:
-    kwargs={'headless':True}
+    kwargs={'headless':engine!='firefox' or os.environ.get('COSMIC_ATLAS_FIREFOX_HEADLESS','1')!='0'}
     cache=Path(os.environ.get('LOCALAPPDATA',''))/'ms-playwright'
     if not Path(getattr(pw,engine).executable_path).exists():
      candidates=list(cache.glob('chromium_headless_shell-*/chrome-headless-shell-win64/chrome-headless-shell.exe' if engine=='chromium' else 'firefox-*/firefox/firefox.exe'))

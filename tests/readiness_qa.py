@@ -8,7 +8,7 @@ def main():
  results=[]
  with sync_playwright() as pw:
   for name,engine,viewport in [('chromium','chromium',{'width':1440,'height':1000}),('firefox','firefox',{'width':1440,'height':1000}),('mobile-emulation','chromium',{'width':390,'height':844})]:
-   kwargs={'headless':True};cache=Path(os.environ.get('LOCALAPPDATA',''))/'ms-playwright'
+   kwargs={'headless':engine!='firefox' or os.environ.get('COSMIC_ATLAS_FIREFOX_HEADLESS','1')!='0'};cache=Path(os.environ.get('LOCALAPPDATA',''))/'ms-playwright'
    candidates=sorted(cache.glob('chromium_headless_shell-*/chrome-headless-shell-win64/chrome-headless-shell.exe' if engine=='chromium' else 'firefox-*/firefox/firefox.exe'))
    if candidates:kwargs['executable_path']=str(candidates[-1])
    if engine=='chromium':kwargs['args']=['--use-angle=swiftshader','--enable-unsafe-swiftshader']
