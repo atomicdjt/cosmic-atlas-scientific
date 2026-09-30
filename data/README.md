@@ -9,3 +9,7 @@
 `example_import_catalog.json` is a small import-ready example. The ingestion scripts produce the same schema.
 
 `source_manifest.json` records upstream provenance and the important negative fact that bulk Gaia DR3 is **not embedded** in this release because the build environment could not reliably reach Gaia TAP. The Gaia ingestion script is included for a networked future build.
+
+## v6 scientific assets
+
+`ephemeris/` preserves exact Horizons queries/responses and compiled DE441 states for 2026–2027. See its manifest and `docs/V6_DATA_AND_PROVENANCE.md`. Local HEALPix packs are reproducibly generated with `scripts/build_catalog_pack.py`; they do not replace or relabel the embedded Gaia baseline. `scientific_result_schema.json` describes actual exported provenance envelopes. Terrain data remain absent.

@@ -4,8 +4,10 @@ import json,os,hashlib
 from playwright.sync_api import sync_playwright
 R=Path(__file__).resolve().parents[1];checks={};errors=[]
 with sync_playwright() as pw:
- exe=sorted((Path(os.environ['LOCALAPPDATA'])/'ms-playwright').glob('chromium_headless_shell-*/chrome-headless-shell-win64/chrome-headless-shell.exe'))[-1]
- browser=pw.chromium.launch(executable_path=str(exe),headless=True,args=['--use-angle=swiftshader','--enable-unsafe-swiftshader']);ctx=browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,reduced_motion='reduce');page=ctx.new_page();page.on('pageerror',lambda e:errors.append(str(e)));page.goto((R/'dist/Cosmic_Atlas_Standalone.html').as_uri());page.evaluate('window.atlasReady')
+ candidates=sorted((Path(os.environ.get('LOCALAPPDATA',''))/'ms-playwright').glob('chromium_headless_shell-*/chrome-headless-shell-win64/chrome-headless-shell.exe'))
+ kw={'headless':True,'args':['--use-angle=swiftshader','--enable-unsafe-swiftshader']}
+ if candidates:kw['executable_path']=str(candidates[-1])
+ browser=pw.chromium.launch(**kw);ctx=browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,reduced_motion='reduce');page=ctx.new_page();page.on('pageerror',lambda e:errors.append(str(e)));page.goto((R/'dist/Cosmic_Atlas_Standalone.html').as_uri());page.evaluate('window.atlasReady')
  page.locator('#data-table-btn').click();checks['visible_table_open']=page.locator('#data-modal-backdrop').evaluate("e=>e.classList.contains('open')");page.locator('#table-next').click();checks['table_paging']='page 2/' in page.locator('#data-modal-summary').inner_text();page.locator('#data-table-body button').first.click();checks['row_inspection']=page.locator('#inspect-name').inner_text()!='Earth & Solar System'
  page.locator('.science-workbench summary').click();page.locator('#filter-source').fill('Gaia');page.wait_for_timeout(300)
  with page.expect_download() as download:page.locator('#export-json-btn').click()

@@ -1,12 +1,19 @@
 cff-version: 1.2.0
-message: "If you use Cosmic Atlas Scientific, cite the software release and the upstream astronomical data sources relevant to the records you used."
+message: "If you use Cosmic Atlas Scientific, cite the exact software release or development commit and the upstream astronomical data sources relevant to the records you used."
 title: "Cosmic Atlas Scientific"
-version: "5.1.0"
-date-released: "2026-09-28"
+version: "6.0.0"
 license: MIT
 authors:
   - family-names: "Turner"
     given-names: "David"
 type: software
-abstract: "A zero-dependency, provenance-aware interactive WebGL atlas spanning Solar-neighborhood to CMB scales with explicit observational, model, and illustrative data tiers."
+abstract: "A provenance-aware offline WebGL atlas with bounded source-derived JPL ephemerides, numerical model tools and local HEALPix catalogs. Version 6 is development software; the latest formal release is 5.1.0."
 
+
+repository-code: "https://github.com/atomicdjt/cosmic-atlas-scientific"
+url: "https://github.com/atomicdjt/cosmic-atlas-scientific"
+keywords:
+  - astronomy
+  - scientific provenance
+  - JPL Horizons
+  - HEALPix

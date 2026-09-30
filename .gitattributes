@@ -5,6 +5,7 @@
 *.png binary
 *.zip binary
 data/raw/** -text
+data/ephemeris/raw/** -text
 standalone/** -text
 historical/** -text
 dist/** -text

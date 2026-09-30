@@ -4,7 +4,7 @@ function nBodyAccelerations(bodies, softeningAu) {
   for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
     const delta = subtractVec3(bodies[j].positionAu, bodies[i].positionAu);
     const distanceSquared = dotVec3(delta, delta) + epsilonSquared;
-    if (distanceSquared === 0) continue;
+    if (!Number.isFinite(distanceSquared) || distanceSquared === 0) throw new Error("Coincident/invalid unsoftened bodies; reduce timestep or use an explicit softened model.");
     const inverseDistanceCubed = 1 / (distanceSquared * Math.sqrt(distanceSquared));
     const factorI = GRAVITATIONAL_CONSTANT_AU3_SOLAR_MASS_DAY2 * bodies[j].massSolar * inverseDistanceCubed;
     const factorJ = GRAVITATIONAL_CONSTANT_AU3_SOLAR_MASS_DAY2 * bodies[i].massSolar * inverseDistanceCubed;

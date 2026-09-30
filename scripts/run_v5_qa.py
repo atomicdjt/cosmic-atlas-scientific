@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def write_lf(path,text):
  with Path(path).open('w',encoding='utf-8',newline='\n') as output: output.write(text)
 def main():
- commands=[[sys.executable,'scripts/build_v5.py'],['node','tests/scientific.cjs'],[sys.executable,'-m','unittest','discover','-s','tests','-v'],[sys.executable,'-m','compileall','-q','scripts']]
+ commands=[[sys.executable,'scripts/build_v5.py'],['node','tests/scientific.cjs'],['node','tests/v6_numerics.cjs'],[sys.executable,'-m','unittest','discover','-s','tests','-v'],[sys.executable,'-m','compileall','-q','scripts']]
  if '--browser' in sys.argv:commands.append([sys.executable,'tests/browser_qa.py'])
  results=[]
  for cmd in commands:

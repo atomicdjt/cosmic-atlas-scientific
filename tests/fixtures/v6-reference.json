@@ -1,0 +1,96 @@
+{
+  "referenceVersions": {
+    "erfa": "2.0.1.5",
+    "astropyHealpix": "2.0.1"
+  },
+  "time": [
+    {
+      "utc": "2026-01-01T00:00:00Z",
+      "jdTt": 2461041.500800741,
+      "jdTdbErfa": 2461041.50080074,
+      "reference": "ERFA dtf2d/utctai/taitt/dtdb, geocenter"
+    },
+    {
+      "utc": "2026-09-30T00:00:00Z",
+      "jdTt": 2461313.500800741,
+      "jdTdbErfa": 2461313.5008007223,
+      "reference": "ERFA dtf2d/utctai/taitt/dtdb, geocenter"
+    },
+    {
+      "utc": "2027-12-31T00:00:00Z",
+      "jdTt": 2461770.500800741,
+      "jdTdbErfa": 2461770.5008007395,
+      "reference": "ERFA dtf2d/utctai/taitt/dtdb, geocenter"
+    }
+  ],
+  "lambert": {
+    "source": "https://github.com/CelesTrak/fundamentals-of-astrodynamics/blob/49df0479c950917c0a2c5ac31f2db6477bba57f6/software/python/tests/astro/iod/test_lambert.py",
+    "case": "test_universal LONG HIGH nrev=0",
+    "r1Km": [
+      15945.34075,
+      0,
+      0
+    ],
+    "r2Km": [
+      12214.83962544293,
+      10249.467311874701,
+      0
+    ],
+    "seconds": 92854.234,
+    "muKm3S2": 398600.4415,
+    "departureKmS": [
+      0.8790611303752992,
+      -6.351161592594172,
+      0
+    ],
+    "arrivalKmS": [
+      3.409048205683391,
+      -5.43032161186189,
+      0
+    ]
+  },
+  "pack": {
+    "schema": "cosmic-atlas.local-pack.v1",
+    "frame": "ICRS",
+    "scheme": "HEALPix RING",
+    "order": 0,
+    "nside": 1,
+    "recordCount": 1,
+    "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sourceMetadata": {
+      "release": "reference"
+    },
+    "builder": {
+      "version": "fixture"
+    },
+    "tiles": [
+      {
+        "id": 4,
+        "file": "ring-0-4.ndjson",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "rowCount": 1,
+        "bytes": 100,
+        "centerRaDeg": 0,
+        "centerDecDeg": 0,
+        "sourceCapRadiusDeg": 1
+      }
+    ]
+  },
+  "sidereal": [
+    {
+      "jdUt1": 2451545.0,
+      "gmstDeg": 280.460618375,
+      "source": "ERFA gmst82; UT1 input, not a UTC precision assertion"
+    },
+    {
+      "jdUt1": 2461041.5,
+      "gmstDeg": 100.66085853700652,
+      "source": "ERFA gmst82; UT1 input, not a UTC precision assertion"
+    },
+    {
+      "jdUt1": 2461771.5,
+      "gmstDeg": 100.1834401126213,
+      "source": "ERFA gmst82; UT1 input, not a UTC precision assertion"
+    }
+  ]
+}
