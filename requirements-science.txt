@@ -1,0 +1,4 @@
+# Build/reference verification only. No browser dependencies.
+astropy-healpix==2.0.1
+astropy==8.0.1
+pyerfa==2.0.1.5

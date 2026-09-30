@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/atomicdjt/cosmic-atlas-scientific/scientific-result-v1",
+  "title": "Scientific provenance envelope for adapters; native subsystem schemas retain named state fields",
+  "type": "object",
+  "required": ["category", "source", "epoch", "timeScale", "frame", "units", "method", "assumptions", "uncertainty", "validRange"],
+  "properties": {
+    "category": {"enum": ["observed", "source-derived", "interpolated source-derived", "numerically computed", "numerically integrated model", "approximate", "illustrative"]},
+    "source": {"type": ["object", "string", "null"]},
+    "epoch": {"type": ["number", "null"]},
+    "timeScale": {"enum": ["UTC", "TT", "TDB", "model Julian days", null]},
+    "frame": {"type": ["string", "null"]},
+    "units": {"type": "object"},
+    "method": {"type": "string"},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "uncertainty": {"type": ["number", "object", "null"]},
+    "validRange": {"type": ["array", "null"], "items": {"type": "number"}, "minItems": 2, "maxItems": 2}
+  }
+}

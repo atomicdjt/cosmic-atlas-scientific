@@ -22,7 +22,7 @@ function greenwichMeanSiderealDeg(jd) {
 
 function icrsToHorizontalApprox(raDeg, decDeg, jd, observer) {
   const site = validateObserver(observer);
-  if (!site || !isFiniteAstronomyNumber(raDeg) || !isFiniteAstronomyNumber(decDeg) || !isFiniteAstronomyNumber(jd)) return null;
+  if (!site || !isFiniteAstronomyNumber(raDeg) || !isFiniteAstronomyNumber(decDeg) || Math.abs(decDeg)>90 || !isFiniteAstronomyNumber(jd)) return null;
   const hourAngle = ((greenwichMeanSiderealDeg(jd) + site.longitudeDeg - raDeg + 540) % 360 - 180) * Math.PI / 180;
   const lat = site.latitudeDeg * Math.PI / 180;
   const dec = decDeg * Math.PI / 180;

@@ -1,6 +1,6 @@
 function hohmannTransferEstimate(originRadiusAu, destinationRadiusAu) {
   const r1 = Number(originRadiusAu), r2 = Number(destinationRadiusAu);
-  if (!(r1 > 0 && r2 > 0)) return null;
+  if (!Number.isFinite(r1) || !Number.isFinite(r2) || !(r1 > 0 && r2 > 0)) return null;
   const transferSemiMajorAu = (r1 + r2) / 2;
   const timeDays = Math.PI * Math.sqrt(transferSemiMajorAu ** 3 / GRAVITATIONAL_CONSTANT_AU3_SOLAR_MASS_DAY2);
   const circular1 = Math.sqrt(GRAVITATIONAL_CONSTANT_AU3_SOLAR_MASS_DAY2 / r1);
