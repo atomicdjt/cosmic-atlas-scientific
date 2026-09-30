@@ -1513,7 +1513,7 @@ input:checked + .slider:before {
 const RELEASE_MANIFEST = Object.freeze({
   product: "Cosmic Atlas Scientific",
   version: window.atlasBuildIdentity?.version || "6.0.0",
-  buildId: window.atlasBuildIdentity?.buildId || "CA-SCI-6.0.0-a2cd298606ae",
+  buildId: window.atlasBuildIdentity?.buildId || "CA-SCI-6.0.0-e96872c55109",
   releaseDate: null,
   coordinateFrame: "ICRS directions; Sol-centered display coordinates",
   cosmology: {
@@ -5836,6 +5836,17 @@ function localPackCameraTick(now) {
   lastPackCamera=signature;lastPackCameraTime=now;
   try{useCameraPackDirection();loadLocalPackCone().catch(error=>{if(error.name!=="AbortError")document.getElementById("pack-output").textContent=error.message;});}catch(error){document.getElementById("pack-output").textContent=error.message;}
 }
+// Font metrics and wrapped navigation vary by browser; keep scientific context
+// below the actual header rather than assuming a fixed header height.
+function positionAtlasOrientationNote() {
+  const note=document.getElementById("orientation-note"),bar=document.querySelector(".top-bar");
+  const floor=innerWidth<=900?140:innerWidth<=1100?100:96;
+  note.style.top=`${Math.max(floor,bar.getBoundingClientRect().bottom+8)}px`;
+}
+const platformHeaderObserver=new ResizeObserver(positionAtlasOrientationNote);
+platformHeaderObserver.observe(document.querySelector(".top-bar"));
+window.addEventListener("resize",positionAtlasOrientationNote);
+positionAtlasOrientationNote();
 queryPlatformEphemeris();
 
 </script>

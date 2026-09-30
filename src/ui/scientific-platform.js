@@ -210,4 +210,15 @@ function localPackCameraTick(now) {
   lastPackCamera=signature;lastPackCameraTime=now;
   try{useCameraPackDirection();loadLocalPackCone().catch(error=>{if(error.name!=="AbortError")document.getElementById("pack-output").textContent=error.message;});}catch(error){document.getElementById("pack-output").textContent=error.message;}
 }
+// Font metrics and wrapped navigation vary by browser; keep scientific context
+// below the actual header rather than assuming a fixed header height.
+function positionAtlasOrientationNote() {
+  const note=document.getElementById("orientation-note"),bar=document.querySelector(".top-bar");
+  const floor=innerWidth<=900?140:innerWidth<=1100?100:96;
+  note.style.top=`${Math.max(floor,bar.getBoundingClientRect().bottom+8)}px`;
+}
+const platformHeaderObserver=new ResizeObserver(positionAtlasOrientationNote);
+platformHeaderObserver.observe(document.querySelector(".top-bar"));
+window.addEventListener("resize",positionAtlasOrientationNote);
+positionAtlasOrientationNote();
 queryPlatformEphemeris();

@@ -57,7 +57,10 @@ def main():
     page.evaluate("workbench.open=true");page.wait_for_timeout(100);check('diagram_accessible_description',"document.getElementById('cmd-canvas').getAttribute('aria-label').includes('catalog search') && document.getElementById('cmd-summary').textContent.includes('No extinction')")
     checks['no_page_errors']=not errors;checks['no_external_requests']=not network;assert all(checks.values())
     page.screenshot(path=str(QA/(name+'.png')),full_page=True)
-   except Exception as e:checks['exception']=str(e);checks['traceback']=traceback.format_exc()
+   except Exception as e:
+    checks['exception']=str(e);checks['traceback']=traceback.format_exc()
+    checks['layout_diagnostic']=page.evaluate("({noteTop:document.getElementById('orientation-note').getBoundingClientRect().top,headerBottom:document.querySelector('.top-bar').getBoundingClientRect().bottom,viewport:innerHeight})")
+    page.screenshot(path=str(QA/(name+'-failure.png')),full_page=True)
    result={'case':name,'browserVersion':b.version,'checks':checks,'errors':errors,'externalRequests':network,'passed':all(v is True for v in checks.values())};results.append(result);print(json.dumps(result),flush=True);b.close()
  (QA/'behavior.json').write_text(json.dumps({'artifactSha256':hashlib.sha256((ROOT/'dist/Cosmic_Atlas_Standalone.html').read_bytes()).hexdigest(),'results':results},indent=2)+'\n')
  return all(x['passed'] for x in results)
