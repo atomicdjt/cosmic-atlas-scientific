@@ -1,14 +1,14 @@
 # v6 measured browser performance
 
-Artifact SHA-256: `970662e47c61da8624983ace2669d6a56879d052a5e72caf2e3fc672a50b0ceb`. Windows 10, headless Chromium 151.0.7922.34 / Firefox 153.0; Chromium uses SwiftShader. These are measurements on this machine, not physical-device or GPU certification.
+Artifact SHA-256: `23b3cab9d06e7b2268bfca336f5df1ba2a9cd346aac5d5ee6fbc0baa24dc830b`. Windows 10, headless Chromium 151.0.7922.34 / Firefox 153.0; Chromium uses SwiftShader. These are measurements on this machine, not physical-device or GPU certification.
 
 ## Scientific workspace and local pack
 
 | Browser | Embedded startup, ms | 10k state queries, ms | 1k Lambert calls, ms | 4000 simulation steps, ms | 625-cell grid, ms | 50k-source cone load, ms |
 |---|---:|---:|---:|---:|---:|---:|
-| chromium | 3342.2 | 14.7 | 21.7 | 68.7 | 306.5 | 2453.7 |
-| firefox | 1490.6 | 18.0 | 19.0 | 57.0 | 198.6 | 1828.9 |
-| mobile | 1593.3 | 37.7 | 20.2 | 70.5 | 252.7 | 1590.0 |
+| chromium | 1043.0 | 17.0 | 24.5 | 49.2 | 207.1 | 1482.9 |
+| firefox | 1265.9 | 11.0 | 13.0 | 32.0 | 111.6 | 887.0 |
+| mobile | 850.5 | 56.7 | 42.5 | 60.0 | 200.3 | 822.5 |
 
 The pack is a genuine 50,000-row Gaia selection, 768 HEALPix RING order-3 tiles. The RA=100°, Dec=0°, radius=15° query retains 2,283 rows / 4,172,265 source bytes and publishes 1,334 cone-matching external/unverified rows. Runtime budgets: 32 MiB retained source, 20k rows, 4 MiB / 5k rows per tile. These budgets do not measure total process/GPU memory. The three-body 1000-day / 4000-step run has energy relative drift about 1.68e-7; that is not a JPL trajectory comparison.
 
@@ -18,12 +18,12 @@ The pack is a genuine 50,000-row Gaia selection, 768 HEALPix RING order-3 tiles.
 
 | Browser | Rows | Startup, ms | Import wall, ms | Filter, ms | First pick, ms | Frame p95, ms | Max import timer gap, ms |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| chromium | 5,000 | 3364.4 | 542.7 | 20.1 | 4.4 | 50.0 | 31.0 |
-| chromium | 20,000 | 2180.8 | 2209.7 | 45.5 | 10.8 | 66.7 | 73.2 |
-| chromium | 50,000 | 2127.5 | 4328.5 | 102.7 | 19.7 | 83.3 | 75.0 |
-| firefox | 5,000 | 6917.2 | 547.0 | 17.0 | 7.0 | 13.9 | 51.0 |
-| firefox | 20,000 | 1607.2 | 2307.0 | 33.0 | 8.0 | 13.9 | 200.0 |
-| firefox | 50,000 | 1336.6 | 4804.0 | 73.0 | 21.0 | 13.9 | 188.0 |
+| chromium | 5,000 | 2390.9 | 173.9 | 13.6 | 2.8 | 49.9 | 33.6 |
+| chromium | 20,000 | 845.0 | 1531.8 | 40.5 | 10.9 | 50.1 | 1070.0 |
+| chromium | 50,000 | 897.5 | 2305.2 | 79.9 | 16.0 | 83.3 | 1143.6 |
+| firefox | 5,000 | 962.8 | 406.0 | 10.0 | 2.0 | 7.0 | 44.0 |
+| firefox | 20,000 | 731.2 | 909.0 | 15.0 | 4.0 | 7.0 | 64.0 |
+| firefox | 50,000 | 698.6 | 2182.0 | 29.0 | 9.0 | 7.0 | 75.0 |
 
 The timer-gap evidence includes publication/serialization pauses; asynchronous parsing alone does not make the whole-catalog import fully responsive. Local cone loading reduces the number of retained/published records but does not eliminate this existing commit cost. Optimization of that remaining main-thread work is future performance work.
 

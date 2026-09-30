@@ -1,5 +1,5 @@
 {
-  "standalone_sha256": "970662e47c61da8624983ace2669d6a56879d052a5e72caf2e3fc672a50b0ceb",
+  "standalone_sha256": "23b3cab9d06e7b2268bfca336f5df1ba2a9cd346aac5d5ee6fbc0baa24dc830b",
   "passed": true,
   "checks": {
     "visible_table_open": true,

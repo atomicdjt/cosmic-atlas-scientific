@@ -1,6 +1,6 @@
 {
   "platform": "Windows-10-10.0.19045-SP0",
-  "artifactSha256": "970662e47c61da8624983ace2669d6a56879d052a5e72caf2e3fc672a50b0ceb",
+  "artifactSha256": "23b3cab9d06e7b2268bfca336f5df1ba2a9cd346aac5d5ee6fbc0baa24dc830b",
   "packSourceSha256": "bf0c832c9abc8d61ed52d5693057d23b71424c40eda44f303f2c2da9fdbdcb3f",
   "results": [
     {
@@ -28,14 +28,14 @@
         "no_page_errors": true
       },
       "metrics": {
-        "embeddedStartupMs": 3342.2030999936396,
-        "simulation360WallMs": 359.24180000438355,
-        "simulation4000WorkerWallMs": 68.70000000298023,
+        "embeddedStartupMs": 1043.0403000063961,
+        "simulation360WallMs": 182.54009999509435,
+        "simulation4000WorkerWallMs": 49.20000000298023,
         "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
-        "grid625WallMs": 306.5459000063129,
-        "ephemeris10000Ms": 14.700000002980232,
-        "lambert1000Ms": 21.69999998807907,
-        "pack50kConeWallMs": 2453.7420999986352,
+        "grid625WallMs": 207.06439999048598,
+        "ephemeris10000Ms": 17,
+        "lambert1000Ms": 24.5,
+        "pack50kConeWallMs": 1482.9203999979654,
         "pack": {
           "sourceRows": 50000,
           "manifestTiles": 768,
@@ -73,14 +73,14 @@
         "no_page_errors": true
       },
       "metrics": {
-        "embeddedStartupMs": 1490.6422000058228,
-        "simulation360WallMs": 149.9467999965418,
-        "simulation4000WorkerWallMs": 57,
+        "embeddedStartupMs": 1265.8994999947026,
+        "simulation360WallMs": 93.23319999384694,
+        "simulation4000WorkerWallMs": 32,
         "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
-        "grid625WallMs": 198.61579999269452,
-        "ephemeris10000Ms": 18,
-        "lambert1000Ms": 19,
-        "pack50kConeWallMs": 1828.8898000027984,
+        "grid625WallMs": 111.60190000373404,
+        "ephemeris10000Ms": 11,
+        "lambert1000Ms": 13,
+        "pack50kConeWallMs": 887.0268000027863,
         "pack": {
           "sourceRows": 50000,
           "manifestTiles": 768,
@@ -118,14 +118,14 @@
         "no_page_errors": true
       },
       "metrics": {
-        "embeddedStartupMs": 1593.2778999995207,
-        "simulation360WallMs": 167.52760000235867,
-        "simulation4000WorkerWallMs": 70.5,
+        "embeddedStartupMs": 850.4994999966584,
+        "simulation360WallMs": 85.48670000163838,
+        "simulation4000WorkerWallMs": 60,
         "simulation4000EnergyRelativeDrift": 1.6755148653318446e-07,
-        "grid625WallMs": 252.6953000051435,
-        "ephemeris10000Ms": 37.70000000298023,
-        "lambert1000Ms": 20.200000002980232,
-        "pack50kConeWallMs": 1589.970600005472,
+        "grid625WallMs": 200.2827999967849,
+        "ephemeris10000Ms": 56.69999998807907,
+        "lambert1000Ms": 42.5,
+        "pack50kConeWallMs": 822.4784000049112,
         "pack": {
           "sourceRows": 50000,
           "manifestTiles": 768,
