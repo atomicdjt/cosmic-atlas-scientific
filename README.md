@@ -2,6 +2,16 @@
 
 A provenance-aware offline astronomy atlas combining catalog observations, literature-adopted measurements, numerical cosmology, and explicitly identified procedural context. The v6 development engine adds offline JPL Horizons/DE441 state queries, validated numerical simulation and Lambert transfer exploration, and functional local HEALPix catalog packs. The published v5.1.0 release remains frozen; this development identity is not a new formal release.
 
+**[Latest formal release (v5.1.0)](https://github.com/atomicdjt/cosmic-atlas-scientific/releases/latest) · [Independent reviewer quickstart](docs/REVIEWER_QUICKSTART.md) · [Numerical evidence](docs/V6_NUMERICAL_VALIDATION.md) · [Limitations](docs/V6_LIMITATIONS.md)**
+
+### Development QA captures (not release screenshots)
+
+| Atlas / catalogue workspace | v6 scientific workspace |
+| --- | --- |
+| ![Cosmic Atlas development capture showing atlas controls and catalog representation](qa/v6/chromium-atlas.png) | ![Cosmic Atlas development capture of the scientific workspace controls](qa/v6/chromium-workspace.png) |
+
+*These are tracked Chromium QA captures from unreleased v6 development. They are not a claim of a v6 public release, independent scientific endorsement, or physical-device performance.*
+
 Open **`dist/Cosmic_Atlas_Standalone.html`** directly in a browser. It includes a genuine **5,000-record Gaia DR3 catalog** and the preserved curated core. No server, package installation, account, API key or network is required. Optional **20k and 50k Gaia**, **9,096-row BSC5**, and **14,027-row OpenNGC** catalogs are included in the full release package and can be imported locally.
 
 Open **Scientific workspace** in the main navigation for Ephemeris, Simulate, Missions and Local catalogs. Query 2026–2027 geometric ICRF/TDB states, export provenance, propagate a separately labelled Newtonian model, or compute a bounded zero-revolution transfer/grid. Terrain is metadata only and observer pointing remains approximate.
